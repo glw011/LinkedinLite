@@ -1,0 +1,65 @@
+/* -------------------------------------------------------------------------------------------------
+Harrison Day - 04/04/25
+Main UI file for LinkedInLite
+------------------------------------------------------------------------------------------------- */
+
+package ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+
+/**
+ * The main UI composable for the LinkedInLite application.
+ *
+ * This function sets up the primary layout structure, including the sidebar
+ * and the main content area. It manages the currently selected tab and
+ * delegates the rendering of content to other composable functions.
+ */
+@Composable
+fun UI() {
+    MaterialTheme {
+        var selectedTab by remember { mutableStateOf("Home") }
+
+        Row(Modifier.fillMaxSize()) {
+
+            // Always Show Sidebar
+            Sidebar(
+                selectedTab = selectedTab,
+                onTabSelected = { tabName -> selectedTab = tabName }
+            )
+
+            // Switch to People / Orgs Tab if Search Bar is Active
+            if (selectedTab != "People / Orgs" && searchActive)
+                selectedTab = "People / Orgs"
+
+            // Disable Search Bar if not on People / Orgs Tab (Might change later)
+            if (selectedTab != "People / Orgs")
+                searchActive = false
+
+            // Show Tab Content
+            Column(modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(Color.White)
+            ) {
+
+                // Switch Tabs
+                when (selectedTab) {
+                    "People / Orgs" -> peopleOrgsTabContent(onSearchTextChanged = { println(it) })
+                    // Add your new tab content composables here
+                }
+            }
+        }
+    }
+}
