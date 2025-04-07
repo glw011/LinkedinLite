@@ -3,6 +3,7 @@ package ui.views
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
@@ -20,8 +21,7 @@ import ui.components.AccountDetailField
 import ui.theme.MainTheme
 
 @Composable
-fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
-    // Login screen UI
+fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {
     MainTheme {
         Scaffold (
             topBar = {
@@ -29,7 +29,7 @@ fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
                     title = { Text(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        text = "Login"
+                        text = "Create an Account"
                     ) }
                 )
             },
@@ -43,42 +43,46 @@ fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
                             Spacer(modifier = Modifier.weight(1f))
                             Button(
                                 modifier = Modifier.weight(1f).padding(64.dp, 0.dp),
-                                onClick = { onLogin() }
+                                onClick = { onContinue() }
                             ) {
-                                Text("Login")
+                                Text("Continue")
                             }
                             Button(
                                 modifier = Modifier.weight(1f),
-                                onClick = { onRegister() },
+                                onClick = { onBack() },
                             ) {
-                                Text("Don't have an account? Sign up here")
+                                Text("Already have an account? Sign in")
                             }
                         }
                     }
                 )
             }
-        ){
-            // Main content of the login screen
-            Column(
-                modifier = Modifier.fillMaxWidth(),
+        ) {
+            // Main content of the register screen
+            Column (
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Welcome to LinkedInLite! Please log in to continue.",
-                    modifier = Modifier.padding(16.dp)
+                AccountDetailField(
+                    label = "Organization Name",
+                    prompt = "Enter name",
+                    keyboardType = KeyboardType.Text,
+                    modifier = Modifier.fillMaxWidth()
                 )
                 AccountDetailField(
                     label = "Email",
-                    prompt = "Enter your email",
+                    prompt = "Enter email",
                     keyboardType = KeyboardType.Email,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
                 AccountDetailField(
                     label = "Password",
-                    prompt = "Enter your password",
+                    prompt = "Enter password",
                     keyboardType = KeyboardType.Password,
                     password = true,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
