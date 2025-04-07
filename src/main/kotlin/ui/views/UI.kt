@@ -3,7 +3,7 @@ Harrison Day - 04/04/25
 Main UI file for LinkedInLite
 ------------------------------------------------------------------------------------------------- */
 
-package views
+package ui.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

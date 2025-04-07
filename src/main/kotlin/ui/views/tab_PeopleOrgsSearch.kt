@@ -3,7 +3,7 @@ Harrison Day - 04/04/25
 Sidebar file for LinkedInLite
 ------------------------------------------------------------------------------------------------- */
 
-package views
+package ui.views
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue

@@ -46,7 +46,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import views.SEARCH_BAR_TEXT
+import ui.views.SEARCH_BAR_TEXT
 
 /**
  * Composable function for the search bar UI element.

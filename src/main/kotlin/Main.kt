@@ -6,7 +6,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import views.UI
+import ui.views.UI
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "LinkedInLite") {
@@ -19,7 +19,7 @@ fun App() {
     // Main function to run the application
 //    var searchActive by rememberSaveable { mutableStateOf(false) }
 //    var searchText by rememberSaveable { mutableStateOf("") }
-//    var selectedTab by rememberSaveable { mutableStateOf("Home") }
+//    var selectedTab by rememberSaveable { mutableStateOf("Login") }
 //    var currentView by rememberSaveable { mutableStateOf("Login") }
     UI()
 }
