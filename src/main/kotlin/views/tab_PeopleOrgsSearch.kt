@@ -3,12 +3,13 @@ Harrison Day - 04/04/25
 Sidebar file for LinkedInLite
 ------------------------------------------------------------------------------------------------- */
 
-package ui
+package views
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import ui.components.searchBar
 
 /**
  * Stores the text currently entered in the search bar.

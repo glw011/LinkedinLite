@@ -3,7 +3,7 @@ Harrison Day - 04/04/25
 Sidebar file for LinkedInLite
 ------------------------------------------------------------------------------------------------- */
 
-package ui
+package ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import views.SEARCH_BAR_TEXT
 
 /**
  * Composable function for the search bar UI element.

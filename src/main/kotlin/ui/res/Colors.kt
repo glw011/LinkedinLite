@@ -1,6 +1,6 @@
 // Color theme for the UI
 
-package ui
+package ui.res
 
 import androidx.compose.ui.graphics.Color
 

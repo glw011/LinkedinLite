@@ -3,7 +3,7 @@ Harrison Day - 04/04/25
 Sidebar file for LinkedInLite
 ------------------------------------------------------------------------------------------------- */
 
-package ui
+package ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ui.res.LIGHT_PURPLE
 
 var FadeSpeed by mutableStateOf(100)
 

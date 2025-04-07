@@ -3,7 +3,7 @@ Harrison Day - 04/04/25
 Main UI file for LinkedInLite
 ------------------------------------------------------------------------------------------------- */
 
-package ui
+package views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import ui.components.Sidebar
+import ui.components.searchActive
 
 /**
  * The main UI composable for the LinkedInLite application.

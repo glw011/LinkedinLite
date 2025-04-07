@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6e09a9f9-e7ce-4bba-801c-a5ce6c61693b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
-    </list>
+    <list default="true" id="6e09a9f9-e7ce-4bba-801c-a5ce6c61693b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,7 +90,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "search-and-tabs",
+    "git-widget-placeholder": "org-profiles",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/toussaint24/AndroidStudioProjects/LinkedinLite",
     "settings.editor.selected.configurable": "preferences.lookFeel",
