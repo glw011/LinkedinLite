@@ -21,7 +21,7 @@ import ui.components.AccountDetailField
 import ui.theme.MainTheme
 
 @Composable
-fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {
+fun registerSelectScreen(onPerson: () -> Unit, onOrg: () -> Unit,  onBack: () -> Unit) {
     MainTheme {
         Scaffold (
             topBar = {
@@ -36,23 +36,11 @@ fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {
             bottomBar = {
                 BottomAppBar (
                     content = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
+                        Button(
+                            modifier = Modifier.fillMaxWidth(0.3f),
+                            onClick = { onBack() }
                         ) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Button(
-                                modifier = Modifier.weight(1f).padding(64.dp, 0.dp),
-                                onClick = { onContinue() }
-                            ) {
-                                Text("Continue")
-                            }
-                            Button(
-                                modifier = Modifier.weight(1f),
-                                onClick = { onBack() },
-                            ) {
-                                Text("Back")
-                            }
+                            Text("Already have an account? Sign in")
                         }
                     }
                 )
@@ -65,25 +53,30 @@ fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AccountDetailField(
-                    label = "Organization Name",
-                    prompt = "Enter name",
-                    keyboardType = KeyboardType.Text,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                AccountDetailField(
-                    label = "Email",
-                    prompt = "Enter email",
-                    keyboardType = KeyboardType.Email,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                AccountDetailField(
-                    label = "Password",
-                    prompt = "Enter password",
-                    keyboardType = KeyboardType.Password,
-                    password = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Select an account type",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.weight(0.75f))
+                    Button(
+                        modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth(0.3f),
+                        onClick = { onPerson() }
+                    ) {
+                        Text("Personal Account")
+                    }
+                    Button(
+                        modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth(0.3f),
+                        onClick = { onOrg() },
+                    ) {
+                        Text("Organization Account")
+                    }
+                    Spacer(modifier = Modifier.weight(1.5f))
+                }
             }
         }
     }

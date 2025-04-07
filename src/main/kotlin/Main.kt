@@ -9,16 +9,18 @@ import androidx.compose.ui.window.application
 import ui.views.UI
 import ui.views.loginScreen
 import ui.views.registerOrgScreen
+import ui.views.registerSelectScreen
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "LinkedInLite") {
-        PreviewApp()
+        App()
     }
 }
 
 enum class View {
     Login,
     Home,
+    RegisterSelect,
     RegisterOrgMain,
     RegisterOrgInfo,
     RegisterOrgPfp,
@@ -34,26 +36,58 @@ fun App() {
 
     if (currentView == View.Login) {
         // Show login screen
+        val onLogin: () -> Unit = {
+            // Handle login logic here
+            // For now, just switch to the home view
+            currentView = View.Home
+        }
+        val onRegister: () -> Unit = {
+            // Handle registration logic here
+            // For now, just switch to the registration view
+            currentView = View.RegisterSelect
+        }
         loginScreen(
-            onLogin = { currentView = View.Home },
-            onRegister = { currentView = View.RegisterOrgMain }
+            onLogin = onLogin,
+            onRegister = onRegister
+        )
+    } else if (currentView == View.RegisterSelect) {
+        val onPerson: () -> Unit = {
+            // Handle person registration logic here
+        }
+        val onOrganization: () -> Unit = {
+            // Handle organization registration logic here
+            // For now, just switch to the organization main view
+            currentView = View.RegisterOrgMain
+        }
+        val onBack: () -> Unit = {
+            // Handle back logic here
+            // For now, just switch to the login view
+            currentView = View.Login
+        }
+        registerSelectScreen(
+            onPerson = onPerson,
+            onOrg = onOrganization,
+            onBack = onBack
         )
     } else if (currentView == View.RegisterOrgMain) {
         // Show registration screen
+        val onContinue: () -> Unit = {
+            // Handle continue logic here
+            // For now, just switch to the registration info view
+            currentView = View.RegisterOrgInfo
+        }
+        val onBack: () -> Unit = {
+            // Handle back logic here
+            // For now, just switch to the registration select view
+            currentView = View.RegisterSelect
+        }
         registerOrgScreen(
-            onContinue = { currentView = View.RegisterOrgInfo },
-            onBack = { currentView = View.Login }
+            onContinue = onContinue,
+            onBack = onBack
         )
     } else if (currentView == View.RegisterOrgInfo) {
     } else {
         // Show main UI
         UI()
     }
-}
-
-@Composable
-@Preview
-fun PreviewApp() {
-    // Preview function for the application
-    App()
 }

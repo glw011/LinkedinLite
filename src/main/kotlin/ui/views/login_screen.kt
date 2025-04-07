@@ -29,7 +29,7 @@ fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
                     title = { Text(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        text = "Login"
+                        text = "LinkedInLite Login"
                     ) }
                 )
             },
