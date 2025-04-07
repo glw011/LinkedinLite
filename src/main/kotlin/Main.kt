@@ -8,6 +8,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import ui.views.UI
 import ui.views.loginScreen
+import ui.views.registerOrgInfoScreen
+import ui.views.registerOrgPfpScreen
 import ui.views.registerOrgScreen
 import ui.views.registerSelectScreen
 
@@ -70,7 +72,6 @@ fun App() {
             onBack = onBack
         )
     } else if (currentView == View.RegisterOrgMain) {
-        // Show registration screen
         val onContinue: () -> Unit = {
             // Handle continue logic here
             // For now, just switch to the registration info view
@@ -86,8 +87,37 @@ fun App() {
             onBack = onBack
         )
     } else if (currentView == View.RegisterOrgInfo) {
-    } else {
-        // Show main UI
+        val onContinue: () -> Unit = {
+            // Handle continue logic here
+            // For now, just switch to the registration profile picture view
+            currentView = View.RegisterOrgPfp
+        }
+        val onBack: () -> Unit = {
+            // Handle back logic here
+            // For now, just switch to the organization main view
+            currentView = View.RegisterOrgMain
+        }
+        registerOrgInfoScreen(
+            onContinue = onContinue,
+            onBack = onBack
+        )
+    } else if (currentView == View.RegisterOrgPfp){
+        val onContinue: () -> Unit = {
+            // Handle continue logic here
+            // For now, just switch to the home view
+            currentView = View.Home
+        }
+        val onBack: () -> Unit = {
+            // Handle back logic here
+            // For now, just switch to the registration info view
+            currentView = View.RegisterOrgInfo
+        }
+        registerOrgPfpScreen(
+            onContinue = onContinue,
+            onBack = onBack
+        )
+    } else if (currentView == View.Home) {
+        // Show home screen
         UI()
     }
 }

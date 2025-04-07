@@ -20,8 +20,9 @@ import androidx.compose.ui.unit.dp
 import ui.components.AccountDetailField
 import ui.theme.MainTheme
 
+
 @Composable
-fun registerSelectScreen(onPerson: () -> Unit, onOrg: () -> Unit,  onBack: () -> Unit) {
+fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
     MainTheme {
         Scaffold (
             topBar = {
@@ -36,11 +37,23 @@ fun registerSelectScreen(onPerson: () -> Unit, onOrg: () -> Unit,  onBack: () ->
             bottomBar = {
                 BottomAppBar (
                     content = {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(0.3f),
-                            onClick = { onBack() }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Already have an account? Sign in")
+                            Spacer(modifier = Modifier.weight(1f))
+                            Button(
+                                modifier = Modifier.weight(1f).padding(64.dp, 0.dp),
+                                onClick = { onContinue() }
+                            ) {
+                                Text("Continue")
+                            }
+                            Button(
+                                modifier = Modifier.weight(1f),
+                                onClick = { onBack() },
+                            ) {
+                                Text("Back")
+                            }
                         }
                     }
                 )
@@ -53,30 +66,7 @@ fun registerSelectScreen(onPerson: () -> Unit, onOrg: () -> Unit,  onBack: () ->
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Select an account type",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.weight(0.75f))
-                    Button(
-                        modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth(0.3f),
-                        onClick = { onPerson() }
-                    ) {
-                        Text("Personal Account")
-                    }
-                    Button(
-                        modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth(0.3f),
-                        onClick = { onOrg() },
-                    ) {
-                        Text("Organization Account")
-                    }
-                    Spacer(modifier = Modifier.weight(1.5f))
-                }
+                Text("Please upload a profile picture for your organization", modifier = Modifier.padding(16.dp))
             }
         }
     }
