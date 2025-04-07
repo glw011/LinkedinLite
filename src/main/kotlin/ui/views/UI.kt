@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import ui.components.Sidebar
 import ui.components.searchActive
+import ui.theme.MainTheme
 
 /**
  * The main UI composable for the LinkedInLite application.
@@ -30,7 +31,7 @@ import ui.components.searchActive
  */
 @Composable
 fun UI() {
-    MaterialTheme {
+    MainTheme {
         var selectedTab by remember { mutableStateOf("Home") }
 
         Row(Modifier.fillMaxSize()) {

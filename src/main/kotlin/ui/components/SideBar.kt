@@ -35,7 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import ui.res.LIGHT_PURPLE
+import ui.theme.LIGHT_PURPLE
 
 var FadeSpeed by mutableStateOf(100)
 
