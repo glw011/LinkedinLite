@@ -71,6 +71,12 @@ fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                     keyboardType = KeyboardType.Text,
                     modifier = Modifier.fillMaxWidth()
                 )
+                AccountDetailField(
+                    label = "Organization Name",
+                    prompt = "Enter name",
+                    keyboardType = KeyboardType.Text,
+                    modifier = Modifier.fillMaxWidth()
+                )
                 Text(
                     text="Organization Type",
                 )

@@ -66,12 +66,6 @@ fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AccountDetailField(
-                    label = "Organization Name",
-                    prompt = "Enter name",
-                    keyboardType = KeyboardType.Text,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                AccountDetailField(
                     label = "Email",
                     prompt = "Enter email",
                     keyboardType = KeyboardType.Email,
