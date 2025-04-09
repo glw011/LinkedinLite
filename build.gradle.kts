@@ -17,6 +17,10 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
+    implementation(compose.material3)
+    implementation(compose.ui)
+    implementation(compose.foundation)
+    implementation(compose.runtime)
 }
 
 compose.desktop {
