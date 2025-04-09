@@ -19,7 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import data.DataSource.tags
 import ui.components.AccountDetailField
-import ui.components.dropDownList
+import ui.components.dropdownList
+import ui.components.multiDropdownList
 import ui.theme.MainTheme
 
 @Composable
@@ -82,7 +83,7 @@ fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                 Text(
                     text="Organization Type",
                 )
-                dropDownList(
+                multiDropdownList(
                     items = tags,
                     modifier = Modifier.fillMaxWidth()
                 )

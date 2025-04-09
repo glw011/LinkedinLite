@@ -2,7 +2,6 @@ package ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenuItem
@@ -16,21 +15,21 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.DataSource.tags
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun dropdownList(items: List<String>, modifier: Modifier = Modifier) {
+fun multiDropdownList(items: List<String>, modifier: Modifier = Modifier) {
 
     var isExpanded by rememberSaveable { mutableStateOf(false) }
 
-    var selectedText by rememberSaveable { mutableStateOf(items[0]) }
+    val selectedItems = rememberSaveable { mutableStateListOf<String>() }
 
     Column (
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -41,7 +40,7 @@ fun dropdownList(items: List<String>, modifier: Modifier = Modifier) {
             onExpandedChange = { isExpanded = !isExpanded },
         ) {
             TextField(
-                value = selectedText,
+                value = selectedItems.joinToString(", "),
                 onValueChange = { },
                 readOnly = true,
                 trailingIcon = {
@@ -54,7 +53,11 @@ fun dropdownList(items: List<String>, modifier: Modifier = Modifier) {
                 items.forEachIndexed{index, text ->
                     DropdownMenuItem(
                         onClick = {
-                            selectedText = items[index]
+                            if (text in selectedItems) {
+                                selectedItems.remove(text)
+                            } else {
+                                selectedItems.add(text)
+                            }
                             isExpanded = false
                         },
                         content = {
@@ -62,7 +65,18 @@ fun dropdownList(items: List<String>, modifier: Modifier = Modifier) {
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(text)
+                                Text(
+                                    text = text,
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.9f)
+                                        .padding(end = 16.dp)
+                                )
+                                if (text in selectedItems) {
+                                    Icon(
+                                        Icons.Rounded.Check,
+                                        contentDescription = "Selected"
+                                    )
+                                }
                             }
                         },
                         modifier = Modifier.padding(8.dp)
