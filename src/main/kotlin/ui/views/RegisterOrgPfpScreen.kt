@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ui.components.EditablePfpImage
-import ui.components.PfpImage
 import ui.theme.MainTheme
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -116,7 +115,6 @@ fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                     )
                 }
                 Text("Please upload a profile picture for your organization", modifier = Modifier.padding(16.dp))
-
             }
         }
     }

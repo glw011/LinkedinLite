@@ -6,6 +6,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import ui.views.OrgProfileTab
 import ui.views.UI
 import ui.views.loginScreen
 import ui.views.registerOrgInfoScreen
@@ -118,6 +119,6 @@ fun App() {
         )
     } else if (currentView == View.Home) {
         // Show home screen
-        UI()
+        OrgProfileTab()
     }
 }
