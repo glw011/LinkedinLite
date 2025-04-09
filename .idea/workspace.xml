@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6e09a9f9-e7ce-4bba-801c-a5ce6c61693b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/MultiSelectDropdownList.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/EditablePfpImage.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/PfpImage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/components/DropdownList.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/DropdownList.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgInfoScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgInfoScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgPfpScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgPfpScreen.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,12 +67,12 @@
     &quot;assignee&quot;: &quot;hday200202&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/glw011/LinkedinLite.git&quot;,
-    &quot;accountId&quot;: &quot;48ef62dd-1e3e-4b97-8bf6-9e8ed0360536&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/glw011/LinkedinLite.git",
+    "accountId": "c562c929-9f8c-47b6-8445-3030b46afa1e"
   }
-}</component>
+}]]></component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
