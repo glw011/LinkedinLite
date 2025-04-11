@@ -32,9 +32,6 @@ enum class View {
 @Composable
 fun App() {
     // Main function to run the application
-    var searchActive by rememberSaveable { mutableStateOf(false) }
-    var searchText by rememberSaveable { mutableStateOf("") }
-    var selectedTab by rememberSaveable { mutableStateOf("Login") }
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
 
     if (currentView == View.Login) {
