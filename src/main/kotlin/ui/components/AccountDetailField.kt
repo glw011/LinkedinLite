@@ -43,20 +43,17 @@ fun AccountDetailField(
 
     Column(
         modifier = modifier
-            .padding(8.dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(label)
-        TextField(
-            value = value,
-            onValueChange = { value = it },
-            label = { Text(prompt) },
-            visualTransformation = if (password) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = keyboardType,
-                imeAction = ImeAction.Done
-            )
+
+        styledTextField(
+            onTextChanged = { value = it },
+            width = 256,
+            xAlignment = Alignment.CenterHorizontally,
+            unfocusedText = prompt,
+            isPassword = password
         )
     }
 }

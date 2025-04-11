@@ -14,10 +14,13 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ui.components.AccountDetailField
+import ui.components.styledButton
+import ui.theme.LIGHT_PURPLE
 import ui.theme.MainTheme
 
 @Composable
@@ -41,18 +44,28 @@ fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Spacer(modifier = Modifier.weight(1f))
-                            Button(
-                                modifier = Modifier.weight(1f).padding(64.dp, 0.dp),
-                                onClick = { onContinue() }
-                            ) {
-                                Text("Continue")
-                            }
-                            Button(
-                                modifier = Modifier.weight(1f),
+
+                            styledButton(
+                                text = "Continue",
+                                width = 80,
+                                xAlignment = Alignment.CenterHorizontally,
+                                onClick = { onContinue() },
+                                buttonColor = LIGHT_PURPLE,
+                                textColor = Color.White,
+                            )
+
+                            Spacer(modifier = Modifier.weight(0.05f))
+
+                            styledButton(
+                                text = "Back",
+                                width = 80,
+                                xAlignment = Alignment.CenterHorizontally,
                                 onClick = { onBack() },
-                            ) {
-                                Text("Back")
-                            }
+                                buttonColor = LIGHT_PURPLE,
+                                textColor = Color.White,
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
                         }
                     }
                 )
@@ -60,17 +73,20 @@ fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {
         ) {
             // Main content of the register screen
             Column (
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.padding(top = 32.dp))
+
                 AccountDetailField(
                     label = "Email",
                     prompt = "Enter email",
                     keyboardType = KeyboardType.Email,
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                Spacer(modifier = Modifier.padding(top = 32.dp))
+
                 AccountDetailField(
                     label = "Password",
                     prompt = "Enter password",
