@@ -4,10 +4,15 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6e09a9f9-e7ce-4bba-801c-a5ce6c61693b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+    <list default="true" id="6e09a9f9-e7ce-4bba-801c-a5ce6c61693b" name="Changes" comment="restyled">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.run/desktop.run.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.run/desktop.run.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/components/SearchBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/SearchBar.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/components/StyledButton.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/StyledButton.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/components/StyledDropdownList.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/StyledDropdownList.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/components/StyledTextField.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/StyledTextField.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgInfoScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgInfoScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/tab_PeopleOrgsSearch.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/tab_PeopleOrgsSearch.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +57,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="searchbar-tabs" />
+        <entry key="$PROJECT_DIR$" value="vscode-testing" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -66,7 +71,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/glw011/LinkedinLite.git&quot;,
-    &quot;accountId&quot;: &quot;48ef62dd-1e3e-4b97-8bf6-9e8ed0360536&quot;
+    &quot;accountId&quot;: &quot;90bbd3ee-a4c7-4ea2-a28b-5e1c6823b2f6&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -94,10 +99,12 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "org-profiles",
+    "git-widget-placeholder": "ui-styling",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/toussaint24/AndroidStudioProjects/LinkedinLite",
+    "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "preferences.lookFeel",
     "show.migrate.to.gradle.popup": "false"
   }
@@ -122,6 +129,31 @@
       <option name="presentableId" value="Default" />
       <updated>1743806584425</updated>
     </task>
+    <task id="LOCAL-00001" summary="restyled, added/condensed components">
+      <option name="closed" value="true" />
+      <created>1744373810116</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1744373810116</updated>
+    </task>
+    <task id="LOCAL-00002" summary="restyled, added/condensed components">
+      <option name="closed" value="true" />
+      <created>1744374745601</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1744374745601</updated>
+    </task>
+    <task id="LOCAL-00003" summary="restyled">
+      <option name="closed" value="true" />
+      <created>1744375468866</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1744375468866</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -135,7 +167,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="searchbar-tabs" />
+                        <option value="origin/vscode-testing" />
                       </list>
                     </value>
                   </entry>
@@ -146,5 +178,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="restyled, condensed components, added components" />
+    <MESSAGE value="restyled, added/condensed components" />
+    <MESSAGE value="restyled" />
+    <option name="LAST_COMMIT_MESSAGE" value="restyled" />
   </component>
 </project>
