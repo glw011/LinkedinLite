@@ -1,0 +1,135 @@
+ ===========
+| Functions |
+ ===========
+authUser(email, hashd_pass)
+ 	returns hkey -> key (time to expire?) to hash table containing credentials
+ 
+addOrg(org_name, org_type, email, hashd_pass, school_name)
+
+addStdnt(fname, lname, email, hashd_pass, school_name, major)
+
+setBio(hkey, text)
+
+addPost(hkey, )
+
+delPost()
+
+addInterest()
+
+delInterest()
+
+addPfP()
+
+setPfP()
+
+addImg()	
+
+delImg()
+
+setSchool()
+
+setMajor()
+
+addSkill()
+
+delSkill()
+
+addToOrg()
+
+remvFromOrg()
+
+setOrgRole()
+
+followEnt()
+
+unfollowEnt()
+
+findByName()
+
+findByIntrst()
+
+findByMajor()
+
+findBySkill()
+
+findByCollege()
+
+findByLocation()
+
+getRecommends()
+
+getRelated()
+
+getFollowers()
+
+getInterests()
+
+getPosts()
+
+getImages()
+
+getStudents()
+
+getOrgs()
+
+
+
+
+ ==========
+| TRIGGERS |
+ ==========
+userCreated:
+	user_type='student':
+	
+	user_type='org':
+
+
+postCreated:
+
+postTagged:
+
+userFollowed:
+
+userUnfollowed:
+
+pfpChanged:
+
+pfpUpload:
+
+orgJoined:
+
+orgQuit:
+
+interestAdded:
+
+interestRemoved:
+
+schoolAdded:
+
+schoolChanged:
+
+majorAdded:
+
+majorChanged:
+
+skillAdded:
+
+skillRemoved:
+
+bioChanged:
+
+passChanged:
+
+
+
+
+
+MISC:
+admin table for orgs?
+
+
+
+
+
+
+

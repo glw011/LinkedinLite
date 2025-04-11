@@ -21,9 +21,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ui.components.EditablePfpImage
+import ui.components.styledButton
+import ui.theme.LIGHT_PURPLE
 import ui.theme.MainTheme
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -71,18 +74,28 @@ fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Spacer(modifier = Modifier.weight(1f))
-                            Button(
-                                modifier = Modifier.weight(1f).padding(64.dp, 0.dp),
-                                onClick = { onContinue() }
-                            ) {
-                                Text("Continue")
-                            }
-                            Button(
-                                modifier = Modifier.weight(1f),
+
+                            styledButton(
+                                text = "Continue",
+                                width = 80,
+                                xAlignment = Alignment.CenterHorizontally,
+                                onClick = { onContinue() },
+                                buttonColor = LIGHT_PURPLE,
+                                textColor = Color.White,
+                            )
+
+                            Spacer(modifier = Modifier.weight(0.05f))
+
+                            styledButton(
+                                text = "Back",
+                                width = 80,
+                                xAlignment = Alignment.CenterHorizontally,
                                 onClick = { onBack() },
-                            ) {
-                                Text("Back")
-                            }
+                                buttonColor = LIGHT_PURPLE,
+                                textColor = Color.White,
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
                         }
                     }
                 )
@@ -90,11 +103,11 @@ fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
         ) {
             // Main content of the register screen
             Column (
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.padding(top = 32.dp))
+
                 val pfpOnClick = {
                     imagePath = openFileChooser()
                 }

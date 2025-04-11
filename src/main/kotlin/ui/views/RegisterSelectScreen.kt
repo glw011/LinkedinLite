@@ -13,8 +13,11 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import ui.components.styledButton
+import ui.theme.LIGHT_PURPLE
 import ui.theme.MainTheme
 
 @Composable
@@ -33,47 +36,54 @@ fun registerSelectScreen(onPerson: () -> Unit, onOrg: () -> Unit,  onBack: () ->
             bottomBar = {
                 BottomAppBar (
                     content = {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(0.3f),
-                            onClick = { onBack() }
-                        ) {
-                            Text("Already have an account? Sign in")
-                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        styledButton(
+                            text = "Back",
+                            width = 80,
+                            xAlignment = Alignment.CenterHorizontally,
+                            onClick = { onBack() },
+                            buttonColor = LIGHT_PURPLE,
+                            textColor = Color.White,
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
                     }
                 )
             }
         ) {
             // Main content of the register screen
             Column (
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Select an account type",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.weight(0.75f))
-                    Button(
-                        modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth(0.3f),
-                        onClick = { onPerson() }
-                    ) {
-                        Text("Personal Account")
-                    }
-                    Button(
-                        modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth(0.3f),
-                        onClick = { onOrg() },
-                    ) {
-                        Text("Organization Account")
-                    }
-                    Spacer(modifier = Modifier.weight(1.5f))
-                }
+                Spacer(modifier = Modifier.padding(top = 32.dp))
+
+                Text(
+                    text = "Select an account type",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.padding(top = 32.dp))
+
+                styledButton(
+                    text = "Personal",
+                    width = 128,
+                    xAlignment = Alignment.CenterHorizontally,
+                    onClick = { onPerson() },
+                    buttonColor = LIGHT_PURPLE,
+                    textColor = Color.White,
+                )
+
+                Spacer(modifier = Modifier.padding(top = 32.dp))
+
+                styledButton(
+                    text = "Organization",
+                    width = 128,
+                    xAlignment = Alignment.CenterHorizontally,
+                    onClick = { onOrg() },
+                    buttonColor = LIGHT_PURPLE,
+                    textColor = Color.White,
+                )
             }
         }
     }

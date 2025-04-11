@@ -17,6 +17,10 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
+    implementation(compose.material3)
+    implementation(compose.ui)
+    implementation(compose.foundation)
+    implementation(compose.runtime)
 }
 
 compose.desktop {
@@ -29,4 +33,13 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+tasks.withType<JavaCompile> {
+    sourceCompatibility = JavaVersion.VERSION_21.toString()
+    targetCompatibility = JavaVersion.VERSION_21.toString()
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_21.toString()
 }

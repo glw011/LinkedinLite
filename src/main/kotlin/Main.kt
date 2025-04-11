@@ -119,6 +119,6 @@ fun App() {
         )
     } else if (currentView == View.Home) {
         // Show home screen
-        OrgProfileTab()
+        UI()
     }
 }
