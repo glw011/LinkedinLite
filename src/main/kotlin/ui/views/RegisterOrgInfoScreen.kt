@@ -3,11 +3,9 @@ package ui.views
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -20,9 +18,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import data.DataSource.tags
 import ui.components.AccountDetailField
-import ui.components.dropdownList
-import ui.components.multiDropdownList
-import ui.components.pfpModifier
 import ui.components.styledButton
 import ui.components.styledDropDownList
 import ui.theme.LIGHT_PURPLE
@@ -108,7 +103,8 @@ fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                     items = tags,
                     modifier = Modifier.fillMaxWidth(),
                     width = 256,
-                    multiSelect = true
+                    multiSelect = true,
+                    noSelectionText = "Select Organization Type"
                 )
             }
         }

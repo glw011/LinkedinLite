@@ -5,14 +5,17 @@ Styled Dropdown List for LinkedInLite
 
 package ui.components
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -26,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
@@ -50,27 +54,32 @@ fun styledDropDownList(
     items: List<String>,
     modifier: Modifier = Modifier,
     width: Int = 256,
-    multiSelect: Boolean = false
+    xAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
+    multiSelect: Boolean = false,
+    noSelectionText: String = ""
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var dropDownIcon by rememberSaveable { mutableStateOf(Icons.Filled.KeyboardArrowDown) }
     var selectedText by rememberSaveable { mutableStateOf(items[0]) }
     val selectedItems = rememberSaveable { mutableStateListOf<String>() }
 
+    dropDownIcon = Icons.Filled.KeyboardArrowDown
     if (isExpanded) dropDownIcon = Icons.Filled.KeyboardArrowUp
-    else dropDownIcon = Icons.Filled.KeyboardArrowDown
 
-    Column (
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    selectedText = noSelectionText
+    if (multiSelect && !selectedItems.isEmpty())
+        selectedText = selectedItems.joinToString(", ")
+    else if (!multiSelect && !selectedItems.isEmpty())
+        selectedText = selectedItems[0]
+
+    MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             onExpandedChange = { isExpanded = !isExpanded },
         ) {
             styledTextField(
                 onTextChanged = { selectedText = it },
-                unfocusedText = selectedItems.joinToString(", "),
+                unfocusedText = selectedText,
                 width = width,
                 xAlignment = Alignment.CenterHorizontally,
                 icon = dropDownIcon,
@@ -81,7 +90,13 @@ fun styledDropDownList(
             if (multiSelect) {
                 ExposedDropdownMenu(
                     expanded = isExpanded,
-                    onDismissRequest = { isExpanded = false }) {
+                    onDismissRequest = { isExpanded = false },
+                    modifier = Modifier
+                        .width(width.dp)
+                        .background(
+                            color = Color.LightGray,
+                        )
+                ) {
                     items.forEachIndexed { index, text ->
                         DropdownMenuItem(
                             onClick = {
@@ -90,7 +105,6 @@ fun styledDropDownList(
                                 } else {
                                     selectedItems.add(text)
                                 }
-                                isExpanded = false
                             },
                             content = {
                                 Row(
@@ -99,6 +113,7 @@ fun styledDropDownList(
                                 ) {
                                     Text(
                                         text = text,
+                                        color = Color.DarkGray,
                                         modifier = Modifier
                                             .fillMaxWidth(0.9f)
                                             .padding(end = 16.dp)
@@ -106,7 +121,8 @@ fun styledDropDownList(
                                     if (text in selectedItems) {
                                         Icon(
                                             Icons.Rounded.Check,
-                                            contentDescription = "Selected"
+                                            contentDescription = "Selected",
+                                            tint = Color.DarkGray // Light Gray checkmarks
                                         )
                                     }
                                 }
@@ -115,22 +131,33 @@ fun styledDropDownList(
                         )
                     }
                 }
-            }
-
-            else {
-                ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
-                    items.forEachIndexed{index, text ->
+            } else {
+                ExposedDropdownMenu(
+                    expanded = isExpanded,
+                    onDismissRequest = { isExpanded = false },
+                    modifier = Modifier
+                        .width(width.dp)
+                        .background(
+                            color = Color.LightGray,
+                        )
+                ) {
+                    items.forEachIndexed { index, text ->
                         DropdownMenuItem(
                             onClick = {
                                 selectedText = items[index]
-                                isExpanded = false
                             },
                             content = {
-                                Row (
+                                Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(text)
+                                    Text(
+                                        text = text,
+                                        color = Color.DarkGray,
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.9f)
+                                            .padding(end = 16.dp)
+                                    )
                                 }
                             },
                             modifier = Modifier.padding(8.dp)

@@ -86,7 +86,8 @@ fun styledTextField(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     canType: Boolean = true,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    fillMaxWidth: Boolean = false
 ) {
     var text by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
@@ -110,67 +111,56 @@ fun styledTextField(
     }
 
     // Text Field
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    focusManager.clearFocus()
+            .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier.width(width.dp))
+            .height(32.dp)
+            .background(Color.LightGray, RoundedCornerShape(32.dp))
+            .border(0.dp, Color.Transparent, RoundedCornerShape(32.dp))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        // Displayed Text (determined by focus)
+        if (text.isEmpty() && !isFocused) {
+            Text(
+                text = unfocusedText,
+                color = DarkGray,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = startPadding, end = endPadding, bottom = 4.dp)
+            )
+        }
+
+        // Text Box
+        BasicTextField(
+            value = text,
+            onValueChange = {
+                if (canType) {
+                    text = it
+                    onTextChanged(it)
                 }
             },
-        horizontalAlignment = xAlignment
-    ) {
-        Box(
+            textStyle = TextStyle(fontSize = 12.sp, color = DarkGray),
             modifier = Modifier
-                .width(width.dp)
-                .height(32.dp)
-                .background(Color.LightGray, RoundedCornerShape(32.dp))
-                .border(0.dp, Color.Transparent, RoundedCornerShape(32.dp))
-                .clickable(onClick = onClick),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            // Displayed Text (determined by focus)
-            if (text.isEmpty() && !isFocused) {
-                Text(
-                    text = unfocusedText,
-                    color = DarkGray,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(start = startPadding, end = endPadding, bottom = 4.dp)
-                )
-            }
-
-            // Text Box
-            BasicTextField(
-                value = text,
-                onValueChange = {
-                    if (canType) {
-                        text = it
-                        onTextChanged(it)
-                    }
+                .fillMaxWidth()
+                .padding(start = startPadding, end = endPadding, bottom = 2.dp)
+                .onFocusChanged { focusState ->
+                    isFocused = focusState.isFocused
                 },
-                textStyle = TextStyle(fontSize = 12.sp, color = DarkGray),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = startPadding, end = endPadding, bottom = 2.dp)
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
-                    },
-                singleLine = singleLine,
-                visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Search),
-                enabled = canType
-            )
+            singleLine = singleLine,
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Search),
+            enabled = canType
+        )
 
-            if (showIcon) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "icon",
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp)
-                        .align(iconAlignment),
-                    tint = Color.DarkGray
-                )
-            }
+        if (showIcon) {
+            Icon(
+                imageVector = icon,
+                contentDescription = "icon",
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp)
+                    .align(iconAlignment),
+                tint = Color.DarkGray
+            )
         }
     }
 }

@@ -63,33 +63,20 @@ fun styledButton(
     textColor: Color = Color.Black,
 ) {
     val focusManager = LocalFocusManager.current
-
-    // Text Field
-    Column(
+    Box(
         modifier = Modifier
             .width(width.dp)
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    focusManager.clearFocus()
-                }
-            },
-        horizontalAlignment = xAlignment
+            .height(32.dp)
+            .background(buttonColor, RoundedCornerShape(32.dp))
+            .border(0.dp, Color.Transparent, RoundedCornerShape(32.dp))
+            .clickable(onClick = onClick)
+            .padding(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Box(
-            modifier = Modifier
-                .width(width.dp)
-                .height(32.dp)
-                .background(buttonColor, RoundedCornerShape(32.dp))
-                .border(0.dp, Color.Transparent, RoundedCornerShape(32.dp))
-                .clickable(onClick = onClick)
-                .padding(),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            Text(
-                text = text,
-                color = textColor,
-                fontSize = 12.sp
-            )
-        }
+        Text(
+            text = text,
+            color = textColor,
+            fontSize = 12.sp
+        )
     }
 }

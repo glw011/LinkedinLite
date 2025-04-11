@@ -9,6 +9,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
@@ -18,8 +21,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.center
+import androidx.compose.ui.unit.dp
 
 /**
  * Composable function for the search bar UI element.
@@ -32,7 +38,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun searchBar(onSearchTextChanged: (String) -> Unit) {
+fun searchBar(onSearchTextChanged: (String) -> Unit, hasFilter: Boolean = false, dropdownItems: List<String> = listOf("")) {
     var searchText by remember { mutableStateOf("") }
     val density = LocalDensity.current
     val windowInfo = LocalWindowInfo.current
@@ -51,14 +57,33 @@ fun searchBar(onSearchTextChanged: (String) -> Unit) {
             targetOffsetY = { -screenHeight }
         )
     ) {
-        // Search Bar
-        styledTextField(
-            onTextChanged = { searchText = it },
-            unfocusedText = "Search for People / Organizations",
-            width = 5000,   // Arbitrarily large number for now, will change later
-            icon = Icons.Filled.Search,
-            showIcon = true,
-            iconAlignment = Alignment.CenterStart
-        )
+        Row {
+            Row (modifier = Modifier.weight(1f)){
+                // Search Bar
+                styledTextField(
+                    onTextChanged = { searchText = it },
+                    unfocusedText = "Search for People / Organizations",
+                    width = 0,   // Arbitrarily large number for now, will change later
+                    icon = Icons.Filled.Search,
+                    showIcon = true,
+                    iconAlignment = Alignment.CenterStart,
+                    fillMaxWidth = true
+                )
+            }
+
+            Spacer(modifier = Modifier.padding(start = 8.dp))
+
+            Row {
+                if (hasFilter) {
+                    styledDropDownList(
+                        items = dropdownItems,
+                        xAlignment = Alignment.End,
+                        multiSelect = true,
+                        width = 256,
+                        noSelectionText = "Filters"
+                    )
+                }
+            }
+        }
     }
 }
