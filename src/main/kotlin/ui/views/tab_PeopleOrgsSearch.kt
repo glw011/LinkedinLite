@@ -5,13 +5,18 @@ Sidebar file for LinkedInLite
 
 package ui.views
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
-import ui.components.dropdownList
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import ui.components.searchBar
+import ui.components.styledDropDownList
 
 /**
  * Stores the text currently entered in the search bar.
@@ -34,6 +39,11 @@ fun peopleOrgsTabContent(onSearchTextChanged: (String) -> Unit) {
     val dropdownItems = remember {
         listOf("TEST1", "TEST2")
     }
-    // This tab has a search bar
-    searchBar(){ onSearchTextChanged(it) }
+
+    Spacer(modifier = Modifier.padding(top = 16.dp))
+
+    Row(modifier = Modifier) {
+        // This tab has a search bar
+        searchBar() { onSearchTextChanged(it) }
+    }
 }
