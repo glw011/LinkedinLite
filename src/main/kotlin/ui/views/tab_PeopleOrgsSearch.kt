@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import ui.components.dropdownList
 import ui.components.searchBar
 
 /**
@@ -29,6 +31,9 @@ var SEARCH_BAR_TEXT by mutableStateOf("")
  */
 @Composable
 fun peopleOrgsTabContent(onSearchTextChanged: (String) -> Unit) {
+    val dropdownItems = remember {
+        listOf("TEST1", "TEST2")
+    }
     // This tab has a search bar
-    searchBar{ onSearchTextChanged(it) }
+    searchBar(){ onSearchTextChanged(it) }
 }

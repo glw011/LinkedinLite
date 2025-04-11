@@ -4,10 +4,23 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6e09a9f9-e7ce-4bba-801c-a5ce6c61693b" name="Changes" comment="">
+    <list default="true" id="6e09a9f9-e7ce-4bba-801c-a5ce6c61693b" name="Changes" comment="restyled, condensed components, added components">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/StyledButton.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/StyledDropdownList.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/StyledTextField.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/components/AccountDetailField.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/AccountDetailField.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/components/SearchBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/components/SearchBar.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/theme/Theme.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/theme/Theme.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/LoginScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgInfoScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgInfoScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgPfpScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgPfpScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterOrgScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterSelectScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/RegisterSelectScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/views/tab_PeopleOrgsSearch.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/views/tab_PeopleOrgsSearch.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +65,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="searchbar-tabs" />
+        <entry key="$PROJECT_DIR$" value="vscode-testing" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -66,7 +79,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/glw011/LinkedinLite.git&quot;,
-    &quot;accountId&quot;: &quot;48ef62dd-1e3e-4b97-8bf6-9e8ed0360536&quot;
+    &quot;accountId&quot;: &quot;90bbd3ee-a4c7-4ea2-a28b-5e1c6823b2f6&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -94,10 +107,12 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "org-profiles",
+    "git-widget-placeholder": "ui-styling",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/toussaint24/AndroidStudioProjects/LinkedinLite",
+    "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "preferences.lookFeel",
     "show.migrate.to.gradle.popup": "false"
   }
@@ -135,7 +150,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="searchbar-tabs" />
+                        <option value="origin/vscode-testing" />
                       </list>
                     </value>
                   </entry>
@@ -146,5 +161,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="restyled, condensed components, added components" />
+    <option name="LAST_COMMIT_MESSAGE" value="restyled, condensed components, added components" />
   </component>
 </project>
