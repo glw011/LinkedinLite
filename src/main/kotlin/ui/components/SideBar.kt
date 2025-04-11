@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -98,13 +99,15 @@ fun Sidebar(selectedTab: String, onTabSelected: (String) -> Unit) {
             }
         )
 
+        Spacer(modifier = Modifier.weight(1f))
+
         settingsTabButton(
             isSelected = selectedTab == "Settings",
             onClick = {
                 searchActive = false
                 onTabSelected("Settings")
                 println("Settings Tab")
-            }
+            },
         )
         // -----------------------------------------------------------------------------------------
     }
