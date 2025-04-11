@@ -15,7 +15,7 @@ import java.io.File
 val pfpModifier = Modifier
     .fillMaxSize()
 
-private fun getBitmapFromFilePath(imagePath: String): ImageBitmap? {
+fun getBitmapFromFilePath(imagePath: String): ImageBitmap? {
     val file = File(imagePath)
     var bitmap: ImageBitmap? = null
 

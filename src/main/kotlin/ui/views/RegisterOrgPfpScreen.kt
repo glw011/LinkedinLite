@@ -28,7 +28,7 @@ import ui.theme.MainTheme
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
-private fun openFileChooser(): String {
+fun openFileChooser(): String {
     val fileChooser = JFileChooser()
     fileChooser.fileFilter =
         FileNameExtensionFilter("Image Files", "jpg", "png", "gif")
