@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ui.views.SEARCH_FILTERS
 
 /**
  * Creates a styled dropdown list component.
@@ -62,6 +63,8 @@ fun styledDropDownList(
     var dropDownIcon by rememberSaveable { mutableStateOf(Icons.Filled.KeyboardArrowDown) }
     var selectedText by rememberSaveable { mutableStateOf(items[0]) }
     val selectedItems = rememberSaveable { mutableStateListOf<String>() }
+
+    SEARCH_FILTERS = selectedItems
 
     dropDownIcon = Icons.Filled.KeyboardArrowDown
     if (isExpanded) dropDownIcon = Icons.Filled.KeyboardArrowUp

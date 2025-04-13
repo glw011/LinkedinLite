@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
@@ -20,62 +21,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ui.components.AccountDetailField
 import ui.components.styledButton
+import ui.theme.DARK_MODE
 import ui.theme.LIGHT_PURPLE
 import ui.theme.MainTheme
 
 @Composable
 fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {
     MainTheme {
-        Scaffold (
-            topBar = {
-                TopAppBar (
-                    title = { Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        text = "Create an Account"
-                    ) }
-                )
-            },
-            bottomBar = {
-                BottomAppBar (
-                    content = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            styledButton(
-                                text = "Continue",
-                                width = 80,
-                                xAlignment = Alignment.CenterHorizontally,
-                                onClick = { onContinue() },
-                                buttonColor = LIGHT_PURPLE,
-                                textColor = Color.White,
-                            )
-
-                            Spacer(modifier = Modifier.weight(0.05f))
-
-                            styledButton(
-                                text = "Back",
-                                width = 80,
-                                xAlignment = Alignment.CenterHorizontally,
-                                onClick = { onBack() },
-                                buttonColor = LIGHT_PURPLE,
-                                textColor = Color.White,
-                            )
-
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
-                )
-            }
-        ) {
+        Surface(modifier = Modifier.fillMaxSize(), color = if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight) {
             // Main content of the register screen
-            Column (
-                modifier = Modifier.fillMaxSize(),
+            Column(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.padding(top = 32.dp))
+
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = "Create an Account",
+                    style = ui.theme.Typography.bodyLarge
+                )
+
                 Spacer(modifier = Modifier.padding(top = 32.dp))
 
                 AccountDetailField(
@@ -94,6 +61,39 @@ fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                     password = true,
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                Spacer(modifier = Modifier.padding(top = 32.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    styledButton(
+                        text = "Continue",
+                        width = 80,
+                        xAlignment = Alignment.CenterHorizontally,
+                        onClick = { onContinue() },
+                        buttonColor = LIGHT_PURPLE,
+                        textColor = Color.White,
+                    )
+
+                    Spacer(modifier = Modifier.weight(0.05f))
+
+                    styledButton(
+                        text = "Back",
+                        width = 80,
+                        xAlignment = Alignment.CenterHorizontally,
+                        onClick = { onBack() },
+                        buttonColor = LIGHT_PURPLE,
+                        textColor = Color.White,
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }

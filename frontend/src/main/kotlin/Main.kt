@@ -6,6 +6,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import ui.theme.MainTheme
 import ui.views.OrgProfileTab
 import ui.views.UI
 import ui.views.loginScreen
@@ -31,6 +32,8 @@ enum class View {
 
 @Composable
 fun App() {
+    MainTheme(){} // should update theme at the start of the app
+
     // Main function to run the application
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
 

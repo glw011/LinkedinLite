@@ -36,7 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ui.theme.DARK_MODE
 import ui.theme.LIGHT_PURPLE
+import ui.theme.MainTheme
 
 var FadeSpeed by mutableStateOf(100)
 
@@ -61,8 +63,8 @@ fun Sidebar(selectedTab: String, onTabSelected: (String) -> Unit) {
         modifier = Modifier
             .width(64.dp)
             .fillMaxHeight()
-            .background(Color.LightGray)
             .padding(2.dp)
+            .background(if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight)
     ) {
         // ------------------------------------------------------------------------------------ TABS
         searchTabButton(
