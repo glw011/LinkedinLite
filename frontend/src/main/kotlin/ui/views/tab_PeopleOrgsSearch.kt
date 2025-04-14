@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import data.DataSource.searchFilters
-import data.DataSource.tags
 import ui.components.profilePreview
 import ui.components.searchActive
 import ui.components.searchBar

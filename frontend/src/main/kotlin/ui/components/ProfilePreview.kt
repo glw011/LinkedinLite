@@ -19,37 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_pfp
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
 import org.jetbrains.compose.resources.painterResource
-
-/**
- * Extension function for String that loads an ImageBitmap from a file path.
- *
- * @return The ImageBitmap if the file is loaded successfully, otherwise null.
- */
-fun String.toImageBitmap(): ImageBitmap? {
-    val file = File(this) // 'this' refers to the string itself (the file path)
-    return if (file.exists()) {
-        try {
-            FileInputStream(file).use { inputStream ->
-                loadImageBitmap(inputStream)
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
-        }
-    } else {
-        null
-    }
-}
 
 /**
  * Composable function for displaying a preview of a profile.
@@ -59,7 +33,6 @@ fun String.toImageBitmap(): ImageBitmap? {
  * @param bio A short bio or description of the profile.
  * @param modifier Modifier for the profile preview.
  */
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun profilePreview(pfp: ImageBitmap?, name: String, bio: String, modifier: Modifier = Modifier) {
     Row(
