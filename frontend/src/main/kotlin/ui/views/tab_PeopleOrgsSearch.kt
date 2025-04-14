@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import data.DataSource.searchFilters
 import data.DataSource.tags
 import ui.components.profilePreview
 import ui.components.searchActive
@@ -39,7 +40,7 @@ import ui.components.searchBar
 var SEARCH_BAR_TEXT by mutableStateOf("")
 
 /**
- *
+ *  List of filters (tags) currently applied to the search.
  */
 var SEARCH_FILTERS by mutableStateOf(listOf<String>())
 
@@ -57,15 +58,25 @@ data class ProfileData(
     val tags: List<String> = listOf()
 )
 
-// TEMPORARY DUMMY DATA
+/**
+ * TEMPORARY: REMOVE WHEN WE HAVE REAL DATA
+ * A list of dummy profile data for testing and demonstration purposes.
+ */
 val dummyProfileList = mutableStateListOf<ProfileData>().apply {
     repeat(30) { i ->
         val name = "User ${i + 1}"
         val bio = "Made up bio for user ${i + 1}, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
         add(ProfileData(null, name, bio))
     }
+
+    repeat( 5 ) { i ->
+        val name = "Organization ${i + 1}"
+        val bio = "Made up bio for organization ${i + 1}, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
+        add(ProfileData(null, name, bio))
+    }
     add(ProfileData(null, "Harrison Day", "Billionaire, philanthropist, and entrepreneur. Co-founder of linkedin lite. Current Occupation: gettin' that money"))
-}
+    add(ProfileData(null, "LATech AI", "Made up bio for organization LATech AI, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."))
+}.shuffled()
 
 /**
  * Composable function for the People / Organizations tab content.
@@ -89,7 +100,7 @@ fun peopleOrgsTabContent(onSearchTextChanged: (String) -> Unit) {
                 SEARCH_BAR_TEXT = it
             },
             hasFilter = true,
-            dropdownItems = tags
+            dropdownItems = searchFilters
         )
 
         // Filtered profiles based on search bar text
@@ -97,7 +108,8 @@ fun peopleOrgsTabContent(onSearchTextChanged: (String) -> Unit) {
             derivedStateOf {
                 if (SEARCH_BAR_TEXT.isEmpty()) {
                     dummyProfileList
-                } else {
+                }
+                else {
                     dummyProfileList.filter { profile ->
                         profile.name.contains(SEARCH_BAR_TEXT, ignoreCase = true)
                     }

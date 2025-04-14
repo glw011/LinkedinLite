@@ -17,4 +17,13 @@ object DataSource {
         "Reading",
         "Cyber Security",
     )
+
+    val searchFilters = listOf(
+        "Freshman",
+        "Sophomore",
+        "Junior",
+        "Senior",
+        "Person",
+        "Organization",
+    ) + tags
 }

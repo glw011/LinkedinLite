@@ -1,6 +1,7 @@
 package ui.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -47,6 +48,8 @@ fun AccountDetailField(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(label)
+
+        Spacer(modifier = Modifier.padding(top = 16.dp))
 
         styledTextField(
             onTextChanged = { value = it },

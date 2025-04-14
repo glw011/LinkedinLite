@@ -67,6 +67,9 @@ fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
             Text(
                 text = "Organization Type",
             )
+
+            Spacer(modifier = Modifier.padding(top = 16.dp))
+
             styledDropDownList(
                 items = tags,
                 modifier = Modifier.fillMaxWidth(),
