@@ -22,69 +22,67 @@ import ui.theme.MainTheme
 
 @Composable
 fun registerSelectScreen(onPerson: () -> Unit, onOrg: () -> Unit,  onBack: () -> Unit) {
-    MainTheme {
-        Scaffold (
-            topBar = {
-                TopAppBar (
-                    title = { Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        text = "Create an Account"
-                    ) }
-                )
-            },
-            bottomBar = {
-                BottomAppBar (
-                    content = {
-                        Spacer(modifier = Modifier.weight(1f))
-                        styledButton(
-                            text = "Back",
-                            width = 80,
-                            xAlignment = Alignment.CenterHorizontally,
-                            onClick = { onBack() },
-                            buttonColor = LIGHT_PURPLE,
-                            textColor = Color.White,
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                )
-            }
-        ) {
-            // Main content of the register screen
-            Column (
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.padding(top = 32.dp))
-
-                Text(
-                    text = "Select an account type",
+    Scaffold (
+        topBar = {
+            TopAppBar (
+                title = { Text(
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    text = "Create an Account"
+                ) }
+            )
+        },
+        bottomBar = {
+            BottomAppBar (
+                content = {
+                    Spacer(modifier = Modifier.weight(1f))
+                    styledButton(
+                        text = "Back",
+                        width = 80,
+                        xAlignment = Alignment.CenterHorizontally,
+                        onClick = { onBack() },
+                        buttonColor = LIGHT_PURPLE,
+                        textColor = Color.White,
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            )
+        }
+    ) {
+        // Main content of the register screen
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.padding(top = 32.dp))
 
-                Spacer(modifier = Modifier.padding(top = 32.dp))
+            Text(
+                text = "Select an account type",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
 
-                styledButton(
-                    text = "Personal",
-                    width = 128,
-                    xAlignment = Alignment.CenterHorizontally,
-                    onClick = { onPerson() },
-                    buttonColor = LIGHT_PURPLE,
-                    textColor = Color.White,
-                )
+            Spacer(modifier = Modifier.padding(top = 32.dp))
 
-                Spacer(modifier = Modifier.padding(top = 32.dp))
+            styledButton(
+                text = "Personal",
+                width = 128,
+                xAlignment = Alignment.CenterHorizontally,
+                onClick = { onPerson() },
+                buttonColor = LIGHT_PURPLE,
+                textColor = Color.White,
+            )
 
-                styledButton(
-                    text = "Organization",
-                    width = 128,
-                    xAlignment = Alignment.CenterHorizontally,
-                    onClick = { onOrg() },
-                    buttonColor = LIGHT_PURPLE,
-                    textColor = Color.White,
-                )
-            }
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+
+            styledButton(
+                text = "Organization",
+                width = 128,
+                xAlignment = Alignment.CenterHorizontally,
+                onClick = { onOrg() },
+                buttonColor = LIGHT_PURPLE,
+                textColor = Color.White,
+            )
         }
     }
 }

@@ -25,88 +25,86 @@ import ui.theme.MainTheme
 
 @Composable
 fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
-    MainTheme {
-        Scaffold (
-            topBar = {
-                TopAppBar (
-                    title = { Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        text = "Create an Account"
-                    ) }
-                )
-            },
-            bottomBar = {
-                BottomAppBar (
-                    content = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            styledButton(
-                                text = "Continue",
-                                width = 80,
-                                xAlignment = Alignment.CenterHorizontally,
-                                onClick = { onContinue() },
-                                buttonColor = LIGHT_PURPLE,
-                                textColor = Color.White,
-                            )
-
-                            Spacer(modifier = Modifier.weight(0.05f))
-
-                            styledButton(
-                                text = "Back",
-                                width = 80,
-                                xAlignment = Alignment.CenterHorizontally,
-                                onClick = { onBack() },
-                                buttonColor = LIGHT_PURPLE,
-                                textColor = Color.White,
-                            )
-
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
-                )
-            }
-        ) {
-            // Main content of the register screen
-            Column (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.padding(top = 32.dp))
-
-                AccountDetailField(
-                    label = "School Name",
-                    prompt = "Enter school name",
-                    keyboardType = KeyboardType.Text,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.padding(top = 32.dp))
-
-                AccountDetailField(
-                    label = "Organization Name",
-                    prompt = "Enter name",
-                    keyboardType = KeyboardType.Text,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.padding(top = 32.dp))
-
-                Text(
-                    text="Organization Type",
-                )
-                styledDropDownList(
-                    items = tags,
+    Scaffold (
+        topBar = {
+            TopAppBar (
+                title = { Text(
                     modifier = Modifier.fillMaxWidth(),
-                    width = 256,
-                    multiSelect = true,
-                    noSelectionText = "Select Organization Type"
-                )
-            }
+                    textAlign = TextAlign.Center,
+                    text = "Create an Account",
+                ) }
+            )
+        },
+        bottomBar = {
+            BottomAppBar (
+                content = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        styledButton(
+                            text = "Continue",
+                            width = 80,
+                            xAlignment = Alignment.CenterHorizontally,
+                            onClick = { onContinue() },
+                            buttonColor = LIGHT_PURPLE,
+                            textColor = Color.White,
+                        )
+
+                        Spacer(modifier = Modifier.weight(0.05f))
+
+                        styledButton(
+                            text = "Back",
+                            width = 80,
+                            xAlignment = Alignment.CenterHorizontally,
+                            onClick = { onBack() },
+                            buttonColor = LIGHT_PURPLE,
+                            textColor = Color.White,
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            )
+        }
+    ) {
+        // Main content of the register screen
+        Column (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+
+            AccountDetailField(
+                label = "School Name",
+                prompt = "Enter school name",
+                keyboardType = KeyboardType.Text,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+
+            AccountDetailField(
+                label = "Organization Name",
+                prompt = "Enter name",
+                keyboardType = KeyboardType.Text,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+
+            Text(
+                text="Organization Type",
+            )
+            styledDropDownList(
+                items = tags,
+                modifier = Modifier.fillMaxWidth(),
+                width = 256,
+                multiSelect = true,
+                noSelectionText = "Select Organization Type"
+            )
         }
     }
 }

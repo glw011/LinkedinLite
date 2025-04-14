@@ -34,42 +34,40 @@ import ui.theme.MainTheme
  */
 @Composable
 fun UI() {
-    MainTheme {
-        var selectedTab by remember { mutableStateOf("Home") }
+    var selectedTab by remember { mutableStateOf("Home") }
 
-        Row(Modifier.fillMaxSize()) {
+    Row(Modifier.fillMaxSize()) {
 
-            // Always Show Sidebar
-            Sidebar(
-                selectedTab = selectedTab,
-                onTabSelected = { tabName -> selectedTab = tabName }
-            )
+        // Always Show Sidebar
+        Sidebar(
+            selectedTab = selectedTab,
+            onTabSelected = { tabName -> selectedTab = tabName }
+        )
 
-            // Switch to People / Orgs Tab if Search Bar is Active
-            if (selectedTab != "People / Orgs" && searchActive)
-                selectedTab = "People / Orgs"
+        // Switch to People / Orgs Tab if Search Bar is Active
+        if (selectedTab != "People / Orgs" && searchActive)
+            selectedTab = "People / Orgs"
 
-            // Disable Search Bar if not on People / Orgs Tab (Might change later)
-            if (selectedTab != "People / Orgs")
-                searchActive = false
+        // Disable Search Bar if not on People / Orgs Tab (Might change later)
+        if (selectedTab != "People / Orgs")
+            searchActive = false
 
-            Spacer(modifier = Modifier.padding(start = 16.dp))
+        Spacer(modifier = Modifier.padding(start = 16.dp))
 
-            // Show Tab Content
-            Column(modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .background(Color.White)
-            ) {
+        // Show Tab Content
+        Column(modifier = Modifier
+            .weight(1f)
+            .fillMaxHeight()
+            .background(Color.White)
+        ) {
 
-                // Switch Tabs
-                when (selectedTab) {
-                    "People / Orgs" -> peopleOrgsTabContent(onSearchTextChanged = { println(it) })
-                    // Add your new tab content composables here
-                }
+            // Switch Tabs
+            when (selectedTab) {
+                "People / Orgs" -> peopleOrgsTabContent(onSearchTextChanged = { println(it) })
+                // Add your new tab content composables here
             }
-
-            Spacer(modifier = Modifier.padding(end = 16.dp))
         }
+
+        Spacer(modifier = Modifier.padding(end = 16.dp))
     }
 }

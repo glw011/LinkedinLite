@@ -55,80 +55,78 @@ fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
 
     var imagePath by remember { mutableStateOf("") }
 
-    MainTheme {
-        Scaffold (
-            topBar = {
-                TopAppBar (
-                    title = { Text(
+    Scaffold (
+        topBar = {
+            TopAppBar (
+                title = { Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = "Create an Account"
+                ) }
+            )
+        },
+        bottomBar = {
+            BottomAppBar (
+                content = {
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        text = "Create an Account"
-                    ) }
-                )
-            },
-            bottomBar = {
-                BottomAppBar (
-                    content = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Spacer(modifier = Modifier.weight(1f))
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Spacer(modifier = Modifier.weight(1f))
 
-                            styledButton(
-                                text = "Continue",
-                                width = 80,
-                                xAlignment = Alignment.CenterHorizontally,
-                                onClick = { onContinue() },
-                                buttonColor = LIGHT_PURPLE,
-                                textColor = Color.White,
-                            )
+                        styledButton(
+                            text = "Continue",
+                            width = 80,
+                            xAlignment = Alignment.CenterHorizontally,
+                            onClick = { onContinue() },
+                            buttonColor = LIGHT_PURPLE,
+                            textColor = Color.White,
+                        )
 
-                            Spacer(modifier = Modifier.weight(0.05f))
+                        Spacer(modifier = Modifier.weight(0.05f))
 
-                            styledButton(
-                                text = "Back",
-                                width = 80,
-                                xAlignment = Alignment.CenterHorizontally,
-                                onClick = { onBack() },
-                                buttonColor = LIGHT_PURPLE,
-                                textColor = Color.White,
-                            )
+                        styledButton(
+                            text = "Back",
+                            width = 80,
+                            xAlignment = Alignment.CenterHorizontally,
+                            onClick = { onBack() },
+                            buttonColor = LIGHT_PURPLE,
+                            textColor = Color.White,
+                        )
 
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
+                        Spacer(modifier = Modifier.weight(1f))
                     }
+                }
+            )
+        }
+    ) {
+        // Main content of the register screen
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+
+            val pfpOnClick = {
+                imagePath = openFileChooser()
+            }
+            val pfpModifier = Modifier
+                .fillMaxWidth(0.3f)
+                .fillMaxHeight(0.5f)
+            if (imagePath.isEmpty()) {
+                EditablePfpImage(
+                    imageVector = Icons.Default.AccountCircle,
+                    modifier = pfpModifier,
+                    onClick = pfpOnClick
+                )
+            } else {
+                EditablePfpImage(
+                    imagePath = imagePath,
+                    modifier = pfpModifier,
+                    onClick = pfpOnClick
                 )
             }
-        ) {
-            // Main content of the register screen
-            Column (
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.padding(top = 32.dp))
-
-                val pfpOnClick = {
-                    imagePath = openFileChooser()
-                }
-                val pfpModifier = Modifier
-                    .fillMaxWidth(0.3f)
-                    .fillMaxHeight(0.5f)
-                if (imagePath.isEmpty()) {
-                    EditablePfpImage(
-                        imageVector = Icons.Default.AccountCircle,
-                        modifier = pfpModifier,
-                        onClick = pfpOnClick
-                    )
-                } else {
-                    EditablePfpImage(
-                        imagePath = imagePath,
-                        modifier = pfpModifier,
-                        onClick = pfpOnClick
-                    )
-                }
-                Text("Please upload a profile picture for your organization", modifier = Modifier.padding(16.dp))
-            }
+            Text("Please upload a profile picture for your organization", modifier = Modifier.padding(16.dp))
         }
     }
 }
