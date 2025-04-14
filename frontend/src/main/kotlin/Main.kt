@@ -34,6 +34,8 @@ enum class View {
 
 @Composable
 fun App() {
+    MainTheme(){} // should update theme at the start of the app
+
     // Main function to run the application
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
 

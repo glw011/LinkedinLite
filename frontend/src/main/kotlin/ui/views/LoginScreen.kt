@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
@@ -18,66 +20,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import data.DataSource.tags
 import ui.components.AccountDetailField
 import ui.components.styledButton
+import ui.components.styledDropDownList
+import ui.theme.DARK_MODE
 import ui.theme.MainTheme
 import ui.theme.LIGHT_PURPLE
 
 @Composable
 fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
     // Login screen UI
-    Scaffold (
-        topBar = {
-            TopAppBar (
-                title = { Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = "LinkedInLite Login",
-                ) }
-            )
-        },
-        bottomBar = {
-            BottomAppBar (
-                modifier = Modifier
-                    .background(Color.LightGray),
-                content = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        styledButton(
-                            text = "Login",
-                            width = 80,
-                            xAlignment = Alignment.CenterHorizontally,
-                            onClick = { onLogin() },
-                            buttonColor = LIGHT_PURPLE,
-                            textColor = Color.White,
-                        )
-
-                        Spacer(modifier = Modifier.weight(0.05f))
-
-                        styledButton(
-                            text = "Register",
-                            width = 80,
-                            xAlignment = Alignment.CenterHorizontally,
-                            onClick = { onRegister() },
-                            buttonColor = LIGHT_PURPLE,
-                            textColor = Color.White,
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                }
-            )
-        }
-    ){
-        // Main content of the login screen
+    Surface(modifier = Modifier.fillMaxSize(), color = if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight) {
+        // Main content of the register screen
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                text = "LinkedInLite Login",
+                style = ui.theme.Typography.bodyLarge
+            )
+
             Spacer(modifier = Modifier.padding(top = 32.dp))
 
             AccountDetailField(
@@ -96,6 +64,39 @@ fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
                 password = true,
                 modifier = Modifier.padding(0.dp)
             )
+
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+
+                styledButton(
+                    text = "Login",
+                    width = 80,
+                    xAlignment = Alignment.CenterHorizontally,
+                    onClick = { onLogin() },
+                    buttonColor = LIGHT_PURPLE,
+                    textColor = Color.White,
+                )
+
+                Spacer(modifier = Modifier.weight(0.05f))
+
+                styledButton(
+                    text = "Register",
+                    width = 80,
+                    xAlignment = Alignment.CenterHorizontally,
+                    onClick = { onRegister() },
+                    buttonColor = LIGHT_PURPLE,
+                    textColor = Color.White,
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

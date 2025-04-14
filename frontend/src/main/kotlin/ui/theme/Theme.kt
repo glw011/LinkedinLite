@@ -4,8 +4,18 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+
+var DARK_MODE: Boolean by mutableStateOf(false)
 
 private val lightScheme = lightColors(
     primary = primaryLight,
@@ -33,6 +43,23 @@ private val darkScheme = darkColors(
     onSurface = onSurfaceDark,
 )
 
+val Typography = Typography(
+    bodyLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    ),
+    headlineLarge = TextStyle( // Add this style
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 32.sp,
+        lineHeight = 40.sp,
+        letterSpacing = 0.sp
+    ),
+)
+
 @Composable
 fun MainTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -48,4 +75,6 @@ fun MainTheme(
         colors = colors,
         content = content
     )
+
+    DARK_MODE = darkTheme
 }

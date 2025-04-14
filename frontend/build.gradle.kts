@@ -21,6 +21,7 @@ dependencies {
     implementation(compose.ui)
     implementation(compose.foundation)
     implementation(compose.runtime)
+    implementation(compose.components.resources)
 }
 
 compose.desktop {
