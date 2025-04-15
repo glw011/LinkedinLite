@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Button
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -24,7 +21,6 @@ import ui.components.AccountDetailField
 import ui.components.styledButton
 import ui.theme.DARK_MODE
 import ui.theme.LIGHT_PURPLE
-import ui.theme.MainTheme
 
 @Composable
 fun registerOrgScreen(onContinue: () -> Unit, onBack: () -> Unit) {

@@ -1,14 +1,11 @@
 package ui.views
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -24,9 +21,7 @@ import data.DataSource.tags
 import ui.components.AccountDetailField
 import ui.components.styledButton
 import ui.components.styledDropDownList
-import ui.theme.DARK_MODE
 import ui.theme.LIGHT_PURPLE
-import ui.theme.MainTheme
 
 @Composable
 fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
@@ -69,6 +64,9 @@ fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
             Text(
                 text = "Organization Type",
             )
+
+            Spacer(modifier = Modifier.padding(top = 16.dp))
+
             styledDropDownList(
                 items = tags,
                 modifier = Modifier.fillMaxWidth(),

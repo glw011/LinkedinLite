@@ -10,7 +10,6 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import ui.theme.DARK_MODE
 import ui.theme.MainTheme
-import ui.views.OrgProfileTab
 import ui.views.UI
 import ui.views.loginScreen
 import ui.views.registerOrgInfoScreen
