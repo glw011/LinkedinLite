@@ -12,6 +12,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +28,7 @@ import ui.theme.MainTheme
 
 @Composable
 fun registerSelectScreen(onPerson: () -> Unit, onOrg: () -> Unit,  onBack: () -> Unit) {
-    Surface(modifier = Modifier.fillMaxSize(), color = if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Main content of the register screen
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -39,6 +40,7 @@ fun registerSelectScreen(onPerson: () -> Unit, onOrg: () -> Unit,  onBack: () ->
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 text = "Create an Account",
+                color = MaterialTheme.colorScheme.onBackground,
                 style = ui.theme.Typography.bodyLarge
             )
 

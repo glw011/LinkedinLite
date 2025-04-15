@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,7 +65,7 @@ fun Sidebar(selectedTab: String, onTabSelected: (String) -> Unit) {
             .width(64.dp)
             .fillMaxHeight()
             .padding(2.dp)
-            .background(if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // ------------------------------------------------------------------------------------ TABS
         searchTabButton(
@@ -141,6 +142,7 @@ fun peopleOrgsTabButton(isSelected: Boolean, onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.Person,
             contentDescription = "People / Orgs",
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .size(32.dp)
                 .padding(bottom = 4.dp)
@@ -189,6 +191,7 @@ fun homeTabButton(isSelected: Boolean, onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.Home,
             contentDescription = "Home",
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .size(32.dp)
                 .padding(bottom = 4.dp)
@@ -237,6 +240,7 @@ fun searchTabButton(isSelected: Boolean, onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.Search,
             contentDescription = "Search",
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .size(32.dp)
                 .padding(bottom = 4.dp)
@@ -279,6 +283,7 @@ fun postTabButton(isSelected: Boolean, onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.Add,
             contentDescription = "Home",
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .size(32.dp)
                 .padding(bottom = 4.dp)
@@ -320,6 +325,7 @@ fun settingsTabButton(isSelected: Boolean, onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.Settings,
             contentDescription = "Settings",
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .size(32.dp)
                 .padding(bottom = 4.dp)

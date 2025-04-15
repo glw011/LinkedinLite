@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,8 +103,12 @@ fun profilePreview(pfp: ImageBitmap?, name: String, bio: String, modifier: Modif
 
         // Name and Bio (in a column)
         Column {
-            Text(text = name, fontWeight = FontWeight.Bold)
-            Text(text = bio)
+            Text(
+                text = name,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(text = bio, color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }

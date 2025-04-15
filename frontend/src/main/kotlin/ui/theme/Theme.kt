@@ -1,10 +1,12 @@
 package ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +19,7 @@ import androidx.compose.ui.unit.sp
 
 var DARK_MODE: Boolean by mutableStateOf(false)
 
-private val lightScheme = lightColors(
+val lightScheme = lightColorScheme(
     primary = primaryLight,
     onPrimary = onPrimaryLight,
     secondary = secondaryLight,
@@ -30,7 +32,7 @@ private val lightScheme = lightColors(
     onSurface = onSurfaceLight,
 )
 
-private val darkScheme = darkColors(
+val darkScheme = darkColorScheme(
     primary = primaryDark,
     onPrimary = onPrimaryDark,
     secondary = secondaryDark,
@@ -67,14 +69,15 @@ fun MainTheme(
 ) {
     // Apply the theme to the content
     val colors = if (!darkTheme) {
+        println("Light theme")
         lightScheme
     } else {
+        println("Dark theme")
         darkScheme
     }
     MaterialTheme (
-        colors = colors,
-        content = content
+        colorScheme = colors,
+        content = content,
     )
-
     DARK_MODE = darkTheme
 }

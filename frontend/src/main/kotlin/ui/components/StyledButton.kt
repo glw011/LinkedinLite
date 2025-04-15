@@ -71,7 +71,7 @@ fun styledButton(
             .border(0.dp, Color.Transparent, RoundedCornerShape(32.dp))
             .clickable(onClick = onClick)
             .padding(),
-        contentAlignment = Alignment.TopCenter
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,

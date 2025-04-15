@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import org.example.linkedinliteui.generated.resources.Res
+import org.example.linkedinliteui.generated.resources.default_pfp
+import org.jetbrains.compose.resources.painterResource
 import java.io.File
 
 val pfpModifier = Modifier
@@ -29,20 +32,20 @@ fun getBitmapFromFilePath(imagePath: String): ImageBitmap? {
 
 @Composable
 fun PfpImage(
-    imageVector: ImageVector? = Icons.Default.AccountCircle,
+    imageBitmap: ImageBitmap?,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
-    if (imageVector == null) {
+    if (imageBitmap == null) {
         Image(
             modifier = modifier.then(pfpModifier).clickable(onClick = onClick),
-            imageVector = Icons.Default.AccountCircle,
+            painter = painterResource(Res.drawable.default_pfp),
             contentDescription = "Profile Picture",
         )
     } else {
         Image(
             modifier = modifier.then(pfpModifier).clickable(onClick = onClick),
-            imageVector = imageVector,
+            bitmap = imageBitmap,
             contentDescription = "Profile Picture",
         )
     }
@@ -56,16 +59,9 @@ fun PfpImage(
 ) {
     val bitmap = getBitmapFromFilePath(imagePath)
 
-    if (bitmap != null) {
-        Image(
-            bitmap = bitmap,
-            modifier = modifier.then(pfpModifier).clickable(onClick = onClick),
-            contentDescription = "Profile Picture",
-        )
-    } else {
-        PfpImage(
-            modifier = modifier.then(pfpModifier),
-            onClick = onClick
-        )
-    }
+    PfpImage(
+        imageBitmap = bitmap,
+        modifier = modifier.then(pfpModifier),
+        onClick = onClick
+    )
 }

@@ -9,18 +9,28 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import org.example.linkedinliteui.generated.resources.Res
+import org.example.linkedinliteui.generated.resources.default_pfp
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 private fun EditablePfpImage(
     imagePath: String,
-    imageVector: ImageVector?,
+    imageBitmap: ImageBitmap?,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
@@ -29,21 +39,26 @@ private fun EditablePfpImage(
 
     Box(
         modifier = modifier
-            .hoverable(interactionSource = interactionSource, enabled = true)
+            .aspectRatio(1f)
             .clip(CircleShape)
+            .hoverable(interactionSource = interactionSource, enabled = true)
     ) {
         if (imagePath.isNotEmpty()) {
             // Show image from path
             PfpImage(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxSize()
+                    .align(Alignment.Center)
+                    .clip(CircleShape),
                 imagePath = imagePath,
                 onClick = onClick,
             )
         } else {
             // Show image vector
             PfpImage(
-                modifier = Modifier,
-                imageVector = imageVector,
+                modifier = Modifier.fillMaxSize()
+                    .align(Alignment.Center)
+                    .clip(CircleShape),
+                imageBitmap = null,
                 onClick = onClick,
             )
         }
@@ -52,7 +67,7 @@ private fun EditablePfpImage(
             Image(
                 imageVector = Icons.Default.AddCircle,
                 contentDescription = "Profile Picture",
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxSize(0.25f)
                     .clip(CircleShape)
                     .align(Alignment.Center)
@@ -63,13 +78,13 @@ private fun EditablePfpImage(
 
 @Composable
 fun EditablePfpImage(
-    imageVector: ImageVector,
+    imageBitmap: ImageBitmap?,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
     EditablePfpImage(
         imagePath = "",
-        imageVector = imageVector,
+        imageBitmap = imageBitmap,
         modifier = modifier,
         onClick = onClick,
     )
@@ -83,7 +98,7 @@ fun EditablePfpImage(
 ) {
     EditablePfpImage(
         imagePath = imagePath,
-        imageVector = null,
+        imageBitmap = null,
         modifier = modifier,
         onClick = onClick,
     )

@@ -1,5 +1,6 @@
 package ui.views
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
@@ -15,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,9 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.example.linkedinliteui.generated.resources.Res
+import org.example.linkedinliteui.generated.resources.default_pfp
+import org.jetbrains.compose.resources.painterResource
 import ui.components.EditablePfpImage
 import ui.components.styledButton
 import ui.theme.DARK_MODE
@@ -56,7 +65,7 @@ fun openFileChooser(): String {
 fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
     var imagePath by remember { mutableStateOf("") }
 
-    Surface(modifier = Modifier.fillMaxSize(), color = if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Main content of the register screen
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -68,6 +77,7 @@ fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 text = "Create an Account",
+                color = MaterialTheme.colorScheme.onBackground,
                 style = ui.theme.Typography.bodyLarge
             )
 
@@ -87,7 +97,7 @@ fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                     .fillMaxHeight(0.5f)
                 if (imagePath.isEmpty()) {
                     EditablePfpImage(
-                        imageVector = Icons.Default.AccountCircle,
+                        imageBitmap = null,
                         modifier = pfpModifier,
                         onClick = pfpOnClick
                     )
@@ -98,7 +108,10 @@ fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                         onClick = pfpOnClick
                     )
                 }
-                Text("Please upload a profile picture for your organization", modifier = Modifier.padding(16.dp))
+                Text(
+                    text = "Please upload a profile picture for your organization",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(16.dp))
 
                 Spacer(modifier = Modifier.padding(top = 32.dp))
 

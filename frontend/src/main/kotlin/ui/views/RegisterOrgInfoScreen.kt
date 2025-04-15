@@ -12,6 +12,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +30,7 @@ import ui.theme.MainTheme
 
 @Composable
 fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Main content of the register screen
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -41,6 +42,7 @@ fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 text = "Create an Account",
+                color = MaterialTheme.colorScheme.onBackground,
                 style = ui.theme.Typography.bodyLarge
             )
 

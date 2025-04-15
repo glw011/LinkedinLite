@@ -14,16 +14,16 @@ import androidx.compose.ui.unit.dp
 import ui.theme.MainTheme
 
 @Composable
-fun Profile(content: @Composable ColumnScope.() -> Unit, modifier: Modifier = Modifier) {
+fun Profile(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     // Profile screen UI
     MainTheme {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            content = content
-        )
+                .padding(16.dp),
+                //.verticalScroll(rememberScrollState()),
+        ) {
+            content()
+        }
     }
 }
