@@ -87,8 +87,8 @@ val dummyProfileList = mutableStateListOf<ProfileData>().apply {
 @Composable
 fun peopleOrgsTabContent(onSearchTextChanged: (String) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxWidth(), // Make the Column fill the width
-        horizontalAlignment = Alignment.CenterHorizontally // Center everything horizontally
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (searchActive)
             Spacer(modifier = Modifier.padding(top = 16.dp))
@@ -120,11 +120,11 @@ fun peopleOrgsTabContent(onSearchTextChanged: (String) -> Unit) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(text = "No Results")
             }
-        } else {
-            // Content - Now a LazyColumn
+        }
+        else {
             LazyColumn(
-                modifier = Modifier.width(1024.dp), // Make LazyColumn fill the width
-                horizontalAlignment = Alignment.CenterHorizontally // Center the items
+                modifier = Modifier.width(1024.dp),
+                horizontalAlignment = Alignment.Start
             ) {
                 items(filteredProfiles) { profile ->
                     profilePreview(profile.pfp, profile.name, profile.bio)
