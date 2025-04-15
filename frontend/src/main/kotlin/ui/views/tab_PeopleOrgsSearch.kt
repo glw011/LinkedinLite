@@ -81,11 +81,9 @@ val dummyProfileList = mutableStateListOf<ProfileData>().apply {
  * Composable function for the People / Organizations tab content.
  *
  * This function displays a search bar when search is active and handles user input.
- *
- * @param onSearchTextChanged Lambda function to call when the search text changes.
  */
 @Composable
-fun peopleOrgsTabContent(onSearchTextChanged: (String) -> Unit) {
+fun peopleOrgsTabContent() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally

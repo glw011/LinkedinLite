@@ -62,7 +62,7 @@ fun UI() {
 
                 // Switch Tabs
                 when (selectedTab) {
-                    "People / Orgs" -> peopleOrgsTabContent(onSearchTextChanged = { println(it) })
+                    "People / Orgs" -> peopleOrgsTabContent()
                     // Add your new tab content composables here
                 }
             }
