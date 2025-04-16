@@ -1,13 +1,9 @@
 package ui.views
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,26 +11,31 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.jetbrains.skia.Surface
 import ui.components.ProfileCard
 import ui.components.ProfileHeader
 import ui.components.ProfilePostsCard
+import data.DataSource.tags
+import ui.components.ProfileTagsCard
 
 val headerShape = RoundedCornerShape(16.dp)
 val postShape = RoundedCornerShape(8.dp)
+
+val exampleTags = listOf(tags[0], tags[1], tags[2], tags[9], tags[11], tags[12], tags[14], tags[4], tags[5])
 
 @Composable
 fun OrgProfileTab() {
@@ -67,20 +68,17 @@ fun OrgProfileTab() {
                         .clip(headerShape)
                 )
                 ProfilePostsCard(
+                    title = "Posts",
                     modifier = Modifier
                         .height(650.dp)
                         .fillMaxWidth()
                 )
-                ProfileCard(
+                ProfileTagsCard(
                     title = "Tags",
-                    subtitle = "",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
-
-                ) {
-
-                }
+                        .height(256.dp)
+                )
             }
             Column(
                 modifier = Modifier
