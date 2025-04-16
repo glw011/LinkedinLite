@@ -18,17 +18,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.example.linkedinliteui.generated.resources.Res
-import org.example.linkedinliteui.generated.resources.default_pfp
-import org.jetbrains.compose.resources.painterResource
 import ui.components.EditablePfpImage
 import ui.components.styledButton
-import ui.theme.DARK_MODE
 import ui.theme.LIGHT_PURPLE
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter

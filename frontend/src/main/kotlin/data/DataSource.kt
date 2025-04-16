@@ -16,6 +16,10 @@ object DataSource {
         "Political Science",
         "Reading",
         "Cyber Security",
+        "Casual",
+        "Competitive",
+        "Gaming",
+        "Community Service",
     )
 
     val searchFilters = listOf(
