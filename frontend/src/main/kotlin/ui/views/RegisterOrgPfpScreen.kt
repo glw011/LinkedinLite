@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -78,8 +79,7 @@ fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                     imagePath = openFileChooser()
                 }
                 val pfpModifier = Modifier
-                    .fillMaxWidth(0.3f)
-                    .fillMaxHeight(0.5f)
+                    .fillMaxHeight(0.3f)
                 if (imagePath.isEmpty()) {
                     EditablePfpImage(
                         imageBitmap = null,

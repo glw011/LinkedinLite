@@ -1,8 +1,10 @@
 package ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,10 +21,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,16 +44,81 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.example.linkedinliteui.generated.resources.Res
-import org.example.linkedinliteui.generated.resources.default_banner
-import org.jetbrains.compose.resources.painterResource
-import ui.theme.MainTheme
-import ui.views.openFileChooser
+import androidx.compose.ui.window.Dialog
 
-fun editBanner(
-
+@Composable
+fun DetailEditDialog(
+    onNameChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onLocationChanged: (String) -> Unit,
+    onSchoolChanged: (String) -> Unit,
+    onSave: () -> Unit,
+    onCancel: () -> Unit,
 ) {
-
+    Dialog(
+        onDismissRequest = onCancel,
+    ) {
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .wrapContentHeight()
+                .clip(RoundedCornerShape(16.dp))
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Edit Profile",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                AccountDetailField(
+                    label = "Name",
+                    prompt = "Enter your name",
+                    onTextChanged = onNameChanged,
+                )
+                AccountDetailField(
+                    label = "Description",
+                    prompt = "Enter your description",
+                    onTextChanged = onDescriptionChanged,
+                )
+                AccountDetailField(
+                    label = "Location",
+                    prompt = "Enter your location",
+                    onTextChanged = onLocationChanged,
+                )
+                AccountDetailField(
+                    label = "School",
+                    prompt = "Enter your school",
+                    onTextChanged = onSchoolChanged,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    styledButton(
+                        text = "Save",
+                        onClick = onSave,
+                        width = 80,
+                    )
+                    styledButton(
+                        text = "Cancel",
+                        onClick = onCancel,
+                        width = 80,
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -59,6 +129,10 @@ fun ProfileHeader(
     location: String,
     school: String,
     banner: ImageBitmap?,
+    profilePicture: ImageBitmap?,
+    onEditHeader: () -> Unit,
+    onEditBanner: () -> Unit,
+    onEditProfilePicture: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -67,10 +141,8 @@ fun ProfileHeader(
         Column(
             modifier = Modifier.wrapContentSize()
         ) {
-            // TODO: Add a background image
-            Image(
-                painter = painterResource(Res.drawable.default_banner),
-                contentDescription = "Profile Banner",
+            Banner(
+                imageBitmap = banner,
                 modifier = Modifier.fillMaxWidth().height(128.dp)
             )
             Surface(
@@ -83,6 +155,7 @@ fun ProfileHeader(
                     title = title,
                     location = location,
                     school = school,
+                    onEdit = onEditHeader,
                     modifier = Modifier.fillMaxWidth().wrapContentHeight()
                 )
             }
@@ -96,15 +169,16 @@ fun ProfileHeader(
         ) {
             Spacer(modifier = Modifier.fillMaxWidth().height(64.dp))
             EditablePfpImage(
-                imageBitmap = null,
-                modifier = Modifier.size(96.dp).border(2.dp, Color.Gray, CircleShape),
-                onClick = { val imagePath = openFileChooser() }
+                imageBitmap = profilePicture,
+                modifier = Modifier
+                    .size(96.dp)
+                    .border(2.dp, Color.Gray, CircleShape)
+                    .background(Color.Gray, CircleShape),
+                onClick = onEditProfilePicture
             )
         }
         EditButton(
-            onClick = {
-                // Handle edit button click
-            },
+            onClick = onEditBanner,
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .size(24.dp)
@@ -121,6 +195,7 @@ fun ProfileHeaderDetails(
     title: String,
     location: String,
     school: String,
+    onEdit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -141,7 +216,7 @@ fun ProfileHeaderDetails(
                         .wrapContentHeight()
                 )
                 Text(
-                    text = title,
+                    text = "Organization at $school",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
@@ -155,9 +230,7 @@ fun ProfileHeaderDetails(
                 )
             }
             EditButton(
-                onClick = {
-                    // Handle edit button click
-                },
+                onClick = onEdit,
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .size(24.dp)

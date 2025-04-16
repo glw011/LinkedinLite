@@ -61,7 +61,7 @@ private fun EditablePfpImage(
                 modifier = Modifier.fillMaxSize()
                     .align(Alignment.Center)
                     .clip(CircleShape),
-                imageBitmap = null,
+                imageBitmap = imageBitmap,
                 onClick = onClick,
             )
         }

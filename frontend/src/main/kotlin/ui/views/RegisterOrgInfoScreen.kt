@@ -24,7 +24,13 @@ import ui.components.styledDropDownList
 import ui.theme.LIGHT_PURPLE
 
 @Composable
-fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
+fun registerOrgInfoScreen(
+    onContinue: () -> Unit,
+    onBack: () -> Unit,
+    onOrgNameChanged: (String) -> Unit,
+    onSchoolNameChanged: (String) -> Unit,
+    onOrgTagsChanged: () -> Unit
+) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Main content of the register screen
         Column(
@@ -46,6 +52,7 @@ fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
             AccountDetailField(
                 label = "School Name",
                 prompt = "Enter school name",
+                onTextChanged = onSchoolNameChanged,
                 keyboardType = KeyboardType.Text,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -55,6 +62,7 @@ fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
             AccountDetailField(
                 label = "Organization Name",
                 prompt = "Enter name",
+                onTextChanged = onOrgNameChanged,
                 keyboardType = KeyboardType.Text,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -72,7 +80,7 @@ fun registerOrgInfoScreen(onContinue: () -> Unit, onBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 width = 256,
                 multiSelect = true,
-                noSelectionText = "Select Organization Type"
+                noSelectionText = "Select Organization Type",
             )
 
             Spacer(modifier = Modifier.padding(top = 64.dp))

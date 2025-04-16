@@ -17,27 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
-/**
- * Composable function for an account detail field.
- *
- * This function renders a Text composable above a TextField composable. It is used for
- * displaying and editing account details such as username, email, and password.
- *
- * @param label The label for the field, displayed above the TextField.
- * @param prompt The placeholder text for the TextField.
- * @param keyboardType The type of keyboard to use for the TextField.
- * @param password Boolean indicating whether the field is for a password (true) or not (false).
- * @param modifier Modifier to be applied to the TextField.
- */
 @Composable
 fun AccountDetailField(
     label: String,
     prompt: String,
+    onTextChanged: (String) -> Unit = {},
     keyboardType: KeyboardType = KeyboardType.Text,
     password: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    var value by rememberSaveable() { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -52,7 +40,7 @@ fun AccountDetailField(
         Spacer(modifier = Modifier.padding(top = 16.dp))
 
         styledTextField(
-            onTextChanged = { value = it },
+            onTextChanged = onTextChanged,
             width = 256,
             xAlignment = Alignment.CenterHorizontally,
             unfocusedText = prompt,
