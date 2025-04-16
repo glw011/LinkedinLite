@@ -41,6 +41,7 @@ fun ProfileRecommendationCard(
         ProfileCard(
             title = "People you may know",
             subtitle = "",
+            isEditable = false,
             modifier = modifier
         ) {
             PersonalProfileRecommendationCard()
@@ -49,6 +50,7 @@ fun ProfileRecommendationCard(
         ProfileCard(
             title = "Organizations you may be interested in",
             subtitle = "",
+            isEditable = false,
             modifier = modifier,
         ) {
             OrganizationProfileRecommendationCard()

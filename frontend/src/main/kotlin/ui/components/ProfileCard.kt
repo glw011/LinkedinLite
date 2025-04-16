@@ -3,12 +3,14 @@ package ui.components
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -26,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -149,6 +152,7 @@ fun ProfilePostsCard(
     ProfileCard(
         title = title,
         subtitle = subtitle,
+        isEditable = false,
         modifier = modifier
     ) {
         LazyRow(
@@ -182,36 +186,52 @@ fun ProfilePostsCard(
 fun ProfileCard(
     title: String,
     subtitle: String,
+    isEditable: Boolean = true,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    ElevatedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.onBackground
-        ),
+    Box(
         modifier = modifier
             .border(1.dp, Color.Gray, CARD_SHAPE)
             .clip(CARD_SHAPE),
     ) {
-        Column(
+        ElevatedCard(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onBackground
+            ),
             modifier = Modifier
-                .padding(8.dp)
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineSmall,
+            Column(
                 modifier = Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth(),
-            )
-            Text(
-                text = subtitle,
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth(),
+                )
+                Text(
+                    text = subtitle,
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth(),
+                )
+                content()
+            }
+        }
+        if (isEditable) {
+            EditButton(
+                onClick = onClick,
                 modifier = Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth(),
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .size(24.dp)
+                    .clip(CARD_SHAPE)
+                    .align(Alignment.TopEnd)
             )
-            content()
         }
     }
 }

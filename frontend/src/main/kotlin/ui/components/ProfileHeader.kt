@@ -1,5 +1,6 @@
 package ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -38,8 +39,17 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.example.linkedinliteui.generated.resources.Res
+import org.example.linkedinliteui.generated.resources.default_banner
+import org.jetbrains.compose.resources.painterResource
 import ui.theme.MainTheme
 import ui.views.openFileChooser
+
+fun editBanner(
+
+) {
+
+}
 
 @Composable
 fun ProfileHeader(
@@ -48,6 +58,7 @@ fun ProfileHeader(
     title: String,
     location: String,
     school: String,
+    banner: ImageBitmap?,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -57,10 +68,11 @@ fun ProfileHeader(
             modifier = Modifier.wrapContentSize()
         ) {
             // TODO: Add a background image
-            Surface( // Temporary background
-                color = Color.Red,
+            Image(
+                painter = painterResource(Res.drawable.default_banner),
+                contentDescription = "Profile Banner",
                 modifier = Modifier.fillMaxWidth().height(128.dp)
-            ) {}
+            )
             Surface(
                 color = MaterialTheme.colorScheme.background,
                 modifier = Modifier.fillMaxWidth().wrapContentHeight()

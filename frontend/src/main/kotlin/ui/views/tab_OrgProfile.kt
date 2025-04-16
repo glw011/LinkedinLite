@@ -95,6 +95,7 @@ fun OrgProfileTab() {
                     title = "Organization Title",
                     location = "Organization Location",
                     school = "Organization School",
+                    banner = null,
                     modifier = Modifier
                         .wrapContentHeight()
                         .fillMaxWidth()
