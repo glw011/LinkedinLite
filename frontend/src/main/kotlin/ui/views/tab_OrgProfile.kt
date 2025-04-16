@@ -41,6 +41,7 @@ import ui.components.ProfilePostsCard
 import data.DataSource.tags
 import ui.components.PfpImage
 import ui.components.ProfileMembersCard
+import ui.components.ProfileRecommendationCard
 import ui.components.ProfileTagsCard
 
 val headerShape = RoundedCornerShape(16.dp)
@@ -125,16 +126,22 @@ fun OrgProfileTab() {
                 modifier = Modifier
                     .weight(0.6f)
                     .wrapContentHeight()
-                    .padding(horizontal = 4.dp)
-                    .border(1.dp, Color.Gray),
+                    .padding(horizontal = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 // Temporary: To be replaced by ProfileRecommendations
-                Surface(
+                ProfileRecommendationCard(
+                    isPersonalProfile = true,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp),
-                    color = Color.White
-                ) {}
+                        .height(400.dp)
+                )
+                ProfileRecommendationCard(
+                    isPersonalProfile = false,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                )
             }
         }
     }
