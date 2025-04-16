@@ -1,6 +1,7 @@
 package ui.components
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -28,11 +29,80 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import ui.views.exampleMembers
+import ui.views.exampleRoles
 import ui.views.exampleTags
 import ui.views.postShape
 
 val CARD_SHAPE = RoundedCornerShape(16.dp)
+
+@Composable
+fun ProfileMembersCard(
+    title: String,
+    subtitle: String = "",
+    members: List<String>,
+    roles: List<String>,
+    modifier: Modifier = Modifier
+) {
+    ProfileCard(
+        title = title,
+        subtitle = subtitle,
+        modifier = modifier
+    ) {
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(members.size) { index ->
+                Column(
+                    modifier = Modifier
+                        .width(175.dp)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable(onClick = {/* TODO: Handle click */ })
+                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                ) {
+                    PfpImage(
+                        imageBitmap = null,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
+                        contentScale = ContentScale.FillHeight
+                    )
+                    Surface(
+                        color = MaterialTheme.colorScheme.background,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(0.3f)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 8.dp)
+                        ) {
+                            if (index < members.size && index < roles.size) {
+                                Text(
+                                    text = members[index],
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                                Text(
+                                    text = roles[index],
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun ProfileTagsCard(

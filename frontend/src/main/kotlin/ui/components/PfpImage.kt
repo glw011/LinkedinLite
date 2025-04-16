@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_pfp
 import org.jetbrains.compose.resources.painterResource
@@ -33,17 +34,20 @@ fun getBitmapFromFilePath(imagePath: String): ImageBitmap? {
 @Composable
 fun PfpImage(
     imageBitmap: ImageBitmap?,
+    contentScale: ContentScale = ContentScale.Fit,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     if (imageBitmap == null) {
         Image(
+            contentScale = contentScale,
             modifier = modifier.then(pfpModifier).clickable(onClick = onClick),
             painter = painterResource(Res.drawable.default_pfp),
             contentDescription = "Profile Picture",
         )
     } else {
         Image(
+            contentScale = contentScale,
             modifier = modifier.then(pfpModifier).clickable(onClick = onClick),
             bitmap = imageBitmap,
             contentDescription = "Profile Picture",
