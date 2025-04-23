@@ -8,6 +8,12 @@ import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_banner
 import org.jetbrains.compose.resources.painterResource
 
+/**
+ * Creates a profile banner image.
+ *
+ * @param imageBitmap The image bitmap to be displayed as the banner. Nullable.
+ * @param modifier The modifier for the image.
+ */
 @Composable
 fun Banner(
     imageBitmap: ImageBitmap?,

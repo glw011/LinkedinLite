@@ -1,6 +1,3 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -10,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import ui.ProfileViewModel
-import ui.theme.DARK_MODE
 import ui.theme.MainTheme
 import ui.views.UI
 import ui.views.loginScreen
@@ -38,9 +34,11 @@ enum class View {
     RegisterOrgPfp,
 }
 
+/**
+ * Main application composable.
+ */
 @Composable
 fun App(profileViewModel: ProfileViewModel = ProfileViewModel()) {
-    // Main function to run the application
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
 
     // Observe the profileViewModel state

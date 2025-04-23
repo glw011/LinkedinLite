@@ -7,6 +7,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
+/**
+ * Creates a slot for a profile to be used in a recommendation card.
+ *
+ * @param modifier The modifier for the profile slot.
+ */
 @Composable
 fun ProfileSlot(
     modifier: Modifier = Modifier,
@@ -32,6 +37,13 @@ fun ProfileSlot(
     }
 }
 
+/**
+ * Creates a recommendation card for profiles. Used on a profile page to display
+ * recommendations for people or organizations to connect with.
+ *
+ * @param isPersonalProfile Boolean indicating if the profile is personal or organizational.
+ * @param modifier Modifier for the card.
+ */
 @Composable
 fun ProfileRecommendationCard(
     isPersonalProfile: Boolean,
@@ -58,6 +70,11 @@ fun ProfileRecommendationCard(
     }
 }
 
+/**
+ * Creates a recommendation card for personal profiles.
+ *
+ * @param modifier Modifier for the card.
+ */
 @Composable
 fun PersonalProfileRecommendationCard(
     modifier: Modifier = Modifier,
@@ -67,6 +84,11 @@ fun PersonalProfileRecommendationCard(
     ) {}
 }
 
+/**
+ * Creates a recommendation card for organizational profiles.
+ *
+ * @param modifier Modifier for the card.
+ */
 @Composable
 fun OrganizationProfileRecommendationCard(
     modifier: Modifier = Modifier,

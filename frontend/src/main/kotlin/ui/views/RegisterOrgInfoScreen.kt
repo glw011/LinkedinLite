@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +22,15 @@ import ui.components.styledButton
 import ui.components.styledDropDownList
 import ui.theme.LIGHT_PURPLE
 
+/**
+ * The registration screen allowing the user to input information about his or her organization
+ *
+ * @param onContinue Callback function for when the user clicks the continue button.
+ * @param onBack Callback function for when the user clicks the back button.
+ * @param onOrgNameChanged Callback function for when the user changes the organization name.
+ * @param onSchoolNameChanged Callback function for when the user changes the school name.
+ * @param onOrgTagsChanged Callback function for when the user changes the organization tags.
+ */
 @Composable
 fun registerOrgInfoScreen(
     onContinue: () -> Unit,
@@ -71,6 +79,7 @@ fun registerOrgInfoScreen(
 
             Text(
                 text = "Organization Type",
+                color = MaterialTheme.colorScheme.onBackground,
             )
 
             Spacer(modifier = Modifier.padding(top = 16.dp))

@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -22,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -35,13 +32,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ui.views.exampleMembers
-import ui.views.exampleRoles
 import ui.views.exampleTags
 import ui.views.postShape
 
 val CARD_SHAPE = RoundedCornerShape(16.dp)
 
+/**
+ * A card to be placed on a profile page that displays a list of members with
+ * their names and roles.
+ *
+ * @param title The title of the card.
+ * @param subtitle The subtitle of the card.
+ * @param members A list of member names.
+ * @param roles A list of roles corresponding to the members. Should be the same size as members.
+ * @param modifier Modifier to apply to the card.
+ */
 @Composable
 fun ProfileMembersCard(
     title: String,
@@ -107,6 +112,13 @@ fun ProfileMembersCard(
     }
 }
 
+/**
+ * A card to be placed on a profile page that displays a list of tags/interests.
+ *
+ * @param title The title of the card.
+ * @param subtitle The subtitle of the card.
+ * @param modifier Modifier to apply to the card.
+ */
 @Composable
 fun ProfileTagsCard(
     title: String,
@@ -143,6 +155,13 @@ fun ProfileTagsCard(
     }
 }
 
+/**
+ * A card to be placed on a profile page that displays a list of recent posts.
+ *
+ * @param title The title of the card.
+ * @param subtitle The subtitle of the card.
+ * @param modifier Modifier to apply to the card.
+ */
 @Composable
 fun ProfilePostsCard(
     title: String,
@@ -182,6 +201,16 @@ fun ProfilePostsCard(
     }
 }
 
+/**
+ * A generic card to be displayed on a profile page.
+ *
+ * @param title The title of the card.
+ * @param subtitle The subtitle of the card.
+ * @param isEditable Whether the card is editable or not. If editable, an edit button is shown.
+ * @param onClick The callback for when the edit button is clicked.
+ * @param modifier Modifier to apply to the card.
+ * @param content The content to be displayed inside the card.
+ */
 @Composable
 fun ProfileCard(
     title: String,

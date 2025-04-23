@@ -1,10 +1,8 @@
 package ui.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +26,13 @@ import ui.theme.LIGHT_PURPLE
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
+/**
+ * Opens a file manager dialog on the user system to choose an image file.
+ * Accepts jpg, png, and gif files.
+ *
+ * @return The absolute path of the selected image file as a String. If no file is selected,
+ * returns an empty string.
+ */
 fun openFileChooser(): String {
     val fileChooser = JFileChooser()
     fileChooser.fileFilter =
@@ -47,6 +52,12 @@ fun openFileChooser(): String {
     return imagePath
 }
 
+/**
+ * The registration screen allowing the user to upload a profile picture for their organization.
+ *
+ * @param onContinue Callback function for when the user clicks the continue button.
+ * @param onBack Callback function for when the user clicks the back button.
+ */
 @Composable
 fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
     var imagePath by remember { mutableStateOf("") }
