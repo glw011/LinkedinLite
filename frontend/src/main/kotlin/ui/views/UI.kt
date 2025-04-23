@@ -63,7 +63,7 @@ fun UI() {
                 // Switch Tabs
                 when (selectedTab) {
                     "People / Orgs" -> peopleOrgsTabContent()
-                    "Settings" -> OrgProfileTab() // Temporary for testing
+                    "My Profile" -> OrgProfileTab()
                     // Add your new tab content composables here
                 }
             }

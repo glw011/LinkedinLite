@@ -73,7 +73,6 @@ val dummyProfileList = mutableStateListOf<ProfileData>().apply {
         val bio = "Made up bio for organization ${i + 1}, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
         add(ProfileData(null, name, bio))
     }
-    add(ProfileData(null, "Harrison Day", "Billionaire, philanthropist, and entrepreneur. Co-founder of linkedin lite. Current Occupation: gettin' that money"))
     add(ProfileData(null, "LATech AI", "Made up bio for organization LATech AI, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."))
 }.shuffled()
 
