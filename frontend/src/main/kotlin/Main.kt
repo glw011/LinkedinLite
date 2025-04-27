@@ -1,6 +1,3 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -10,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import ui.ProfileViewModel
-import ui.theme.DARK_MODE
 import ui.theme.MainTheme
 import ui.views.UI
 import ui.views.loginScreen
@@ -18,6 +14,7 @@ import ui.views.registerOrgInfoScreen
 import ui.views.registerOrgPfpScreen
 import ui.views.registerOrgScreen
 import ui.views.registerSelectScreen
+import utils.updateScreenDimensions
 import java.awt.Dimension
 
 fun main() = application {
@@ -42,6 +39,8 @@ enum class View {
 fun App(profileViewModel: ProfileViewModel = ProfileViewModel()) {
     // Main function to run the application
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
+
+    updateScreenDimensions()
 
     // Observe the profileViewModel state
     val profileState by profileViewModel.uiState.collectAsState()

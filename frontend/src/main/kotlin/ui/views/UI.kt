@@ -64,6 +64,7 @@ fun UI() {
                 when (selectedTab) {
                     "People / Orgs" -> peopleOrgsTabContent()
                     "My Profile" -> OrgProfileTab()
+                    "Home" -> homeTab()
                     // Add your new tab content composables here
                 }
             }
