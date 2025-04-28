@@ -3,7 +3,7 @@ package debug
 import androidx.compose.runtime.mutableStateListOf
 import ui.components.Comment
 import ui.components.Post
-import ui.views.ProfileData
+import ui.views.home.ProfileData
 
 fun getDummyProfileList(): List<ProfileData> {
     val dummyProfileList = mutableStateListOf<ProfileData>().apply {

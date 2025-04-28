@@ -1,4 +1,4 @@
-package ui.views
+package ui.views.home
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -19,17 +19,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import data.DataSource.tags
-import ui.ProfileHeaderInfo
-import ui.ProfileUiState
 import ui.components.DetailEditDialog
 import ui.components.ProfileHeader
 import ui.components.ProfileMembersCard
 import ui.components.ProfilePostsCard
 import ui.components.ProfileRecommendationCard
 import ui.components.ProfileTagsCard
+import ui.views.registerorg.openFileChooser
 import util.getBitmapFromFilepath
 
 val headerShape = RoundedCornerShape(16.dp)

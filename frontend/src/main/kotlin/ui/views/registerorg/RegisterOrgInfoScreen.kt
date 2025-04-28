@@ -1,4 +1,4 @@
-package ui.views
+package ui.views.registerorg
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

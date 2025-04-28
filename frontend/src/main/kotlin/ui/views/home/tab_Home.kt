@@ -1,4 +1,4 @@
-package ui.views
+package ui.views.home
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn

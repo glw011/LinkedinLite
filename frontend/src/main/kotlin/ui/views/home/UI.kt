@@ -3,7 +3,7 @@ Harrison Day - 04/04/25
 Main UI file for LinkedInLite
 ------------------------------------------------------------------------------------------------- */
 
-package ui.views
+package ui.views.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ui.ProfileUiState
 import ui.components.Sidebar
 import ui.components.searchActive
 import ui.theme.DARK_MODE

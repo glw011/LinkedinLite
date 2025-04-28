@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
-import ui.views.SEARCH_BAR_TEXT
+import ui.views.home.SEARCH_BAR_TEXT
 
 /**
  * Composable function for the search bar UI element.

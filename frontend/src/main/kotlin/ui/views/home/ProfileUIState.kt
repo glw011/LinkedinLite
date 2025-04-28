@@ -1,4 +1,4 @@
-package ui
+package ui.views.home
 
 import androidx.compose.ui.graphics.ImageBitmap
 import org.example.linkedinliteui.generated.resources.Res

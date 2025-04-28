@@ -1,20 +1,19 @@
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import ui.ProfileUiState
+import ui.views.home.ProfileUiState
 import ui.theme.MainTheme
-import ui.views.UI
+import ui.views.home.UI
 import ui.views.loginScreen
-import ui.views.registerOrgInfoScreen
-import ui.views.registerOrgPfpScreen
-import ui.views.registerOrgScreen
-import ui.views.registerSelectScreen
-import utils.updateScreenDimensions
+import ui.views.registerorg.registerOrgInfoScreen
+import ui.views.registerorg.registerOrgPfpScreen
+import ui.views.registerorg.registerOrgScreen
+import ui.views.registerorg.registerSelectScreen
+import util.updateScreenDimensions
 import java.awt.Dimension
 
 fun main() = application {

@@ -32,8 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ui.views.exampleTags
-import ui.views.postShape
+import ui.views.home.exampleTags
+import ui.views.home.postShape
 
 val CARD_SHAPE = RoundedCornerShape(16.dp)
 
