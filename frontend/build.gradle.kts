@@ -23,6 +23,9 @@ dependencies {
     implementation(compose.foundation)
     implementation(compose.runtime)
     implementation(compose.components.resources)
+    implementation("org.jetbrains.exposed:exposed-core:0.60.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.60.0")
+    implementation("org.jetbrains.exposed:exposed-crypt:0.60.0")
 }
 
 compose.desktop {

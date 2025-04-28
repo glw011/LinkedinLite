@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ui.ProfileUiState
 import ui.components.Sidebar
 import ui.components.searchActive
 import ui.theme.DARK_MODE
@@ -31,7 +32,9 @@ import ui.theme.DARK_MODE
  * delegates the rendering of content to other composable functions.
  */
 @Composable
-fun UI() {
+fun UI(
+    profileUiState: ProfileUiState
+) {
     Surface(modifier = Modifier.fillMaxSize(), color = if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight) {
         var selectedTab by remember { mutableStateOf("Home") }
 
@@ -63,7 +66,7 @@ fun UI() {
                 // Switch Tabs
                 when (selectedTab) {
                     "People / Orgs" -> peopleOrgsTabContent()
-                    "Settings" -> OrgProfileTab() // Temporary for testing
+                    "Settings" -> OrgProfileTab(profileUiState) // Temporary for testing
                     // Add your new tab content composables here
                 }
             }

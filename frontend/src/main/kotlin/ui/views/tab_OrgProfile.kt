@@ -22,13 +22,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import data.DataSource.tags
+import ui.ProfileHeaderInfo
+import ui.ProfileUiState
 import ui.components.DetailEditDialog
 import ui.components.ProfileHeader
 import ui.components.ProfileMembersCard
 import ui.components.ProfilePostsCard
 import ui.components.ProfileRecommendationCard
 import ui.components.ProfileTagsCard
-import ui.components.getBitmapFromFilePath
+import util.getBitmapFromFilepath
 
 val headerShape = RoundedCornerShape(16.dp)
 val postShape = RoundedCornerShape(8.dp)
@@ -61,20 +63,11 @@ val exampleRoles = listOf(
  * The profile tab for organizations in the main screen.
  */
 @Composable
-fun OrgProfileTab() {
-    var banner by rememberSaveable { mutableStateOf<ImageBitmap?>(null) }
-    var profilePicture by rememberSaveable { mutableStateOf<ImageBitmap?>(null) }
+fun OrgProfileTab(
+    uiState: ProfileUiState
+) {
+    var profileHeaderInfo by rememberSaveable { mutableStateOf(ProfileHeaderInfo()) }
     var imagePath by rememberSaveable { mutableStateOf("") }
-    var name by rememberSaveable { mutableStateOf("Organization Name") }
-    var description by rememberSaveable { mutableStateOf("\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"") }
-    var location by rememberSaveable { mutableStateOf("Organization Location") }
-    var school by rememberSaveable { mutableStateOf("Organization School") }
-
-    var tempName by rememberSaveable { mutableStateOf("") }
-    var tempDescription by rememberSaveable { mutableStateOf("") }
-    var tempLocation by rememberSaveable { mutableStateOf("") }
-    var tempSchool by rememberSaveable { mutableStateOf("") }
-
     var isEditingHeader by rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -96,24 +89,24 @@ fun OrgProfileTab() {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 ProfileHeader(
-                    name = name,
-                    description = description,
-                    title = "Organization Title",
-                    location = location,
-                    school = school,
-                    banner = banner,
-                    profilePicture = profilePicture,
+                    name = uiState.headerInfo.name,
+                    description = uiState.headerInfo.description,
+                    title = uiState.headerInfo.title,
+                    location = uiState.headerInfo.location,
+                    school = uiState.headerInfo.school,
+                    banner = uiState.headerInfo.banner,
+                    profilePicture = uiState.headerInfo.profilePicture,
                     onEditHeader = { isEditingHeader = true },
                     onEditBanner = {
                         imagePath = openFileChooser()
                         if (imagePath.isNotEmpty()) {
-                            banner = getBitmapFromFilePath(imagePath)
+                            uiState.headerInfo.banner = getBitmapFromFilepath(imagePath)
                         }
                     },
                     onEditProfilePicture = {
                         imagePath = openFileChooser()
                         if (imagePath.isNotEmpty()) {
-                            profilePicture = getBitmapFromFilePath(imagePath)
+                            uiState.headerInfo.profilePicture = getBitmapFromFilepath(imagePath)
                         }
                     },
                     modifier = Modifier
@@ -167,35 +160,36 @@ fun OrgProfileTab() {
     }
     if (isEditingHeader) {
         DetailEditDialog(
-            onNameChanged = { tempName = it },
-            onDescriptionChanged = { tempDescription = it },
-            onLocationChanged = { tempLocation = it },
-            onSchoolChanged = { tempSchool = it },
+            onNameChanged = { profileHeaderInfo.name = it },
+            onDescriptionChanged = { profileHeaderInfo.description = it },
+            onLocationChanged = { profileHeaderInfo.location = it },
+            onSchoolChanged = { profileHeaderInfo.school = it },
             onSave = {
                 isEditingHeader = false
 
-                if (tempName.isNotEmpty()) {
-                    name = tempName
-                    tempName = ""
+                if (profileHeaderInfo.name.isNotEmpty()) {
+                    uiState.headerInfo.name = profileHeaderInfo.name
+                    profileHeaderInfo.name = ""
                 }
-                if (tempDescription.isNotEmpty()) {
-                    description = tempDescription
-                    tempDescription = ""
+                if (profileHeaderInfo.description.isNotEmpty()) {
+                    uiState.headerInfo.description = profileHeaderInfo.description
+                    profileHeaderInfo.description = ""
                 }
-                if (tempLocation.isNotEmpty()) {
-                    location = tempLocation
-                    tempLocation = ""
+                if (profileHeaderInfo.location.isNotEmpty()) {
+                    uiState.headerInfo.location = profileHeaderInfo.location
+                    profileHeaderInfo.location = ""
                 }
-                if (tempSchool.isNotEmpty()) {
-                    school = tempSchool
-                    tempSchool = ""
+                if (profileHeaderInfo.school.isNotEmpty()) {
+                    uiState.headerInfo.school = profileHeaderInfo.school
+                    profileHeaderInfo.school = ""
                 }
              },
             onCancel = {
                 isEditingHeader = false
-                tempName = ""
-                tempDescription = ""
-                tempSchool = ""
+                profileHeaderInfo.name = ""
+                profileHeaderInfo.description = ""
+                profileHeaderInfo.location = ""
+                profileHeaderInfo.school = ""
             }
         )
     }

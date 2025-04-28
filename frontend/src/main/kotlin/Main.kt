@@ -6,7 +6,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import ui.ProfileViewModel
+import ui.ProfileUiState
 import ui.theme.MainTheme
 import ui.views.UI
 import ui.views.loginScreen
@@ -38,11 +38,9 @@ enum class View {
  * Main application composable.
  */
 @Composable
-fun App(profileViewModel: ProfileViewModel = ProfileViewModel()) {
+fun App() {
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
-
-    // Observe the profileViewModel state
-    val profileState by profileViewModel.uiState.collectAsState()
+    var profileUiState by rememberSaveable { mutableStateOf(ProfileUiState()) }
 
     if (currentView == View.Login) {
         // Show login screen
@@ -84,6 +82,7 @@ fun App(profileViewModel: ProfileViewModel = ProfileViewModel()) {
             // Handle continue logic here
             // For now, just switch to the registration info view
             currentView = View.RegisterOrgInfo
+            profileUiState.headerInfo.name =
         }
         val onBack: () -> Unit = {
             // Handle back logic here
@@ -102,8 +101,6 @@ fun App(profileViewModel: ProfileViewModel = ProfileViewModel()) {
             // Handle continue logic here
             // For now, just switch to the registration profile picture view
             currentView = View.RegisterOrgPfp
-            profileViewModel.setName(organizationName)
-            profileViewModel.setSchool(schoolName)
         }
         val onBack: () -> Unit = {
             // Handle back logic here
