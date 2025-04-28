@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,6 +28,8 @@ import data.DataSource.searchFilters
 import ui.components.profilePreview
 import ui.components.searchActive
 import ui.components.searchBar
+import debug.generateDummies
+import debug.getDummyProfileList
 
 /**
  * Stores the text currently entered in the search bar.
@@ -58,26 +59,6 @@ data class ProfileData(
 )
 
 /**
- * TEMPORARY: REMOVE WHEN WE HAVE REAL DATA
- * A list of dummy profile data for testing and demonstration purposes.
- */
-val dummyProfileList = mutableStateListOf<ProfileData>().apply {
-    repeat(30) { i ->
-        val name = "User ${i + 1}"
-        val bio = "Made up bio for user ${i + 1}, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
-        add(ProfileData(null, name, bio))
-    }
-
-    repeat( 5 ) { i ->
-        val name = "Organization ${i + 1}"
-        val bio = "Made up bio for organization ${i + 1}, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
-        add(ProfileData(null, name, bio))
-    }
-    add(ProfileData(null, "Harrison Day", "Billionaire, philanthropist, and entrepreneur. Co-founder of linkedin lite. Current Occupation: gettin' that money"))
-    add(ProfileData(null, "LATech AI", "Made up bio for organization LATech AI, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."))
-}.shuffled()
-
-/**
  * Composable function for the People / Organizations tab content.
  *
  * This function displays a search bar when search is active and handles user input.
@@ -100,14 +81,19 @@ fun peopleOrgsTabContent() {
             dropdownItems = searchFilters
         )
 
+        val profileList: List<ProfileData> = if (generateDummies)
+            getDummyProfileList()
+        else
+            getDummyProfileList() // Same for now, need to get real data
+
         // Filtered profiles based on search bar text
         val filteredProfiles by remember {
             derivedStateOf {
                 if (SEARCH_BAR_TEXT.isEmpty()) {
-                    dummyProfileList
+                    profileList
                 }
                 else {
-                    dummyProfileList.filter { profile ->
+                    profileList.filter { profile ->
                         profile.name.contains(SEARCH_BAR_TEXT, ignoreCase = true)
                     }
                 }

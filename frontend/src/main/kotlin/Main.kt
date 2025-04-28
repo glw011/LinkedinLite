@@ -14,6 +14,7 @@ import ui.views.registerOrgInfoScreen
 import ui.views.registerOrgPfpScreen
 import ui.views.registerOrgScreen
 import ui.views.registerSelectScreen
+import utils.updateScreenDimensions
 import java.awt.Dimension
 
 fun main() = application {
@@ -41,6 +42,8 @@ enum class View {
 fun App() {
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
     var profileUiState by rememberSaveable { mutableStateOf(ProfileUiState()) }
+
+    updateScreenDimensions()
 
     if (currentView == View.Login) {
         // Show login screen

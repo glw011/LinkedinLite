@@ -9,6 +9,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -35,7 +37,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import org.example.linkedinliteui.generated.resources.Res
+import org.example.linkedinliteui.generated.resources.default_pfp
+import org.jetbrains.compose.resources.painterResource
 import ui.theme.DARK_MODE
 import ui.theme.LIGHT_PURPLE
 
@@ -101,6 +108,15 @@ fun Sidebar(selectedTab: String, onTabSelected: (String) -> Unit) {
         )
 
         Spacer(modifier = Modifier.weight(1f))
+
+        profileTabButton(
+            isSelected = selectedTab == "My Profile",
+            onClick = {
+                searchActive = false
+                onTabSelected("My Profile")
+                println("My Profile Tab")
+            },
+        )
 
         settingsTabButton(
             isSelected = selectedTab == "Settings",
@@ -293,6 +309,59 @@ fun postTabButton(isSelected: Boolean, onClick: () -> Unit) {
             enter = fadeIn(animationSpec = tween(durationMillis = FadeSpeed)),
             exit = fadeOut(animationSpec = tween(durationMillis = FadeSpeed))
         ) {
+            Box(
+                modifier = Modifier
+                    .padding(start = 48.dp, bottom = 4.dp)
+                    .size(width = 4.dp, height = 32.dp)
+                    .background(LIGHT_PURPLE, shape = RoundedCornerShape(32.dp))
+            )
+        }
+    }
+}
+
+@Composable
+fun profileTabButton(isSelected: Boolean, onClick: () -> Unit) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    // Box to contain icon
+    Box(
+        modifier = Modifier
+            .size(64.dp)
+            .width(64.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        // Settings Icon
+//        Icon(
+//            imageVector = Icons.Filled.Settings,
+//            contentDescription = "My Profile",
+//            tint = MaterialTheme.colorScheme.onBackground,
+//            modifier = Modifier
+//                .size(32.dp)
+//                .padding(bottom = 4.dp)
+//        )
+
+        // Temporary default pfp
+        Image(
+            painter = painterResource(Res.drawable.default_pfp),
+            contentDescription = "Default Profile Picture",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+        )
+        // Selection Indicator
+        AnimatedVisibility(
+            visible = isSelected,
+            enter = fadeIn(animationSpec = tween(durationMillis = FadeSpeed)),
+            exit = fadeOut(animationSpec = tween(durationMillis = FadeSpeed))
+        ) {
+
+            // Selection Indicator
             Box(
                 modifier = Modifier
                     .padding(start = 48.dp, bottom = 4.dp)
