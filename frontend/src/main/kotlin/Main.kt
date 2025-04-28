@@ -85,7 +85,6 @@ fun App() {
             // Handle continue logic here
             // For now, just switch to the registration info view
             currentView = View.RegisterOrgInfo
-            profileUiState.headerInfo.name =
         }
         val onBack: () -> Unit = {
             // Handle back logic here
@@ -134,6 +133,6 @@ fun App() {
         )
     } else if (currentView == View.Home) {
         // Show home screen
-        UI()
+        UI(profileUiState)
     }
 }
