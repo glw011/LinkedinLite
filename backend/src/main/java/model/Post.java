@@ -1,78 +1,28 @@
-package model;
+package Backend;
 
-import java.time.LocalDateTime;
+import java.util.HashMap;
 
-public class Post {
+public class Post{
+    private int postId;
+    private User owner;
+    private String content;
+    private Picture postImg;
+    private Date postDate;
+    private HashMap<Integer, Interest> tags;
+    private HashMap<Integer, Comment> comments;
 
-    private int postId;              // unique identifier for post (primary key)
-    private String postText;         //  main content
-    private String userKey;          // identifier for user who created  post
-    private String imageFileName;    // nmame of image file associated with post (optional)
-    private LocalDateTime timestamp; //  date/time post was created
+    public Post(int id, User owner, String content, Picture img, Date date){
+        this.postId = id;
+        this.owner = owner;
+        this.content = content;
+        this.postImg = img;
+        this.postDate = date;
 
-    // Default constructor
-    public Post() {
+        this.tags = new HashMap<>();
+        this.comments = new HashMap<>();
     }
 
-    // Parameterized constructor
-    public Post(int postId, String postText, String userKey, String imageFileName, LocalDateTime timestamp) {
-        this.postId = postId;
-        this.postText = postText;
-        this.userKey = userKey;
-        this.imageFileName = imageFileName;
-        this.timestamp = timestamp;
-    }
+    public int getID(){return this.postId;}
 
-    // getters and setters
-
-    public int getPostId() {
-        return postId;
-    }
-
-    public void setPostId(int postId) {
-        this.postId = postId;
-    }
-
-    public String getPostText() {
-        return postText;
-    }
-
-    public void setPostText(String postText) {
-        this.postText = postText;
-    }
-
-    public String getUserKey() {
-        return userKey;
-    }
-
-    public void setUserKey(String userKey) {
-        this.userKey = userKey;
-    }
-
-    public String getImageFileName() {
-        return imageFileName;
-    }
-
-    public void setImageFileName(String imageFileName) {
-        this.imageFileName = imageFileName;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    @Override
-    public String toString() {
-        return "Post{" +
-                "postId=" + postId +
-                ", postText='" + postText + '\'' +
-                ", userKey='" + userKey + '\'' +
-                ", imageFileName='" + imageFileName + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
+    // TODO: Add remaining getter/setter methods
 }

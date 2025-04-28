@@ -1,63 +1,20 @@
-package model;
+package Backend;
 
-public class Major {
+public class Major{
     private int majorId;
-    private String majorName;
-    private School school;      // Foreign key to the School
-    private int fieldId;       // Foreign key to FieldOfStudy
-    private Discipline discipline;;
-    // Default constructor
-    public Major() {
+    private String name;
+    private College college;
+    private FoS field;
+
+    public Major(int id, String name, College college, FoS field){
+        this.majorId = id;
+        this.name = name;
+        this.college = college;
+        this.field = field;
     }
 
-    // Parameterized constructor
-    public Major(int majorId, String majorName, School school, int fieldId) {
-        this.majorId = majorId;
-        this.majorName = majorName;
-        this.school = school;
-        this.fieldId = fieldId;
-    }
-
-    // Getters and Setters
-    public int getMajorId() {
-        return majorId;
-    }
-
-    public void setMajorId(int majorId) {
-        this.majorId = majorId;
-    }
-
-    public String getMajorName() {
-        return majorName;
-    }
-
-    public void setMajorName(String majorName) {
-        this.majorName = majorName;
-    }
-
-    public School getSchool() {
-        return school;
-    }
-
-    public void setSchool(School school) {
-        this.school = school;
-    }
-
-    public int getFieldId() {
-        return fieldId;
-    }
-
-    public void setFieldId(int fieldId) {
-        this.fieldId = fieldId;
-    }
-
-    @Override
-    public String toString() {
-        return "Major{" +
-                "majorId=" + majorId +
-                ", majorName='" + majorName + '\'' +
-                ", school=" + school +
-                ", fieldId=" + fieldId +
-                '}';
-    }
+    public int getID(){return this.majorId;}
+    public String getName(){return this.name;}
+    public College getCollege(){return this.college;}
+    public FoS getField(){return this.field;}
 }

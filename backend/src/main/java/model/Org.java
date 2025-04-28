@@ -1,53 +1,34 @@
-package model;
+package Backend;
 
-public class Org {
-    private int orgId;
-    private String orgName;
-    private String orgType; // e.g., "Company", "Nonprofit", etc.
+import java.util.HashMap;
 
-    // Default constructor
-    public Org() {
-    }
+public class Org extends User {
+    private String name;
+    private String orgType;
+    private HashMap<Integer, Student> members;
 
-    // Parameterized constructor
-    public Org(int orgId, String orgName, String orgType) {
-        this.orgId = orgId;
-        this.orgName = orgName;
+    public Org(int id, String email, String name, String orgType, School school){
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.type = "org";
         this.orgType = orgType;
+        this.school = school;
+        this.members = new HashMap<>();
+
+        this.ownedImgs = new HashMap<>();
+        this.interests = new HashMap<>();
+        this.posts = new HashMap<>();
+        this.followingList = new HashMap<>();
     }
 
-    // Getters and Setters
-    public int getOrgId() {
-        return orgId;
-    }
+    public String getName(){return this.name;}
+    public String getOrgType(){return this.orgType;}
 
-    public void setOrgId(int orgId) {
+    public void addMember(Student student){this.members.putIfAbsent(student.getID(), student);}
+    public void removeMember(Student student){this.members.remove(student.getID());}
+    public Student getMember(int id){return this.members.get(id);}
+    public boolean checkMembership(Student student){return this.members.containsKey(student.getID());}
+    public HashMap<Integer, Student> getMembersList(){return this.members;}
 
-        this.orgId = orgId;
-    }
-
-    public String getOrgName() {
-        return orgName;
-    }
-
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
-    }
-
-    public String getOrgType() {
-        return orgType;
-    }
-
-    public void setOrgType(String orgType) {
-        this.orgType = orgType;
-    }
-
-    @Override
-    public String toString() {
-        return "Organization{" +
-                "orgId=" + orgId +
-                ", orgName='" + orgName + '\'' +
-                ", orgType='" + orgType + '\'' +
-                '}';
-    }
 }

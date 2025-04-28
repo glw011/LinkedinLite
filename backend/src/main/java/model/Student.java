@@ -1,39 +1,59 @@
+package Backend;
 
+import java.util.HashMap;
 
-
-package model;
-
-public class Student {
-    private int stdntId;
+public class Student extends User {
     private String fname;
     private String lname;
-    private int schoolId;
-    private int majorId;
-    private String email;
-    private String hashedPass;
-    private String schoolName;
-    private School school;
+    private College college;
     private Major major;
+    private HashMap<Integer, Skill> skills;
+    private HashMap<Integer, Org> orgs;
 
-    public int getStdntId() { return stdntId; }
-    public void setStdntId(int stdntId) { this.stdntId = stdntId; }
-    public String getFname() { return fname; }
-    public void setFname(String fname) { this.fname = fname; }
-    public String getLname() { return lname; }
-    public School getSchool() { return school; }
-    public void setSchool(School school) { this.school = school; }
-    public Major getMajor() { return major; }
-    public void setMajor(Major major) { this.major = major; }
-    public String getSchoolName() { return schoolName; }
-    public void setSchoolName(String schoolName) { this.schoolName = schoolName; }
-    public void setLname(String lname) { this.lname = lname; }
-    public int getMajorId() { return majorId; }
-    public void setMajorId(int majorId) { this.majorId = majorId; }
-    public int getSchoolId() { return schoolId; }
-    public void setSchoolId(int schoolId) { this.schoolId = schoolId; }
-    public String getHashedPass() { return hashedPass; }
-    public void setHashedPass(String hashedPass) { this.hashedPass = hashedPass; }
-    public void setEmail(String email) { this.email = email; }
-    public String getEmail() {return email;}
+    public Student(int id, String email, String fname, String lname, School school){
+        this.id = id;
+        this.email = email;
+        this.fname = fname;
+        this.lname = lname;
+        this.school = school;
+        this.type = "student";
+        this.skills = new HashMap<>();
+        this.orgs = new HashMap<>();
+
+        this.ownedImgs = new HashMap<>();
+        this.interests = new HashMap<>();
+        this.posts = new HashMap<>();
+        this.followingList = new HashMap<>();
+    }
+
+    public void changeSchool(School newSchool){
+        this.setSchool(newSchool);
+        this.college = null;
+        this.major = null;
+    }
+    public College getCollege(){return this.college;}
+    public void setCollege(College college){this.college = college;}
+    public Major getMajor(){return this.major;}
+    public void setMajor(Major major){this.major = major;}
+
+    public void joinOrg(Org org){
+        // TODO: If statement to check if org has added them to members list
+        this.orgs.putIfAbsent(org.getID(), org);
+    }
+    public void leaveOrg(Org org){
+        // TODO: Add call to Org obj to remove student from members list
+        this.orgs.remove(org.getID());
+    }
+    public Org getOrg(int id){return this.orgs.get(id);}
+    public HashMap<Integer, Org> getOrgsList(){return this.orgs;}
+
+    public String getFName(){return this.fname;}
+    public String getLName(){return this.lname;}
+    public String getName(){return String.format("%s %s", this.fname, this.lname);}
+
+    public void addSkill(Skill skill){this.skills.putIfAbsent(skill.getID(), skill);}
+    public void removeSkill(Skill skill){this.skills.remove(skill.getID());}
+    public Skill getSkill(int id){return this.skills.get(id);}
+    public HashMap<Integer, Skill> getSkillsList(){return this.skills;}
+    public boolean checkForSkill(Skill skill){return this.skills.containsKey(skill.getID());}
 }
-

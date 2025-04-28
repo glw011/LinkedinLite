@@ -1,61 +1,53 @@
-package model;
-@SuppressWarnings("unused")
-public class School {
+package Backend;
+
+import java.util.HashMap;
+
+public class School{
     private int schoolId;
-    private String schoolName;
+    private String name;
     private String city;
-    private String state;
     private String country;
-    // default
-    public School() {
-    }
-    // param'd
-    public School(int schoolId, String schoolName, String city, String state, String country) {
+    private String state;
+    public int zip;
+
+    private HashMap<Integer, College> colleges;
+    private HashMap<Integer, Org> orgs;
+    private HashMap<Integer, Student> students;
+
+    // TODO: Add zip column to db table
+    public School(int schoolId, String name, String city, String state, String country, int zip){
         this.schoolId = schoolId;
-        this.schoolName = schoolName;
+        this.name = name;
         this.city = city;
-        this.state = state;
         this.country = country;
-    }
-    // getters and setters
-    public int getSchoolId() {
-        return schoolId;
-    }
-    public void setSchoolId(int schoolId) {
-        this.schoolId = schoolId;
-    }
-    public String getSchoolName() {
-        return schoolName;
-    }
-    public void setSchoolName(String schoolName) {
-        this.schoolName = schoolName;
-    }
-    public String getCity() {
-        return city;
-    }
-    public void setCity(String city) {
-        this.city = city;
-    }
-    public String getState() {
-        return state;
-    }
-    public void setState(String state) {
         this.state = state;
+        this.zip = zip;
+
+        this.students = new HashMap<>();
+        this.orgs = new HashMap<>();
+        this.colleges = new HashMap<>();
     }
-    public String getCountry() {
-        return country;
-    }
-    public void setCountry(String country) {
-        this.country = country;
-    }
-    @Override
-    public String toString() {
-        return "School{" +
-                "schoolId=" + schoolId +
-                ", schoolName='" + schoolName + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", country='" + country + '\'' +
-                '}';
-    }
+
+    public int getId(){return this.schoolId;}
+    public String getName(){return this.name;}
+    public String getCity(){return this.city;}
+    public String getCountry(){return this.country;}
+    public String getState(){return this.state;}
+    public int getZip(){return this.zip;}
+    public String getAddress(){return String.format("%s, %s %d", this.city, this.state, this.zip);}
+
+    public void addCollege(College college){this.colleges.putIfAbsent(college.getID(), college);}
+    public College getCollege(int id){return this.colleges.get(id);}
+    public HashMap<Integer, College> getCollegesList(){return this.colleges;}
+
+    public void addStudent(Student student){this.students.putIfAbsent(student.getID(), student);}
+    public Student getStudent(int id){return this.students.get(id);}
+    public boolean checkForStudent(Student student){return this.students.containsKey(student.getID());}
+    public HashMap<Integer, Student> getStudentsList(){return this.students;}
+    public void removeStudent(Student student){this.students.remove(student.getID());}
+
+    public void addOrg(Org org){this.orgs.putIfAbsent(org.getID(), org);}
+    public Org getOrg(int id){return this.orgs.get(id);}
+    public HashMap<Integer, Org> getOrgsList(){return this.orgs;}
+    public void removeOrg(Org org){this.orgs.remove(org.getID());}
 }
