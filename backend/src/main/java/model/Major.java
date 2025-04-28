@@ -1,4 +1,4 @@
-package Backend;
+package Model;
 
 public class Major{
     private int majorId;
@@ -6,7 +6,7 @@ public class Major{
     private College college;
     private FoS field;
 
-    public Major(int id, String name, College college, FoS field){
+    public Major(int id, String name, FoS field){
         this.majorId = id;
         this.name = name;
         this.college = college;

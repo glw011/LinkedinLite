@@ -5,45 +5,27 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import model.Student;
+import model.UserType
 import dao.PostDAO;
 import util.DBConnection;
 import java.util.*;
 
-public class StudentDAO {
-
-    /**
-     * Authenticates a user based on email and hashed password.
-     * Returns a token string ("hkey") if successful, or null if not.
-     * temp token using id and timestamp
-     */
-    public String authUser(String email, String hashedPass) throws Exception {
-
-        String sql = "SELECT stdnt_id FROM STUDENT WHERE email = ? AND password = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, email);
-            stmt.setString(2, hashedPass);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    int studentId = rs.getInt("stdnt_id");
-                    // PLACEHOLDER
-                    return "token_" + studentId + "_" + System.currentTimeMillis();
-                } else {
-                    return null;
-                }
-            }
-        }
-    }
+public class StudentDAO extends UserDAO{
 
     /**
      * add student to  db.
      * assuming STUDENT table has columns for fname, lname, email,
      * password, school_name, and major.
      */
-    public boolean addStdnt(int stdntId, String fname, String lname, String email, String hashedPass, String schoolName, int majorId) throws Exception {
+    public boolean addStdnt(String fname, String email, String hashedPass, String schoolName, int majorId) throws Exception {
+        if(UserDAO.addUser(email, hashedPass, UserType.STUDENT)){
+            String sql = "UPDATE Students SET fname = ?, major_id = ? WHERE student_id = ?";
+
+            try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement()){
+
+            }
+
+        }
 
         String sql = "INSERT INTO STUDENT (stdntId, fname, lname, email, password, school_name, majorId) VALUES (?, ?, ?, ?, ?, ?)";
 

@@ -1,4 +1,4 @@
-package Backend;
+package model;
 
 public enum UserType {
     STUDENT(0, "student"),
