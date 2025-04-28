@@ -10,21 +10,20 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 3306
-      DB_NAME: linkedin_clone_test
-      DB_USER: root
-      DB_PASS: password
+      DB_NAME: lldb
+      DB_USER: dbuser
+      DB_PASS: CSC403
 
   db:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 12345678
-      MYSQL_DATABASE: linkedin_clone_test
+      MYSQL_ROOT_PASSWORD: CSC403
+      MYSQL_DATABASE: lldb
     volumes:
       - db_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
-
 volumes:
   db_data:
