@@ -75,8 +75,9 @@ fun styledTextField(
     onClick: () -> Unit = {},
     canType: Boolean = true,
     singleLine: Boolean = true,
-    fillMaxWidth: Boolean = false
-) {
+    fillMaxWidth: Boolean = false,
+    iconClickedFunctionPtr: () -> Unit = {},
+    ) {
     var text by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -146,7 +147,8 @@ fun styledTextField(
                 contentDescription = "icon",
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp)
-                    .align(iconAlignment),
+                    .align(iconAlignment)
+                    .clickable{iconClickedFunctionPtr()},
                 tint = Color.DarkGray
             )
         }

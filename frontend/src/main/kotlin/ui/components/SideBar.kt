@@ -139,7 +139,7 @@ fun peopleOrgsTabButton(isSelected: Boolean, onClick: () -> Unit) {
 
         // Person Icon
         Icon(
-            imageVector = Icons.Filled.Person,
+            imageVector = Icons.Filled.People,
             contentDescription = "People / Orgs",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
@@ -280,7 +280,7 @@ fun postTabButton(isSelected: Boolean, onClick: () -> Unit) {
 
         // Add Icon
         Icon(
-            imageVector = Icons.Filled.Add,
+            imageVector = Icons.Filled.AddBox,
             contentDescription = "Home",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
