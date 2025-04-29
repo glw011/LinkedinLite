@@ -2,6 +2,7 @@ package util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DBConnection {
     // use env vars for settings, else defaults
@@ -14,7 +15,7 @@ public class DBConnection {
     // construct JDBC URL using the retrieved values
     private static final String URL = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME + "?useSSL=false";
 
-    public static Connection getConnection() throws Exception {
+    public static Connection getConnection() throws SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }

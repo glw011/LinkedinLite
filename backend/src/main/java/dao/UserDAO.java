@@ -1,11 +1,13 @@
-
 package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
-import java.sql.SQLException
-import model.Student;
+import java.sql.SQLException;
+import model.User;
+import model.UserType;
+import model.ModelManager;
 import dao.PostDAO;
 import util.DBConnection;
 import java.util.*;
@@ -40,28 +42,42 @@ public class UserDAO {
     }
 
 
-    public boolean addUser(String email, String hashedPass, UserType userType) throws SQLException {
+    public static boolean addUser(String email, String hashedPass, UserType userType) throws SQLException {
 
         String sql = "INSERT INTO User_Verify (email, pass_hash, type) VALUES ( ?, ?, ?)";
+        Connection conn = DBConnection.getConnection();
 
-        try (Connection conn = DBConnection.getConnection();
-             Statement stmt = conn.createStatement()) {
+        try{
+            PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, email);
             stmt.setString(2, hashedPass);
-            stmt.setString(3, userType.str);
+            stmt.setString(3, userType.getStr());
 
-            boolean success = stmt.executeQuery(sql)
+            boolean success = (stmt.executeUpdate() > 0);
+            if(success){
+                String idQry = String.format("SELECT user_id FROM User_Verify WHERE email = %s", email);
+                Statement statement = conn.createStatement();
+                ResultSet results = statement.executeQuery(idQry);
 
-            return stmt.executeUpdate() > 0;
+                while(results.next()){
+                    int currId = results.getInt("user_id");
+                    ModelManager.mapNewUser(email, currId, userType);
+                }
+            }
+            return success;
+        } catch(SQLException e) {
+            System.err.println(e.getErrorCode());
+            System.err.println(Arrays.toString(e.getStackTrace()));
         }
+        return false;
     }
 
     /**
      * set bio for an authenticated user.
      * assumes token is in temp placeholder format as above".
      */
-    public boolean setBio(String hkey, String bio) throws Exception {
+    public boolean setBio(String hkey, String bio) throws SQLException {
 
         String[] parts = hkey.split("_");
 
@@ -223,80 +239,12 @@ public class UserDAO {
         }
     }
 
-    public Student getStudentById(int id) throws Exception {
-
-        String sql = "SELECT * FROM STUDENT WHERE stdnt_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                Student s = new Student();
-                s.setStdntId(rs.getInt("stdnt_id"));
-                s.setFname(rs.getString("fname"));
-                s.setLname(rs.getString("lname"));
-                s.setMajorId(rs.getInt("major_id"));
-                return s;
-            }
-        }
-        return null;
+    public User getUserById(int id) throws SQLException {
+        return ModelManager.getUser(id);
     }
 
-    public List<Student> getAllStudents() throws Exception {
+    public void setSchool(int userId, int schoolId) throws SQLException{
 
-        List<Student> students = new ArrayList<>();
-        String sql = "SELECT * FROM STUDENT";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-
-                Student s = new Student();
-                s.setStdntId(rs.getInt("stdnt_id"));
-                s.setFname(rs.getString("fname"));
-                s.setLname(rs.getString("lname"));
-                s.setSchoolId(rs.getInt("school_id"));
-                s.setMajorId(rs.getInt("major_id"));
-                s.setEmail(rs.getString("email"));
-                s.setHashedPass(rs.getString("password"));
-                s.setSchoolName(rs.getString("school_name"));
-
-                students.add(s);
-            }
-        }
-        return students;
-    }
-    public boolean deleteStudent(int id) throws Exception {
-
-        String sql = "DELETE FROM STUDENT WHERE stdnt_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
-        }
-    }
-    public boolean updateStudent(Student s) throws Exception {
-
-        String sql = "UPDATE STUDENT SET fname = ?, lname = ?, major_id = ? WHERE stdnt_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, s.getStdntId());
-            stmt.setString(2, s.getFname());
-            stmt.setString(3, s.getLname());
-            stmt.setInt(4, s.getSchoolId());
-            stmt.setInt(5, s.getMajorId());
-            stmt.setString(6, s.getEmail());
-            stmt.setString(7, s.getHashedPass());
-            stmt.setString(8, s.getSchoolName());
-            return stmt.executeUpdate() > 0;
-        }
     }
 
 }

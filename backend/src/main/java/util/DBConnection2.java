@@ -1,6 +1,6 @@
 package util;
 
-//import java.util.Arrays;
+import java.util.Arrays;
 //import java.util.LinkedList;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -54,29 +54,10 @@ public class DBConnection2 {
         return getStatement().executeQuery(query);
     }
 
-    public void closeDBConnection() throws SQLException{
-        if(this.statement != null) this.statement.close();
-        if(this.connection != null) this.connection.close();
+    public void closeDBConnection() throws SQLException {
+        if (this.statement != null) this.statement.close();
+        if (this.connection != null) this.connection.close();
     }
-/*
-    // TODO: Not used
-    public void addNewUser(String email, String hashPass, UserType userType){
-        String sqlQuery = String.format(
-                "INSERT INTO Users (email, pass_hash, type) VALUES ('%s', '%s', '%s')",
-                email, hashPass, userType.val
-        );
-
-        try{
-            ResultSet results = queryDB(sqlQuery);
-            results.close();
-        }
-        catch(SQLException e){
-            if(DEBUG) System.out.println("Failed to add new user");
-            System.err.println("Insert Failed: Error Code - "+e.getErrorCode());
-            System.err.println(Arrays.toString(e.getStackTrace()));
-        }
-    }
- */
 
 /*
     // TODO: Remove once logic doesn't need to be recycled somewhere

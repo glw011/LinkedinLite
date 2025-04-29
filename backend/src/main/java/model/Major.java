@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 public class Major{
     private int majorId;
@@ -13,7 +13,7 @@ public class Major{
         this.field = field;
     }
 
-    public int getID(){return this.majorId;}
+    public Integer getID(){return this.majorId;}
     public String getName(){return this.name;}
     public College getCollege(){return this.college;}
     public FoS getField(){return this.field;}

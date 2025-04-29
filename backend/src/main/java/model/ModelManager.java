@@ -1,5 +1,7 @@
 package model;
 
+import util.DBConnection2;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -8,22 +10,39 @@ import java.util.Objects;
 // Database Object: Responsible for initial mapping of database and altering mapping as needed
 public class ModelManager {
     private static HashMap<Integer, School> allSchools;
-    private static Hashmap<Integer, Major>  allMajors;
+    private static HashMap<String, Integer> schoolByName;
+
+    private static HashMap<Integer, Major> allMajors;
+    private static HashMap<String, Integer> majorByName;
+
     private static HashMap<Integer, FoS> allFields;
+    private static HashMap<String, Integer> fieldByName;
+
     private static HashMap<Integer, Skill> allSkills;
+    private static HashMap<String, Integer> skillByName;
+
     private static HashMap<Integer, Interest> allInterests;
+    private static HashMap<String, Integer> interestByName;
 
     private static HashMap<Integer, UserType> userTypeById;
     private static HashMap<String, Integer> userIdByEmail;
+
     private static DBConnection2 dbConnection;
 
 
     public ModelManager() throws SQLException{
+        dbConnection = new DBConnection2();
+
         allSchools = new HashMap<>();
+        schoolByName = new HashMap<>();
         allMajors = new HashMap<>();
+        majorByName = new HashMap<>();
         allFields = new HashMap<>();
+        fieldByName = new HashMap<>();
         allSkills = new HashMap<>();
+        skillByName = new HashMap<>();
         allInterests = new HashMap<>();
+        interestByName = new HashMap<>();
 
         populateLists();
         populateRelatedAttributes();
@@ -80,6 +99,7 @@ public class ModelManager {
                     schools.getInt("zip")
             );
             allSchools.putIfAbsent(currSchool.getId(), currSchool);
+            schoolByName.putIfAbsent(currSchool.getName(), currSchool.getId());
         }
 
         schools.close();
@@ -94,6 +114,7 @@ public class ModelManager {
                     fields.getAsciiStream("fos_name").toString()
             );
             allFields.putIfAbsent(currField.getID(), currField);
+            fieldByName.putIfAbsent(currField.getName(), currField.getID());
         }
 
         fields.close();
@@ -109,7 +130,6 @@ public class ModelManager {
             String currSqlStr = String.format("SELECT * FROM Skill_FoS WHERE skill_id = %d", currSkillId);
             ResultSet field = dbConnection.queryDB(currSqlStr);
 
-            // TODO: Determine if a skill can belong to multiple fields (add while(field.next()) loop) or only 1 field
             field.next();
             int currFieldId = field.getInt("fos_id");
             FoS currField = allFields.get(currFieldId);
@@ -121,6 +141,7 @@ public class ModelManager {
                     currField
             );
             allSkills.putIfAbsent(currSkill.getID(), currSkill);
+            skillByName.putIfAbsent(currSkill.getName(), currSkill.getID());
             currField.addRelatedSkill(currSkill);
         }
 
@@ -149,20 +170,25 @@ public class ModelManager {
                     currField
             );
             allInterests.putIfAbsent(currInterest.getID(), currInterest);
+            interestByName.putIfAbsent(currInterest.getName(), currInterest.getID());
             currField.addRelatedInterest(currInterest);
         }
 
         interests.close();
     }
-    private static void populateMajorsList() throws SQLExeption{
+    // TODO: Finish method
+    private static void populateMajorsList() throws SQLException{
         String sqlStr = "SELECT * FROM Majors";
-        ResultSet majors =dbConnection.queryDB(sqlStr);
+        ResultSet majors = dbConnection.queryDB(sqlStr);
 
-        while(interests.next()){
+        while(majors.next()){
             FoS currFoS = allFields.get(majors.getInt("fos_id"));
             Major currMajor = new Major(majors.getInt("major_id"), majors.getString("major_name"), currFoS);
-            allMajors.putIfAbsent(currMajor.getID(), currMajor)
+            allMajors.putIfAbsent(currMajor.getID(), currMajor);
+            majorByName.putIfAbsent(currMajor.getName(), currMajor.getID());
         }
+
+        majors.close();
     }
 
     /* Method returning formated SQL query created from passed parameters which can then be executed by Statement object
@@ -201,15 +227,39 @@ public class ModelManager {
 
     public static UserType getUserType(int id){return userTypeById.get(id);}
     public static Integer getUserId(String email){return userIdByEmail.get(email);}
+    public static void mapNewUser(String email, Integer id, UserType type){
+        userTypeById.putIfAbsent(id, type);
+        userIdByEmail.putIfAbsent(email, id);
+    }
+
     public static School getSchool(int id){return allSchools.get(id);}
+    public static School getSchoolByName(String name){
+        if(schoolByName.containsKey(name)) return allSchools.get(schoolByName.get(name));
+        return null;
+    }
+
     public static FoS getFoS(int id){return allFields.get(id);}
+    public static FoS getFoSByName(String name){
+        if(fieldByName.containsKey(name)) return allFields.get(fieldByName.get(name));
+        return null;
+    }
+
     public static Skill getSkill(int id){return allSkills.get(id);}
+    public static Skill getSkillByName(String name){
+        if(skillByName.containsKey(name)) return allSkills.get(skillByName.get(name));
+        return null;
+    }
+
     public static Interest getInterest(int id){return allInterests.get(id);}
+    public static Interest getInterestByName(String name){
+        if(interestByName.containsKey(name)) return allInterests.get(interestByName.get(name));
+        return null;
+    }
+
     public static Student getStudent(int id){}
     public static Org getOrg(int id){}
     public static User getUser(int id){
         UserType type = getUserType(id);
-        DAOFactory userDAO = new DAOFactory();
 
         if(type == UserType.STUDENT){
 

@@ -11,4 +11,8 @@ public enum UserType {
         this.val = val;
         this.str = str;
     }
+
+    public String getStr(){return this.str;}
+
+    public int getVal(){return this.val;}
 }

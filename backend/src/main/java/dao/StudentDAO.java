@@ -8,6 +8,8 @@ import model.Student;
 import model.UserType
 import dao.PostDAO;
 import util.DBConnection;
+
+import java.sql.Statement;
 import java.util.*;
 
 public class StudentDAO extends UserDAO{
@@ -44,31 +46,6 @@ public class StudentDAO extends UserDAO{
         }
     }
 
-    /**
-     * set bio for an authenticated user.
-     * assumes token is in temp placeholder format as above".
-     */
-    public boolean setBio(String hkey, String bio) throws Exception {
-
-        String[] parts = hkey.split("_");
-
-        if (parts.length < 2) {
-            return false;
-        }
-
-        int studentId = Integer.parseInt(parts[1]);
-
-        String sql = "UPDATE STUDENT SET bio = ? WHERE stdnt_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, bio);
-            stmt.setInt(2, studentId);
-
-            return stmt.executeUpdate() > 0;
-        }
-    }
 
     /**
      * adds post
