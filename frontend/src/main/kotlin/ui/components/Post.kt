@@ -295,4 +295,6 @@ fun likePost(post: Post) {
  * @return The retrieved post or null if no post is found
  * @TODO Implement actual post retrieval from backend
  */
-fun retrievePost(): Post?
+fun retrievePost(): Post? {
+    return null
+}
