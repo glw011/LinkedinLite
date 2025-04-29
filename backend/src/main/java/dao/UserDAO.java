@@ -4,8 +4,6 @@ import java.sql.*;
 import model.User;
 import model.UserType;
 import model.ModelManager;
-import model.Picture;
-import model.Post;
 import dao.PostDAO;
 import util.DBConnection;
 import util.DBConnection2;
@@ -65,6 +63,7 @@ public class UserDAO {
                     int currId = results.getInt("user_id");
                     ModelManager.mapNewUser(email, currId, userType);
                 }
+                results.close();
             }
             return success;
         } catch(SQLException e) {
@@ -121,6 +120,7 @@ public class UserDAO {
                 ResultSet post = nxtPstmt.executeQuery();
                 post.next();
                 int postId = post.getInt("post_id");
+                post.close();
 
                 // TODO: Create PostManager obj which holds hashmap containing Post objects made in last 5-7 days as vals, post_id as key??
                 String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
@@ -138,119 +138,153 @@ public class UserDAO {
     /**
      * deletes given p[ost by ID
      */
-    public boolean delPost(int postId) throws Exception {
+    public boolean delPost(int postId) throws SQLException {
+        String tagsSql = "DELETE FROM Post_Tags WHERE post_id = ?";
+        String postSql = "DELETE FROM POST WHERE post_id = ?";
+        try(PreparedStatement postPstmt = DBConnection2.getPrepStatement(postSql);
+            PreparedStatement tagsPstmt = DBConnection2.getPrepStatement(tagsSql))
+        {
+            postPstmt.setInt(1, postId);
+            tagsPstmt.setInt(1, postId);
 
-        String sql = "DELETE FROM POST WHERE post_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, postId);
-
-            return stmt.executeUpdate() > 0;
+            return (postPstmt.executeUpdate() > 0)&&(tagsPstmt.executeUpdate() > 0);
         }
+        catch(SQLException e){
+            System.err.println(e.getErrorCode());
+            System.err.println(Arrays.toString(e.getStackTrace()));
+        }
+        return false;
+    }
+    /**
+     * Receives user_id int as arg and returns LinkedList of all postIds owned by given userId to caller
+     */
+    public LinkedList<Integer> getAllUserPosts(int userId) throws SQLException{
+        // TODO: Needs to be implemented
+        return null;
+    }
+
+    /**
+     * Receives user_id int as arg and returns LinkedList of all postIds owned by given userId having a timestamp
+     * that is within past 7 days (can be more or less??) to caller
+     */
+    public LinkedList<Integer> getAllRecentUserPosts(int userId) throws SQLException{
+        // TODO: Needs to be implemented
+        return null;
     }
 
     /**
      * adds an interest to user's profile.
-     * assume ENTITY_INTERESTS table with entity_id and intrest_id columns.
      */
-    public boolean addInterest(String hkey, int interestId) throws Exception {
+    public boolean addInterest(int userId, int interestId) throws SQLException {
+        String sql = "INSERT INTO User_Interests (user_id, interest_id) VALUES (?, ?)";
 
-        String[] parts = hkey.split("_");
-
-        if (parts.length < 2) {
-            return false;
-        }
-
-        int studentId = Integer.parseInt(parts[1]);
-
-        String sql = "INSERT INTO ENTITY_INTERESTS (entity_id, interest_id) VALUES (?, ?)";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, studentId);
-            stmt.setInt(2, interestId);
-            return stmt.executeUpdate() > 0;
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, interestId);
+            return pstmt.executeUpdate() > 0;
         }
     }
 
     /**
      * removes an interest from user's profile.
      */
-    public boolean delInterest(String hkey, int interestId) throws Exception {
+    public boolean delInterest(int userId, int interestId) throws SQLException {
+        String sql = "DELETE FROM User_Interests WHERE user_id = ? AND interest_id = ?";
 
-        String[] parts = hkey.split("_");
-
-        if (parts.length < 2) {
-            return false;
-        }
-
-        int studentId = Integer.parseInt(parts[1]);
-
-        String sql = "DELETE FROM ENTITY_INTERESTS WHERE entity_id = ? AND interest_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, studentId);
-            stmt.setInt(2, interestId);
-            return stmt.executeUpdate() > 0;
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, interestId);
+            return pstmt.executeUpdate() > 0;
         }
     }
 
     /**
-     * follows another entity
-     * inserts into a FOLLOW table with columns entity_id and following_id.
+     * Receives user_id int as arg and returns LinkedList of all interestIds associated with given userId to caller
      */
-    public boolean followEnt(String hkey, int entityToFollowId) throws Exception {
+    public LinkedList<Integer> getAllUserInterests(int userId) throws SQLException{
+        String sql = "SELECT interest_id FROM User_Interests WHERE user_id = ?";
+        LinkedList<Integer> intrstLst;
 
-        String[] parts = hkey.split("_");
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, userId);
+            ResultSet intrsts = pstmt.executeQuery();
+            intrstLst = new LinkedList<>();
 
-        if (parts.length < 2) {
-            return false;
+            while(intrsts.next()){
+                intrstLst.add(intrsts.getInt("interest_id"));
+            }
+
+            intrsts.close();
         }
+        return intrstLst;
+    }
 
-        int studentId = Integer.parseInt(parts[1]);
+    /**
+     * sets user identified by myUserId to follow user identified by userIdToFollow
+     * inserts new row into Follows table with columns user_id=myUserId and following_id=userIdToFollow
+     */
+    public boolean followUser(int myUserId, int userIdToFollow) throws SQLException {
+        String sql = "INSERT INTO Follows (user_id, following_id) VALUES (?, ?)";
 
-        String sql = "INSERT INTO FOLLOW (entity_id, following_id) VALUES (?, ?)";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, entityToFollowId);
-            stmt.setInt(2, studentId);
-            return stmt.executeUpdate() > 0;
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+            pstmt.setInt(1, myUserId);
+            pstmt.setInt(2, userIdToFollow);
+            return pstmt.executeUpdate() > 0;
         }
     }
 
     /**
-     * unfollow entity.
+     * sets user identified by myUserId to unfollow user identified by userIdToUnfollow
+     * Deletes row in Follows table where columns user_id=myUserId and following_id=userIdToUnfollow
      */
-    public boolean unfollowEnt(String hkey, int entityToUnfollowId) throws Exception {
+    public boolean unfollowEnt(int myUserId, int userIdToUnfollow) throws SQLException {
+        String sql = "DELETE FROM Follows WHERE entity_id = ? AND following_id = ?";
 
-        String[] parts = hkey.split("_");
-
-        if (parts.length < 2) {
-            return false;
-        }
-
-        int studentId = Integer.parseInt(parts[1]);
-
-        String sql = "DELETE FROM FOLLOW WHERE entity_id = ? AND following_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, entityToUnfollowId);
-            stmt.setInt(2, studentId);
-            return stmt.executeUpdate() > 0;
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+            pstmt.setInt(1, myUserId);
+            pstmt.setInt(2, userIdToUnfollow);
+            return pstmt.executeUpdate() > 0;
         }
     }
 
-    public User getUserById(int id) throws SQLException {
-        return ModelManager.getUser(id);
+    /**
+     * Receives user_id int as arg and returns to caller a LinkedList of all ids being followed by passed user_id
+     */
+    public LinkedList<Integer> getAllFollowedUsers(int userId) throws SQLException{
+        String sql = "SELECT following_id FROM Follows WHERE user_id = ?";
+        LinkedList<Integer> followsLst;
+
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+            pstmt.setInt(1, userId);
+            followsLst = new LinkedList<>();
+
+            ResultSet follows = pstmt.executeQuery();
+
+            while(follows.next()){
+                followsLst.add(follows.getInt("following_id"));
+            }
+        }
+        return followsLst;
+    }
+
+    /**
+     * Receives user_id int as arg and returns to caller a LinkedList of all ids that are following passed user_id
+     */
+    public LinkedList<Integer> getAllUsersFollowing(int userId) throws SQLException{
+        String sql = "SELECT user_id FROM Follows WHERE following_id = ?";
+        LinkedList<Integer> followrLst;
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, userId);
+            followrLst = new LinkedList<>();
+
+            ResultSet followrs = pstmt.executeQuery();
+
+            while(followrs.next()){
+                followrLst.add(followrs.getInt("user_id"));
+            }
+        }
+        return followrLst;
     }
 
     public boolean setSchool(int userId, int schoolId) throws SQLException{
@@ -262,6 +296,16 @@ public class UserDAO {
 
             return pstmt.executeUpdate() > 0;
         }
+    }
+
+    public LinkedList<Integer> getAllUserImages(int userId){
+        // TODO: Needs to be implemented
+        return null;
+    }
+
+    public boolean setProfileImg(int userId, int imgId){
+        // TODO: Needs to be implemented
+        return false;
     }
 
 }

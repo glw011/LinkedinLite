@@ -189,8 +189,8 @@ public class ModelManager {
         majors.close();
     }
 
-    /* Method returning formated SQL query created from passed parameters which can then be executed by Statement object
-     *
+    /**
+     * Method returning formated SQL query created from passed parameters which can then be executed by Statement object
      * ARGS:
      *   - columns := Array of column names, e.g. [1]{"student_id AS id", "fname", "lname"} or [2]{"*"} for all columns
      *   - table := table to select from (can be union of n tables so long as correctly constructed)
@@ -199,7 +199,6 @@ public class ModelManager {
      *       ** WILL "AND" 2+ CONDITIONS TOGETHER
      *       e.g. [1]{"student_id = 5", "fname = S*"} or if no conditions needed [2]{}
      *       ** If "OR" is needed, must format as {"student_id = 5 OR student_id = 6", "major_id <= 3"}
-     *
      * RETURNS:
      *   String --> formatted to query database using passed args
      *   The example args used above would return...

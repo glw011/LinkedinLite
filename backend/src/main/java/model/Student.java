@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class Student extends User {
     private String fname;
     private String lname;
-    private College college;
+    //private College college;
     private Major major;
     private HashMap<Integer, Skill> skills;
     private HashMap<Integer, Org> orgs;
@@ -28,11 +28,11 @@ public class Student extends User {
 
     public void changeSchool(School newSchool){
         this.setSchool(newSchool);
-        this.college = null;
+        //this.college = null;
         this.major = null;
     }
-    public College getCollege(){return this.college;}
-    public void setCollege(College college){this.college = college;}
+    //public College getCollege(){return this.college;}
+    //public void setCollege(College college){this.college = college;}
     public Major getMajor(){return this.major;}
     public void setMajor(Major major){this.major = major;}
 

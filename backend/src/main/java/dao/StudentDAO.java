@@ -46,49 +46,6 @@ public class StudentDAO extends UserDAO{
         }
     }
 
-
-    /**
-     * adds post
-     * assume token contains the stdmtID and POST table exists
-     * columns ==  post_owner, post_txt, and timestamp (with NOW() used for the current timestamp).
-     */
-    public boolean addPost(String hkey, String postText) throws Exception {
-
-        String[] parts = hkey.split("_");
-
-        if (parts.length < 2) {
-            return false;
-        }
-
-        int studentId = Integer.parseInt(parts[1]);
-
-        String sql = "INSERT INTO POST (post_owner, post_txt, timestamp) VALUES (?, ?, NOW())";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, studentId);
-            stmt.setString(2, postText);
-            return stmt.executeUpdate() > 0;
-        }
-    }
-
-    /**
-     * deletes given p[ost by ID
-     */
-    public boolean delPost(int postId) throws Exception {
-
-        String sql = "DELETE FROM POST WHERE post_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, postId);
-
-            return stmt.executeUpdate() > 0;
-        }
-    }
-
     /**
      * adds an interest to user's profile.
      * assume ENTITY_INTERESTS table with entity_id and intrest_id columns.

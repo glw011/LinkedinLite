@@ -10,7 +10,7 @@ public class School{
     private String state;
     public int zip;
 
-    private HashMap<Integer, College> colleges;
+    //private HashMap<Integer, College> colleges;
     private HashMap<Integer, Org> orgs;
     private HashMap<Integer, Student> students;
 
@@ -25,7 +25,7 @@ public class School{
 
         this.students = new HashMap<>();
         this.orgs = new HashMap<>();
-        this.colleges = new HashMap<>();
+        //this.colleges = new HashMap<>();
     }
 
     public int getId(){return this.schoolId;}
@@ -36,9 +36,9 @@ public class School{
     public int getZip(){return this.zip;}
     public String getAddress(){return String.format("%s, %s %d", this.city, this.state, this.zip);}
 
-    public void addCollege(College college){this.colleges.putIfAbsent(college.getID(), college);}
-    public College getCollege(int id){return this.colleges.get(id);}
-    public HashMap<Integer, College> getCollegesList(){return this.colleges;}
+    //public void addCollege(College college){this.colleges.putIfAbsent(college.getID(), college);}
+    //public College getCollege(int id){return this.colleges.get(id);}
+    //public HashMap<Integer, College> getCollegesList(){return this.colleges;}
 
     public void addStudent(Student student){this.students.putIfAbsent(student.getID(), student);}
     public Student getStudent(int id){return this.students.get(id);}

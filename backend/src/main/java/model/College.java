@@ -2,7 +2,11 @@ package model;
 
 import java.util.HashMap;
 
+/**
+ * No longer a planned feature
+ */
 public class College{
+    /*
     private int collegeId;
     private String name;
     private School school;
@@ -21,4 +25,5 @@ public class College{
     public void addMajor(Major major){this.majors.putIfAbsent(major.getID(), major);}
     public Major getMajor(int id){return this.majors.get(id);}
     public HashMap<Integer, Major> getMajorsList(){return this.majors;}
+    */
 }
