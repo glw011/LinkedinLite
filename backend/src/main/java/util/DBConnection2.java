@@ -2,8 +2,6 @@ package util;
 
 import java.sql.*;
 import java.util.Arrays;
-//import java.util.LinkedList;
-
 
 public class DBConnection2 {
     private static final boolean DEBUG = true;

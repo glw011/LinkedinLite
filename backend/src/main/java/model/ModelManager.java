@@ -43,7 +43,6 @@ public class ModelManager {
         interestByName = new HashMap<>();
 
         populateLists();
-        populateRelatedAttributes();
     }
 
     private void populateLists() throws SQLException{
@@ -55,17 +54,6 @@ public class ModelManager {
         populateMajorsList();
     }
 
-    private void populateRelatedAttributes(){
-        // Each interest has FoS, Each skill has FoS, Each major has FoS
-        // TODO: populate hasmap containing each interest as a key, with LinkedList of userIds having that interest
-
-
-        // TODO: populate hashmap containing each FoS as a key, each returning LinkedList of related interests as its value
-        // TODO: populate hashmap containing each FoS as a key, each returning LinkedList of related skills as its value
-        // TODO: populate hashmap containing each Major as a key, returning related FoS as its value
-        // TODO: populate hashmap containing each interest as a key, each returning LinkedList of all interests related to interest key as its value
-        return;
-    }
 
     private static void populateUsersLists() throws SQLException{
         String sqlStr = "SELECT * FROM Users";
@@ -174,7 +162,6 @@ public class ModelManager {
 
         interests.close();
     }
-    // TODO: Finish method
     private static void populateMajorsList() throws SQLException{
         String sqlStr = "SELECT * FROM Majors";
         ResultSet majors = dbConnection.queryDB(sqlStr);
@@ -208,14 +195,14 @@ public class ModelManager {
     public String getSqlQuery(String[] columns, String table, String[] conditions){
         String columnStr = "";
         for(int i=0; i<columns.length; i++){
-            columnStr += columns[i];
+            columnStr = String.join(columnStr, columns[i]);
             columnStr += (i == (columns.length-1)) ? "" : ", ";
         }
 
 
         String conditionStr = (conditions == null) ? "" : " WHERE ";
         for(int i = 0; i < Objects.requireNonNull(conditions).length; i++){
-            conditionStr += conditions[i];
+            conditionStr = String.join(conditionStr, conditions[i]);
             conditionStr += (i == (conditions.length-1)) ? "" : " AND ";
         }
 
@@ -230,31 +217,44 @@ public class ModelManager {
     }
 
     public static School getSchool(int id){return allSchools.get(id);}
+    public static int getSchoolIdByName(String name){return schoolByName.get(name);}
     public static School getSchoolByName(String name){
         if(schoolByName.containsKey(name)) return allSchools.get(schoolByName.get(name));
         return null;
     }
 
     public static FoS getFoS(int id){return allFields.get(id);}
+    public static int getFoSIdByName(String name){return fieldByName.get(name);}
     public static FoS getFoSByName(String name){
         if(fieldByName.containsKey(name)) return allFields.get(fieldByName.get(name));
         return null;
     }
 
     public static Skill getSkill(int id){return allSkills.get(id);}
+    public static int getSkillIdByName(String name){return skillByName.get(name);}
     public static Skill getSkillByName(String name){
         if(skillByName.containsKey(name)) return allSkills.get(skillByName.get(name));
         return null;
     }
 
     public static Interest getInterest(int id){return allInterests.get(id);}
+    public static int getInterestIdByName(String name){return interestByName.get(name);}
     public static Interest getInterestByName(String name){
         if(interestByName.containsKey(name)) return allInterests.get(interestByName.get(name));
         return null;
     }
 
-    public static Student getStudent(int id){}
-    public static Org getOrg(int id){}
+    public static Major getMajor(int id){return allMajors.get(id);}
+    public static int getMajorIdByName(String name){return majorByName.get(name);}
+    public static Major getMajorByName(String name){
+        if(majorByName.containsKey(name)) return allMajors.get(majorByName.get(name));
+        return null;
+    }
+
+    // TODO: Implement the 3 following functions to get objects from UserModelFactory
+    //public static Student getStudent(int id){}
+    //public static Org getOrg(int id){}
+    /*
     public static User getUser(int id){
         UserType type = getUserType(id);
 
@@ -267,5 +267,6 @@ public class ModelManager {
 
         return null;
 
-    } // TODO: implement
+    }
+     */
 }

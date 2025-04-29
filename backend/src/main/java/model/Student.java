@@ -1,14 +1,14 @@
 package model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Student extends User {
     private String fname;
     private String lname;
-    //private College college;
     private Major major;
-    private HashMap<Integer, Skill> skills;
-    private HashMap<Integer, Org> orgs;
+    private LinkedList<Integer> skills;
+    private LinkedList<Integer> orgs;
 
     public Student(int id, String email, String fname, String lname, School school){
         this.id = id;
@@ -17,13 +17,13 @@ public class Student extends User {
         this.lname = lname;
         this.school = school;
         this.type = "student";
-        this.skills = new HashMap<>();
-        this.orgs = new HashMap<>();
+        this.skills = new LinkedList<>();
+        this.orgs = new LinkedList<>();
 
-        this.ownedImgs = new HashMap<>();
-        this.interests = new HashMap<>();
-        this.posts = new HashMap<>();
-        this.followingList = new HashMap<>();
+        this.ownedImgs = new LinkedList<>();
+        this.interests = new LinkedList<>();
+        this.posts = new LinkedList<>();
+        this.followingList = new LinkedList<>();
     }
 
     public void changeSchool(School newSchool){
@@ -34,26 +34,26 @@ public class Student extends User {
     //public College getCollege(){return this.college;}
     //public void setCollege(College college){this.college = college;}
     public Major getMajor(){return this.major;}
-    public void setMajor(Major major){this.major = major;}
+    public void setMajor(int majorId){this.major = ModelManager.getMajor(majorId);}
 
-    public void joinOrg(Org org){
+    public void setOrgList(LinkedList<Integer> orgList){this.orgs = orgList;}
+    public void joinOrg(int orgId){
         // TODO: If statement to check if org has added them to members list
-        this.orgs.putIfAbsent(org.getID(), org);
+        if(!this.orgs.contains(orgId))this.orgs.add(orgId);
     }
-    public void leaveOrg(Org org){
+    public void leaveOrg(int orgId){
         // TODO: Add call to Org obj to remove student from members list
-        this.orgs.remove(org.getID());
+        this.orgs.remove((Integer)orgId);
     }
-    public Org getOrg(int id){return this.orgs.get(id);}
-    public HashMap<Integer, Org> getOrgsList(){return this.orgs;}
+    public LinkedList<Integer> getOrgsList(){return this.orgs;}
 
     public String getFName(){return this.fname;}
     public String getLName(){return this.lname;}
     public String getName(){return String.format("%s %s", this.fname, this.lname);}
 
-    public void addSkill(Skill skill){this.skills.putIfAbsent(skill.getID(), skill);}
-    public void removeSkill(Skill skill){this.skills.remove(skill.getID());}
-    public Skill getSkill(int id){return this.skills.get(id);}
-    public HashMap<Integer, Skill> getSkillsList(){return this.skills;}
-    public boolean checkForSkill(Skill skill){return this.skills.containsKey(skill.getID());}
+    public void setSkillList(LinkedList<Integer> skillList){this.skills = skillList;}
+    public void addSkill(int skillId){if(!this.skills.contains(skillId))this.skills.add(skillId);}
+    public void removeSkill(int skillId){this.skills.remove((Integer)skillId);}
+    public LinkedList<Integer> getSkillsList(){return this.skills;}
+    public boolean checkForSkill(int skillId){return this.skills.contains(skillId);}
 }

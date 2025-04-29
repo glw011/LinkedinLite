@@ -1,7 +1,6 @@
 package dao;
 
 import java.sql.*;
-import model.User;
 import model.UserType;
 import model.ModelManager;
 import dao.PostDAO;
@@ -46,9 +45,7 @@ public class UserDAO {
         String sql = "INSERT INTO User_Verify (email, pass_hash, type) VALUES ( ?, ?, ?)";
         Connection conn = DBConnection.getConnection();
 
-        try{
-            PreparedStatement stmt = conn.prepareStatement(sql);
-
+        try(PreparedStatement stmt = conn.prepareStatement(sql)){
             stmt.setString(1, email);
             stmt.setString(2, hashedPass);
             stmt.setString(3, userType.getStr());
@@ -75,18 +72,15 @@ public class UserDAO {
 
     /**
      * set bio for an authenticated user.
-     * assumes token is in temp placeholder format as above".
      */
     public boolean setBio(int userId, String bio) throws SQLException {
         String sql = "UPDATE Users SET bio = ? WHERE user_id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+            pstmt.setString(1, bio);
+            pstmt.setInt(2, userId);
 
-            stmt.setString(1, bio);
-            stmt.setInt(2, userId);
-
-            return stmt.executeUpdate() > 0;
+            return pstmt.executeUpdate() > 0;
         }
     }
 
@@ -167,7 +161,7 @@ public class UserDAO {
      * Receives user_id int as arg and returns LinkedList of all postIds owned by given userId having a timestamp
      * that is within past 7 days (can be more or less??) to caller
      */
-    public LinkedList<Integer> getAllRecentUserPosts(int userId) throws SQLException{
+    public LinkedList<Integer> getAllRecentPosts(int userId) throws SQLException{
         // TODO: Needs to be implemented
         return null;
     }
@@ -201,7 +195,7 @@ public class UserDAO {
     /**
      * Receives user_id int as arg and returns LinkedList of all interestIds associated with given userId to caller
      */
-    public LinkedList<Integer> getAllUserInterests(int userId) throws SQLException{
+    public LinkedList<Integer> getAllInterests(int userId) throws SQLException{
         String sql = "SELECT interest_id FROM User_Interests WHERE user_id = ?";
         LinkedList<Integer> intrstLst;
 
@@ -237,7 +231,7 @@ public class UserDAO {
      * sets user identified by myUserId to unfollow user identified by userIdToUnfollow
      * Deletes row in Follows table where columns user_id=myUserId and following_id=userIdToUnfollow
      */
-    public boolean unfollowEnt(int myUserId, int userIdToUnfollow) throws SQLException {
+    public boolean unfollowUser(int myUserId, int userIdToUnfollow) throws SQLException {
         String sql = "DELETE FROM Follows WHERE entity_id = ? AND following_id = ?";
 
         try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
@@ -298,7 +292,7 @@ public class UserDAO {
         }
     }
 
-    public LinkedList<Integer> getAllUserImages(int userId){
+    public LinkedList<Integer> getAllOwnedImages(int userId){
         // TODO: Needs to be implemented
         return null;
     }
