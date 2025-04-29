@@ -31,13 +31,29 @@ import org.example.linkedinliteui.generated.resources.default_post
 import org.jetbrains.compose.resources.painterResource
 import ui.theme.LIGHT_PURPLE
 
-data class Comment (
+/**
+ * Represents a comment on a post in the application.
+ *
+ * @property userName The name of the user who made the comment
+ * @property text The content of the comment
+ * @property pfp The profile picture of the commenter as an ImageBitmap, can be null
+ */
+data class Comment(
     val userName: String = "",
     val text: String = "",
     val pfp: ImageBitmap?
 )
 
-data class Post (
+/**
+ * Represents a post in the application.
+ *
+ * @property title The title of the post
+ * @property postImage The image attached to the post, can be null
+ * @property userName The name of the user who created the post
+ * @property description The main content/description of the post
+ * @property comments List of comments associated with the post
+ */
+data class Post(
     val title: String = "",
     val postImage: ImageBitmap?,
     val userName: String = "",
@@ -45,6 +61,11 @@ data class Post (
     val comments: List<Comment>
 )
 
+/**
+ * Renders a post with its associated content and interactive elements.
+ *
+ * @param post The post to be displayed
+ */
 @Composable
 fun drawPost(post: Post) {
     var liked = remember { mutableStateOf(false) }
@@ -222,6 +243,11 @@ fun drawPost(post: Post) {
     }
 }
 
+/**
+ * Renders a comment with the user's profile picture and content.
+ *
+ * @param comment The comment to be displayed
+ */
 @Composable
 fun drawComment(comment: Comment) {
     Column(modifier = Modifier) {
@@ -243,20 +269,30 @@ fun drawComment(comment: Comment) {
     }
 }
 
-/** @TODO
- * post comment functionality
+/**
+ * Posts a comment on the specified post.
+ *
+ * @param post The post to comment on
+ * @TODO Implement actual comment posting functionality
  */
 fun postComment(post: Post) {
     println("Post Comment Test")
 }
 
-/** @TODO
- * like post functionality
+/**
+ * Toggles the like status for the specified post.
+ *
+ * @param post The post to like/unlike
+ * @TODO Implement actual like functionality with backend integration
  */
 fun likePost(post: Post) {
     println("Like Post ${post.title}")
 }
 
-fun retrievePost(): Post? {
-    return null
-}
+/**
+ * Retrieves a post from the data source.
+ *
+ * @return The retrieved post or null if no post is found
+ * @TODO Implement actual post retrieval from backend
+ */
+fun retrievePost(): Post?
