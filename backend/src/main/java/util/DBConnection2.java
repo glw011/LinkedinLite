@@ -1,12 +1,9 @@
 package util;
 
+import java.sql.*;
 import java.util.Arrays;
 //import java.util.LinkedList;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.Statement;
+
 
 public class DBConnection2 {
     private static final boolean DEBUG = true;
@@ -19,19 +16,14 @@ public class DBConnection2 {
 
     private static final String DB_URL = String.format("jdbc:mysql://%s:%s/%s?useSSL=false;AUTO_SERVER=TRUE", DB_HOST, DB_PORT, DB_NAME);
 
-    private Connection connection;
-    private Statement statement;
-
-    public DBConnection2(){
-        this.connection = null;
-        this.statement = null;
-    }
+    private static Connection connection = null;
+    private static Statement statement = null;
 
 
-    public Connection getConnection() throws SQLException{
-        if(this.connection == null){
+    public static Connection getConnection() throws SQLException{
+        if(connection == null){
             try{
-                this.connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+                connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
                 if(DEBUG) System.out.println("Connection to DB Successful");
             }
             //TODO: Add loop to retry connection 2 or 3 times?
@@ -41,13 +33,18 @@ public class DBConnection2 {
                 System.err.println(Arrays.toString(e.getStackTrace()));
             }
         }
-        return this.connection;
+        return connection;
     }
 
-    public Statement getStatement() throws SQLException{      //TODO: Try/Catch reattempt in catch
-        if(this.connection == null){getConnection();}
-        if(this.statement == null){this.statement = this.connection.createStatement();}
-        return this.statement;
+    public static Statement getStatement() throws SQLException{      //TODO: Try/Catch reattempt in catch
+        if(connection == null){getConnection();}
+        if(statement == null){statement = connection.createStatement();}
+        return statement;
+    }
+
+    public static PreparedStatement getPrepStatement(String sqlStr) throws SQLException{
+        if(connection == null){getConnection();}
+        return connection.prepareStatement(sqlStr);
     }
 
     public ResultSet queryDB(String query) throws SQLException{
@@ -55,8 +52,8 @@ public class DBConnection2 {
     }
 
     public void closeDBConnection() throws SQLException {
-        if (this.statement != null) this.statement.close();
-        if (this.connection != null) this.connection.close();
+        if (statement != null) statement.close();
+        if (connection != null) connection.close();
     }
 
 /*
@@ -102,7 +99,7 @@ public class DBConnection2 {
         return studentList;
     }
 
-}
 */
+}
 
 

@@ -1,17 +1,18 @@
 package model;
 
 import java.util.HashMap;
+import java.sql.Timestamp;
 
 public class Post{
     private int postId;
     private User owner;
     private String content;
     private Picture postImg;
-    private Date postDate;
+    private Timestamp postDate;
     private HashMap<Integer, Interest> tags;
     private HashMap<Integer, Comment> comments;
 
-    public Post(int id, User owner, String content, Picture img, Date date){
+    public Post(int id, User owner, String content, Picture img, Timestamp date){
         this.postId = id;
         this.owner = owner;
         this.content = content;

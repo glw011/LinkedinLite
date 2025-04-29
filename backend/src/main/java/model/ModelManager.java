@@ -31,8 +31,6 @@ public class ModelManager {
 
 
     public ModelManager() throws SQLException{
-        dbConnection = new DBConnection2();
-
         allSchools = new HashMap<>();
         schoolByName = new HashMap<>();
         allMajors = new HashMap<>();

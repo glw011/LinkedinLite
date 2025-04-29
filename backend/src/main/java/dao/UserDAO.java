@@ -1,15 +1,14 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import model.User;
 import model.UserType;
 import model.ModelManager;
+import model.Picture;
+import model.Post;
 import dao.PostDAO;
 import util.DBConnection;
+import util.DBConnection2;
 import java.util.*;
 
 public class UserDAO {
@@ -20,7 +19,9 @@ public class UserDAO {
      * temp token using id and timestamp
      */
     public String authUser(String email, String hashedPass) throws SQLException {
-
+        // TODO: Should we just simplify this to return user_id to frontend after authorize and they keep track of and pass
+        //  it back to us anytime user wants to take any type of user action?? Lets us pretend to ensure no one is changing someone
+        //  else's data (assuming they can manage it throughout each user session) and makes it easy to update any necessary rows?
         String sql = "SELECT user_id FROM User_Verify WHERE email = ? AND pass_hash = ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -77,23 +78,14 @@ public class UserDAO {
      * set bio for an authenticated user.
      * assumes token is in temp placeholder format as above".
      */
-    public boolean setBio(String hkey, String bio) throws SQLException {
-
-        String[] parts = hkey.split("_");
-
-        if (parts.length < 2) {
-            return false;
-        }
-
-        int studentId = Integer.parseInt(parts[1]);
-
-        String sql = "UPDATE STUDENT SET bio = ? WHERE stdnt_id = ?";
+    public boolean setBio(int userId, String bio) throws SQLException {
+        String sql = "UPDATE Users SET bio = ? WHERE user_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, bio);
-            stmt.setInt(2, studentId);
+            stmt.setInt(2, userId);
 
             return stmt.executeUpdate() > 0;
         }
@@ -104,24 +96,42 @@ public class UserDAO {
      * assume token contains the stdmtID and POST table exists
      * columns ==  post_owner, post_txt, and timestamp (with NOW() used for the current timestamp).
      */
-    public boolean addPost(String hkey, String postText) throws Exception {
+    public boolean addPost(int userId, String postText, LinkedList<Integer> tagList) throws SQLException {
+        // TODO: Handle how image uploads are handled when uploaded with a post
+        String sqlQry = "SELECT NOW()";
+        Statement stmt = DBConnection2.getStatement();
+        ResultSet currTime = stmt.executeQuery(sqlQry);
+        currTime.next();
+        Timestamp timestamp = currTime.getTimestamp("NOW()");
 
-        String[] parts = hkey.split("_");
+        String sql = "INSERT INTO Posts (owner_id, content, post_date) VALUES (?, ?, ?)";
 
-        if (parts.length < 2) {
-            return false;
-        }
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, postText);
+            pstmt.setTimestamp(3, timestamp);
+            boolean postSuccess = pstmt.executeUpdate() > 0;
 
-        int studentId = Integer.parseInt(parts[1]);
+            if(postSuccess){
+                sqlQry = "SELECT * FROM Posts WHERE owner_id = ? AND post_date = ?";
+                PreparedStatement nxtPstmt = DBConnection2.getPrepStatement(sqlQry);
+                nxtPstmt.setInt(1, userId);
+                nxtPstmt.setTimestamp(2, timestamp);
 
-        String sql = "INSERT INTO POST (post_owner, post_txt, timestamp) VALUES (?, ?, NOW())";
+                ResultSet post = nxtPstmt.executeQuery();
+                post.next();
+                int postId = post.getInt("post_id");
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, studentId);
-            stmt.setString(2, postText);
-            return stmt.executeUpdate() > 0;
+                // TODO: Create PostManager obj which holds hashmap containing Post objects made in last 5-7 days as vals, post_id as key??
+                String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
+                PreparedStatement tagPstmt = DBConnection2.getPrepStatement(tagSql);
+                for (Integer tag : tagList) {
+                    tagPstmt.setInt(1, postId);
+                    tagPstmt.setInt(2, tag);
+                    tagPstmt.executeUpdate();
+                }
+            }
+            return postSuccess;
         }
     }
 
@@ -243,8 +253,15 @@ public class UserDAO {
         return ModelManager.getUser(id);
     }
 
-    public void setSchool(int userId, int schoolId) throws SQLException{
+    public boolean setSchool(int userId, int schoolId) throws SQLException{
+        String sql = "UPDATE Users SET school_id = ? WHERE user_id = ?";
 
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql);){
+            pstmt.setInt(1, schoolId);
+            pstmt.setInt(2, userId);
+
+            return pstmt.executeUpdate() > 0;
+        }
     }
 
 }
