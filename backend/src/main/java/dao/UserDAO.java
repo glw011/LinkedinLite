@@ -3,9 +3,9 @@ package dao;
 import java.sql.*;
 import model.UserType;
 import model.ModelManager;
-import dao.PostDAO;
 import util.DBConnection;
 import util.DBConnection2;
+import dao.PostDAO;
 import java.util.*;
 
 public class UserDAO {
@@ -43,25 +43,15 @@ public class UserDAO {
     public static boolean addUser(String email, String hashedPass, UserType userType) throws SQLException {
 
         String sql = "INSERT INTO User_Verify (email, pass_hash, type) VALUES (?, ?, ?)";
-        Connection conn = DBConnection.getConnection();
 
-        try(PreparedStatement stmt = conn.prepareStatement(sql)){
+        try(PreparedStatement stmt = DBConnection2.getPrepStatement(sql, new String[] {"user_id"})){
             stmt.setString(1, email);
             stmt.setString(2, hashedPass);
             stmt.setString(3, userType.getStr());
 
-            boolean success = (stmt.executeUpdate() > 0);
-            if(success){
-                String idQry = String.format("SELECT user_id FROM User_Verify WHERE email = %s", email);
-                Statement statement = conn.createStatement();
-                ResultSet results = statement.executeQuery(idQry);
-
-                while(results.next()){
-                    int currId = results.getInt("user_id");
-                    ModelManager.mapNewUser(email, currId, userType);
-                }
-                results.close();
-            }
+            int newId = stmt.executeUpdate();
+            boolean success = newId > 0;
+            if(success) ModelManager.mapNewUser(email, newId, userType);
             return success;
         } catch(SQLException e) {
             System.err.println(e.getErrorCode());
@@ -106,36 +96,19 @@ public class UserDAO {
      */
     public boolean addPost(int userId, String postText, LinkedList<Integer> tagList) throws SQLException {
         // TODO: Handle how image uploads are handled when uploaded with a post
-        String sqlQry = "SELECT NOW()";
-        Statement stmt = DBConnection2.getStatement();
-        ResultSet currTime = stmt.executeQuery(sqlQry);
-        currTime.next();
-        Timestamp timestamp = currTime.getTimestamp("NOW()");
+        String sql = "INSERT INTO Posts (owner_id, content) VALUES (?, ?)";
 
-        String sql = "INSERT INTO Posts (owner_id, content, post_date) VALUES (?, ?, ?)";
-
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql, new String[] {"post_id"})) {
             pstmt.setInt(1, userId);
             pstmt.setString(2, postText);
-            pstmt.setTimestamp(3, timestamp);
-            boolean postSuccess = pstmt.executeUpdate() > 0;
-
+            int newPostId = pstmt.executeUpdate();
+            boolean postSuccess = newPostId > 0;
             if(postSuccess){
-                sqlQry = "SELECT * FROM Posts WHERE owner_id = ? AND post_date = ?";
-                PreparedStatement nxtPstmt = DBConnection2.getPrepStatement(sqlQry);
-                nxtPstmt.setInt(1, userId);
-                nxtPstmt.setTimestamp(2, timestamp);
-
-                ResultSet post = nxtPstmt.executeQuery();
-                post.next();
-                int postId = post.getInt("post_id");
-                post.close();
-
                 // TODO: Create PostManager obj which holds hashmap containing Post objects made in last 5-7 days as vals, post_id as key??
                 String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
                 PreparedStatement tagPstmt = DBConnection2.getPrepStatement(tagSql);
                 for (Integer tag : tagList) {
-                    tagPstmt.setInt(1, postId);
+                    tagPstmt.setInt(1, newPostId);
                     tagPstmt.setInt(2, tag);
                     tagPstmt.executeUpdate();
                 }
@@ -168,8 +141,7 @@ public class UserDAO {
      * Receives user_id int as arg and returns LinkedList of all postIds owned by given userId to caller
      */
     public LinkedList<Integer> getAllUserPosts(int userId) throws SQLException{
-        // TODO: Needs to be implemented
-        return null;
+        return PostDAO.getAllUserPosts(userId);
     }
 
     /**
@@ -333,7 +305,7 @@ public class UserDAO {
     }
 
     public Integer getProfileImg(int userId) throws SQLException{
-        String sql = "SELECT school_id FROM Users WHERE user_id = ?";
+        String sql = "SELECT pfp_id FROM Users WHERE user_id = ?";
         int pfpId;
 
         try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
@@ -346,7 +318,6 @@ public class UserDAO {
         }
         return pfpId;
     }
-
 }
 
 

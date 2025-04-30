@@ -2,14 +2,11 @@ package dao;
 
 import model.Post;
 import util.DBConnection;
-
-import java.sql.Connection;
+import util.DBConnection2;
+import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 public class PostDAO {
 
@@ -19,44 +16,29 @@ public class PostDAO {
      *
      * @param post A Post object containing the post details.
      * @return true if the post was successfully inserted; false otherwise.
-     * @throws Exception if a database error occurs.
+     * @throws SQLException if a database error occurs.
      */
-    public boolean insertPost(Post post) throws Exception {
+    public static boolean insertPost(int userId, String content, LinkedList<Integer> tags) throws SQLException {
 
-        String sql = "INSERT INTO POST (post_text, user_key, image_file_name, timestamp) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Posts (owner_id, content) VALUES (?, ?)";
 
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = DBConnection2.getPrepStatement(sql, new String[] {"post_id"})) {
+            stmt.setInt(1, userId);
+            stmt.setString(2, content);
 
-            // bvind values from the post object into the SQL params.
-            stmt.setString(1, post.getPostText());
-            stmt.setString(2, post.getUserKey());
-            stmt.setString(3, post.getImageFileName());
+            int postId = stmt.executeUpdate();
 
-            // set the timestamp; if null -> current time.
-            if (post.getTimestamp() != null) {
-                stmt.setTimestamp(4, Timestamp.valueOf(post.getTimestamp()));
-            } else {
-                stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            }
-
-            //  INSERT statement.
-            int affectedRows = stmt.executeUpdate();
-
-            // ff the insertion affected at least one row -> success.
-            if (affectedRows > 0) {
-                // get auto-generated key if needed
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        // set the generated postId in the Post model.
-                        post.setPostId(generatedKeys.getInt(1));
+            if ((postId > 0)&&(!tags.isEmpty())) {
+                String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
+                try(PreparedStatement pstmt = DBConnection2.getPrepStatement(tagSql)){
+                    for(int tag : tags){
+                        pstmt.setInt(1, postId);
+                        pstmt.setInt(2, tag);
                     }
                 }
-                return true;
-            } else {
-                return false;
             }
+            return postId > 0;
         }
     }
 
@@ -67,26 +49,28 @@ public class PostDAO {
      * @return a List of Post objects.
      * @throws Exception if a database error occurs.
      */
-    public List<Post> getAllPosts() throws Exception {
-        List<Post> posts = new ArrayList<>();
-        String sql = "SELECT * FROM POST";
+    public static LinkedList<Post> getAllPosts() throws SQLException {
+        LinkedList<Post> posts = new LinkedList<>();
+        String sql = "SELECT * FROM Posts";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        String tagSql = "";
+        String comSql = "";
 
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Post post = new Post();
-                post.setPostId(rs.getInt("post_id"));
-                post.setPostText(rs.getString("post_text"));
-                post.setUserKey(rs.getString("user_key"));
-                post.setImageFileName(rs.getString("image_file_name"));
+                Post post = new Post(
+                        rs.getInt("post_id"),
+                        rs.getInt("owner_id"),
+                        rs.getString("content"),
+                        rs.getTimestamp("post_date")
+                );
 
-                //  SQL Timestamp to LocalDateTime if available
-                Timestamp timestamp = rs.getTimestamp("timestamp");
-                if (timestamp != null) {
-                    post.setTimestamp(timestamp.toLocalDateTime());
+                try(PreparedStatement comStmt = DBConnection2.getPrepStatement(comSql);
+                    PreparedStatement tagStmt = DBConnection2.getPrepStatement(tagSql)){
+                    // TODO: FINISH
                 }
+
                 posts.add(post);
             }
         }
@@ -100,23 +84,12 @@ public class PostDAO {
      * @return true if the update was successful, false otherwise.
      * @throws Exception if a database error occurs.
      */
-    public boolean updatePost(Post post) throws Exception {
-        String sql = "UPDATE POST SET post_text = ?, user_key = ?, image_file_name = ?, timestamp = ? WHERE post_id = ?";
+    public static boolean updatePost(int postId, String content) throws SQLException {
+        String sql = "UPDATE Posts SET content = ? WHERE post_id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, post.getPostText());
-            stmt.setString(2, post.getUserKey());
-            stmt.setString(3, post.getImageFileName());
-
-            // set  timestamp; null if timestamp null
-            if (post.getTimestamp() != null) {
-                stmt.setTimestamp(4, Timestamp.valueOf(post.getTimestamp()));
-            } else {
-                stmt.setTimestamp(4, null);
-            }
-            stmt.setInt(5, post.getPostId());
+        try (PreparedStatement stmt = DBConnection2.getPrepStatement(sql)) {
+            stmt.setString(1, content);
+            stmt.setInt(2, postId);
 
             return stmt.executeUpdate() > 0;
         }
@@ -129,14 +102,28 @@ public class PostDAO {
      * @return true if the deletion was successful, false otherwise.
      * @throws Exception if a database error occurs.
      */
-    public boolean deletePost(int postId) throws Exception {
-        String sql = "DELETE FROM POST WHERE post_id = ?";
+    public static boolean delPost(int postId) throws SQLException {
+        String sql = "DELETE FROM Posts WHERE post_id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        try (PreparedStatement stmt = DBConnection2.getPrepStatement(sql)) {
             stmt.setInt(1, postId);
             return stmt.executeUpdate() > 0;
         }
+    }
+
+    public static LinkedList<Integer> getAllUserPosts(int userId) throws SQLException{
+        LinkedList<Integer> postLst = new LinkedList<>();
+        String sql = "SELECT post_id FROM Posts WHERE owner_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, userId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                postLst.add(rs.getInt("post_id"));
+            }
+        }
+        return postLst;
     }
 }

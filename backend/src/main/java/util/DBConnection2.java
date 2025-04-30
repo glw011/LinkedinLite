@@ -44,6 +44,11 @@ public class DBConnection2 {
         return connection.prepareStatement(sqlStr);
     }
 
+    public static PreparedStatement getPrepStatement(String sqlStr, String[] colNames) throws SQLException{
+        if(connection == null){getConnection();}
+        return connection.prepareStatement(sqlStr, colNames);
+    }
+
     public static ResultSet queryDB(String query) throws SQLException{
         return getStatement().executeQuery(query);
     }

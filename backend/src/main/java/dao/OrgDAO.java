@@ -144,7 +144,6 @@ public class OrgDAO extends UserDAO{
     // TODO: Need to add a membership approval table to store students who have applied to join an org but not yet accepted
     //  also would need 3 additional functions like approveMember(stdId), rejectMember(stdId), getPendingMembers(orgId)
 
-    // TODO: Needs implementation
     public boolean addMember(int orgId, int stdId) throws SQLException{
         String sql = "INSERT INTO Org_Membership (student_id, org_id) VALUES (?, ?)";
 
@@ -156,7 +155,6 @@ public class OrgDAO extends UserDAO{
         }
     }
 
-    // TODO: Needs implementation
     public boolean delMember(int orgId, int stdId) throws SQLException{
         String sql = "DELETE FROM Org_Membership WHERE student_id = ? AND org_id = ?";
 
