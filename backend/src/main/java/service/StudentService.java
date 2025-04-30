@@ -2,7 +2,7 @@ package service;
 
 import dao.StudentDAO;
 import model.Student;
-import java.util.List;
+import java.util.HashMap;
 //import dao.MajorDAO;
 import model.School;
 import model.Major;
@@ -18,8 +18,8 @@ public class StudentService {
      * @throws Exception if no data is available or a database error occurs.
      */
 
-    public List<Student> getAllStudents() throws Exception {
-        List<Student> students = studentDAO.getAllStudents();
+    public HashMap<Integer, Student> getAllStudents() throws Exception {
+        HashMap<Integer, Student> students = studentDAO.getAllStudents();
         if (students == null) {
             throw new Exception("No student data available.");
         }

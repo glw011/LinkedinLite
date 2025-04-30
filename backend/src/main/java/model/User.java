@@ -5,12 +5,11 @@ import java.util.LinkedList;
 public class User {
     public int id;
     public String email;
-    public String hashPass;
     public String type;
 
     public School school;
     public String bio;
-    public Picture profilePic;
+    public int profilePic;
     public LinkedList<Integer> ownedImgs;
     public LinkedList<Integer> interests;
     public LinkedList<Integer> posts;
@@ -24,11 +23,11 @@ public class User {
     }
     public String getEmail(){return this.email;}
 
-    public void setProfilePic(Picture img){
-        if(this.ownedImgs.contains(img.getID())) this.profilePic = img;
+    public void setProfilePic(int imgId){
+        if(this.ownedImgs.contains(imgId)) this.profilePic = imgId;
         //else raise Exception;//TODO: implement what happens if set pfp to an img that is not owned by user
     }
-    public Picture getProfilePic(){return this.profilePic;}
+    public int getProfilePic(){return this.profilePic;}
 
     public String getType(){return this.type;}
 

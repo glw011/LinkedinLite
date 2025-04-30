@@ -3,11 +3,7 @@ package dao;
 
 import java.sql.*;
 
-import model.Interest;
-import model.ModelManager;
-import model.Student;
-import model.UserType;
-import dao.PostDAO;
+import model.*;
 import util.DBConnection;
 import util.DBConnection2;
 import java.util.*;
@@ -43,18 +39,9 @@ public class StudentDAO extends UserDAO{
         }
         return false;
     }
-    // TODO: FIX
-    public Student getStudentById(int id) throws SQLException {
-        return null;
-    }
 
-    //TODO: FIX
-    public LinkedList<Student> getAllStudents() throws SQLException{
-        LinkedList<Student> studentList;
-        String skillSql = "";
-        String intrstSql = "";
-        String orgSql = "";
-        String follows = "";
+    public Student getStudentById(int stdId) throws SQLException {
+        Student studentObj;
 
         String sqlStr =
             "SELECT DISTINCT" +
@@ -64,17 +51,58 @@ public class StudentDAO extends UserDAO{
                 "User_Verify.email as email, " +
                 "Users.bio as bio, " +
                 "Users.pfp_id as pfp_id, " +
-                "Majors.major_name as major_name, " +
-                "Majors.major_id as major_id, " +
+                "Students.major_id as major_id, " +
                 "Users.school_id as school_id " +
             "FROM " +
                 "User_Verify JOIN Users ON User_Verify.user_id = Users.user_id " +
-                    "JOIN Students ON Students.student_id = Users.user_id " +
-                    "JOIN Majors ON Students.major_id = Majors.major_id";
+                "JOIN Students ON Students.student_id = Users.user_id " +
+            "WHERE " +
+                "Users.user_id = ?";
 
-        try(Statement stmt = DBConnection2.getStatement()){
-            studentList = new LinkedList<>();
-            ResultSet results = stmt.executeQuery(sqlStr);
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sqlStr)){
+            ResultSet results = pstmt.executeQuery();
+            studentObj = new Student(
+                    results.getInt("id"),
+                    results.getString("email"),
+                    results.getString("fname"),
+                    results.getString("lname"),
+                    ModelManager.getSchool(results.getInt("school_id"))
+            );
+
+            studentObj.setBio(results.getString("bio"));
+            studentObj.setMajor(results.getInt("major_id"));
+            studentObj.setProfilePic(results.getInt("pfp_id"));
+
+            studentObj.setSkillList(getAllSkills(studentObj.getID()));
+            studentObj.setInterestList(getAllInterests(studentObj.getID()));
+            studentObj.setOrgList(getAllOrgs(studentObj.getID()));
+            studentObj.setFollowingList(getAllFollowedUsers(studentObj.getID()));
+            studentObj.setPostsList(getAllUserPosts(studentObj.getID()));
+            studentObj.setOwnedImgsList(getAllOwnedImages(studentObj.getID()));
+        }
+        return studentObj;
+    }
+
+    public HashMap<Integer, Student> getAllStudents() throws SQLException{
+        HashMap<Integer, Student> studentMap;
+
+        String sqlStr =
+            "SELECT DISTINCT" +
+                "Students.student_id as id, " +
+                "Students.fname as fname, " +
+                "Students.lname as lname, " +
+                "User_Verify.email as email, " +
+                "Users.bio as bio, " +
+                "Users.pfp_id as pfp_id, " +
+                "Students.major_id as major_id, " +
+                "Users.school_id as school_id " +
+            "FROM " +
+                "User_Verify JOIN Users ON User_Verify.user_id = Users.user_id " +
+                    "JOIN Students ON Students.student_id = Users.user_id ";
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sqlStr)){
+            studentMap = new HashMap<>();
+            ResultSet results = pstmt.executeQuery();
 
             while(results.next()){
                 int currId = results.getInt("id");
@@ -85,49 +113,64 @@ public class StudentDAO extends UserDAO{
                     results.getString("lname"),
                     ModelManager.getSchool(results.getInt("school_id"))
                 );
-                LinkedList<Integer> currLst;
 
-                currLst = getAllInterests(currId);
-                LinkedList<Interest> intrstLst = new LinkedList<>();
-                for(Integer intrstId : currLst){
-                    intrstLst.add(ModelManager.getInterest(intrstId));
-                }
+                currStudent.setBio(results.getString("bio"));
+                currStudent.setMajor(results.getInt("major_id"));
+                currStudent.setProfilePic(results.getInt("pfp_id"));
 
-                currLst = getAllFollowedUsers(currId);
+                currStudent.setSkillList(getAllSkills(currId));
+                currStudent.setInterestList(getAllInterests(currId));
+                currStudent.setOrgList(getAllOrgs(currId));
+                currStudent.setFollowingList(getAllFollowedUsers(currId));
+                currStudent.setPostsList(getAllUserPosts(currId));
+                currStudent.setOwnedImgsList(getAllOwnedImages(currId));
 
-
-
-
-                // TODO: Query Skills, Interests, Orgs, Follows
+                studentMap.putIfAbsent(currId, currStudent);
             }
+            results.close();
         }
-
-
-        while(results.next()){
-            Student currStudent = new Student(
-                    results.getInt("id"),
-                    results.getAsciiStream("email").toString(),
-                    results.getAsciiStream("fname").toString(),
-                    results.getAsciiStream("lname").toString(),
-                    DAOManager.getSchool(results.getInt("school_id"))
-            );
-            // TODO: Complete getAllStudents() method
-            //currStudent.setMajor(DBO.majors.get(results.getInt("major_id")));
-        }
-
-        results.close();
-        return studentList;
+        return studentMap;
     }
 
+    // TODO: Nah fam, once you're in, you're in for life. Ain't no escape
     public boolean deleteStudent(int id) throws SQLException {
+        return false;
+    }
 
-        String sql = "DELETE FROM STUDENT WHERE stdnt_id = ?";
+    public LinkedList<Integer> getAllSkills(int stdId) throws SQLException{
+        String sql = "SELECT skill_id FROM Student_Skills WHERE student_id = ?";
+        LinkedList<Integer> skillLst;
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, stdId);
+            ResultSet skills = pstmt.executeQuery();
+            skillLst = new LinkedList<>();
+
+            while(skills.next()){
+                skillLst.add(skills.getInt("skill_id"));
+            }
+
+            skills.close();
         }
+        return skillLst;
+    }
+
+    public LinkedList<Integer> getAllOrgs(int stdId) throws SQLException{
+        String sql = "SELECT org_id FROM Org_Membership WHERE student_id = ?";
+        LinkedList<Integer> orgLst;
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, stdId);
+            ResultSet orgs = pstmt.executeQuery();
+            orgLst = new LinkedList<>();
+
+            while(orgs.next()){
+                orgLst.add(orgs.getInt("org_id"));
+            }
+
+            orgs.close();
+        }
+        return orgLst;
     }
 
 }

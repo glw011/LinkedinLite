@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 public class Org extends User {
     private String name;
-    private String orgType;
     private LinkedList<Integer> members;
 
     public Org(int id, String email, String name, String orgType, School school){

@@ -2,16 +2,17 @@ package model;
 
 public class Picture{
     private int imgId;
-    private User owner;
-    private Date uploadDate;
+    private int ownerId;
     private String url;
 
-    public Picture(int id, User owner, String url, Date date){
+    public Picture(int id, int ownerId){
         this.imgId = id;
-        this.owner = owner;
-        this.url = url;
-        this.uploadDate = date;
+        this.ownerId = ownerId;
+
+        // TODO: EVERYTHING
     }
 
     public int getID(){return this.imgId;}
+
+
 }
