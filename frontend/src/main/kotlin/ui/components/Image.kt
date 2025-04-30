@@ -26,6 +26,7 @@ fun Image(
         bitmap = image,
         contentScale = contentScale,
         contentDescription = contentDescription,
+        alignment = alignment,
         modifier = modifier
     )
 }
