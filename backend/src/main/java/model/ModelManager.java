@@ -1,7 +1,6 @@
 package model;
 
 import util.DBConnection2;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -27,25 +26,29 @@ public class ModelManager {
     private static HashMap<Integer, UserType> userTypeById;
     private static HashMap<String, Integer> userIdByEmail;
 
-    private static DBConnection2 dbConnection;
-
-
     public ModelManager() throws SQLException{
         allSchools = new HashMap<>();
         schoolByName = new HashMap<>();
+
         allMajors = new HashMap<>();
         majorByName = new HashMap<>();
+
         allFields = new HashMap<>();
         fieldByName = new HashMap<>();
+
         allSkills = new HashMap<>();
         skillByName = new HashMap<>();
+
         allInterests = new HashMap<>();
         interestByName = new HashMap<>();
+
+        userTypeById = new HashMap<>();
+        userIdByEmail = new HashMap<>();
 
         populateLists();
     }
 
-    private void populateLists() throws SQLException{
+    private static void populateLists() throws SQLException{
         populateUsersLists();
         populateSchoolsList();
         populateFieldsList();
@@ -57,7 +60,7 @@ public class ModelManager {
 
     private static void populateUsersLists() throws SQLException{
         String sqlStr = "SELECT * FROM Users";
-        ResultSet users = dbConnection.queryDB(sqlStr);
+        ResultSet users = DBConnection2.queryDB(sqlStr);
 
         while(users.next()){
             int id = users.getInt("user_id");
@@ -73,7 +76,7 @@ public class ModelManager {
     }
     private static void populateSchoolsList() throws SQLException {
         String sqlStr = "SELECT * FROM Schools";
-        ResultSet schools = dbConnection.queryDB(sqlStr);
+        ResultSet schools = DBConnection2.queryDB(sqlStr);
 
         while(schools.next()){
             School currSchool = new School(
@@ -92,7 +95,7 @@ public class ModelManager {
     }
     private static void populateFieldsList() throws SQLException{
         String sqlStr = "SELECT * FROM Fields_of_Study";
-        ResultSet fields = dbConnection.queryDB(sqlStr);
+        ResultSet fields = DBConnection2.queryDB(sqlStr);
 
         while(fields.next()){
             FoS currField = new FoS(
@@ -107,14 +110,14 @@ public class ModelManager {
     }
     private static void populateSkillsList() throws SQLException{
         String sqlStr = "SELECT * FROM Skills";
-        ResultSet skills = dbConnection.queryDB(sqlStr);
+        ResultSet skills = DBConnection2.queryDB(sqlStr);
 
         while(skills.next()){
             int currSkillId = skills.getInt("skill_id");
             String currSkillName = skills.getAsciiStream("skill_name").toString();
 
             String currSqlStr = String.format("SELECT * FROM Skill_FoS WHERE skill_id = %d", currSkillId);
-            ResultSet field = dbConnection.queryDB(currSqlStr);
+            ResultSet field = DBConnection2.queryDB(currSqlStr);
 
             field.next();
             int currFieldId = field.getInt("fos_id");
@@ -135,14 +138,14 @@ public class ModelManager {
     }
     private static void populateInterestsList() throws SQLException{
         String sqlStr = "SELECT * FROM Interests";
-        ResultSet interests = dbConnection.queryDB(sqlStr);
+        ResultSet interests = DBConnection2.queryDB(sqlStr);
 
         while(interests.next()){
             int currInterestId = interests.getInt("interest_id");
             String currInterestName = interests.getAsciiStream("interest_name").toString();
 
             String currSqlStr = String.format("SELECT * FROM Interest_FoS WHERE interest_id = %d", currInterestId);
-            ResultSet field = dbConnection.queryDB(currSqlStr);
+            ResultSet field = DBConnection2.queryDB(currSqlStr);
 
             //TODO: Determine if interest can belong to multiple fields (add while(field.next()) loop) or only 1 field
             field.next();
@@ -164,7 +167,7 @@ public class ModelManager {
     }
     private static void populateMajorsList() throws SQLException{
         String sqlStr = "SELECT * FROM Majors";
-        ResultSet majors = dbConnection.queryDB(sqlStr);
+        ResultSet majors = DBConnection2.queryDB(sqlStr);
 
         while(majors.next()){
             FoS currFoS = allFields.get(majors.getInt("fos_id"));
@@ -175,6 +178,7 @@ public class ModelManager {
 
         majors.close();
     }
+
 
     /**
      * Method returning formated SQL query created from passed parameters which can then be executed by Statement object
@@ -250,23 +254,4 @@ public class ModelManager {
         if(majorByName.containsKey(name)) return allMajors.get(majorByName.get(name));
         return null;
     }
-
-    // TODO: Implement the 3 following functions to get objects from UserModelFactory
-    //public static Student getStudent(int id){}
-    //public static Org getOrg(int id){}
-    /*
-    public static User getUser(int id){
-        UserType type = getUserType(id);
-
-        if(type == UserType.STUDENT){
-
-        }
-        else if(type == UserType.ORG){
-
-        }
-
-        return null;
-
-    }
-     */
 }

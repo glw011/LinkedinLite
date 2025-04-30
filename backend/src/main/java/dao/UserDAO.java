@@ -84,6 +84,21 @@ public class UserDAO {
         }
     }
 
+    public String getBio(int userId) throws SQLException{
+        String sql = "SELECT bio FROM Users WHERE user_id = ?";
+        String bio;
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, userId);
+            ResultSet bioRs = pstmt.executeQuery();
+
+            bio = bioRs.getString("bio");
+
+            bioRs.close();
+        }
+        return bio;
+    }
+
     /**
      * adds post
      * assume token contains the stdmtID and POST table exists
@@ -292,6 +307,21 @@ public class UserDAO {
         }
     }
 
+    public Integer getSchool(int userId) throws SQLException{
+        String sql = "SELECT school_id FROM Users WHERE user_id = ?";
+        int schoolId;
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            schoolId = rs.getInt("school_id");
+
+            rs.close();
+        }
+        return schoolId;
+    }
+
     public LinkedList<Integer> getAllOwnedImages(int userId){
         // TODO: Needs to be implemented
         return null;
@@ -300,6 +330,21 @@ public class UserDAO {
     public boolean setProfileImg(int userId, int imgId){
         // TODO: Needs to be implemented
         return false;
+    }
+
+    public Integer getProfileImg(int userId) throws SQLException{
+        String sql = "SELECT school_id FROM Users WHERE user_id = ?";
+        int pfpId;
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            pfpId = rs.getInt("pfp_id");
+
+            rs.close();
+        }
+        return pfpId;
     }
 
 }

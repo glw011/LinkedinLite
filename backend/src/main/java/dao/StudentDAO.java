@@ -60,6 +60,8 @@ public class StudentDAO extends UserDAO{
                 "Users.user_id = ?";
 
         try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sqlStr)){
+            pstmt.setInt(1, stdId);
+
             ResultSet results = pstmt.executeQuery();
             studentObj = new Student(
                     results.getInt("id"),
@@ -83,6 +85,9 @@ public class StudentDAO extends UserDAO{
         return studentObj;
     }
 
+    // TODO: Duplicate and add Interest obj, Skill obj, School obj, Major obj as param for one duplicate
+    // TODO: OR Duplicate once with String arg for the conditions of search and create function to format condition string
+    //  i.e. "WHERE %s = ? AND %s = ?", "school_id", "interest" (also need to join all tables into the query)
     public HashMap<Integer, Student> getAllStudents() throws SQLException{
         HashMap<Integer, Student> studentMap;
 
@@ -132,8 +137,23 @@ public class StudentDAO extends UserDAO{
         return studentMap;
     }
 
+    // TODO: Needs implementation
+    public boolean setLname(int userId, String lname){
+        return false;
+    }
+
     // TODO: Nah fam, once you're in, you're in for life. Ain't no escape
     public boolean deleteStudent(int id) throws SQLException {
+        return false;
+    }
+
+    // TODO: Needs implementation
+    public boolean addSkill(int userId, int skillId){
+        return false;
+    }
+
+    // TODO: Needs implementation
+    public boolean delSkill(int userId, int skillId){
         return false;
     }
 

@@ -36,8 +36,7 @@ public class DBConnection2 {
 
     public static Statement getStatement() throws SQLException{      //TODO: Try/Catch reattempt in catch
         if(connection == null){getConnection();}
-        if(statement == null){statement = connection.createStatement();}
-        return statement;
+        return connection.createStatement();
     }
 
     public static PreparedStatement getPrepStatement(String sqlStr) throws SQLException{
@@ -45,11 +44,11 @@ public class DBConnection2 {
         return connection.prepareStatement(sqlStr);
     }
 
-    public ResultSet queryDB(String query) throws SQLException{
+    public static ResultSet queryDB(String query) throws SQLException{
         return getStatement().executeQuery(query);
     }
 
-    public void closeDBConnection() throws SQLException {
+    public static void closeDBConnection() throws SQLException {
         if (statement != null) statement.close();
         if (connection != null) connection.close();
     }

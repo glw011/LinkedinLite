@@ -1,13 +1,12 @@
 package model;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Org extends User {
     private String name;
     private LinkedList<Integer> members;
 
-    public Org(int id, String email, String name, String orgType, School school){
+    public Org(int id, String email, String name, School school){
         this.id = id;
         this.email = email;
         this.name = name;
