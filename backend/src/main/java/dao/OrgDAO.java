@@ -141,4 +141,17 @@ public class OrgDAO extends UserDAO{
         return memberLst;
     }
 
+    // TODO: Need to add a membership approval table to store students who have applied to join an org but not yet accepted
+    //  also would need 3 additional functions like approveMember(stdId), rejectMember(stdId), getPendingMembers(orgId)
+
+    // TODO: Needs implementation
+    public boolean addMember(int orgId, int stdId){
+        return false;
+    }
+
+    // TODO: Needs implementation
+    public boolean delMember(int orgId, int stdId){
+        return false;
+    }
+
 }
