@@ -83,9 +83,10 @@ fun styledTextField(
     onClick: () -> Unit = {},
     canType: Boolean = true,
     singleLine: Boolean = true,
-    fillMaxWidth: Boolean = false
+    fillMaxWidth: Boolean = false,
+    value: String = "",
 ) {
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(value) }
     var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     var startPadding = 0.dp

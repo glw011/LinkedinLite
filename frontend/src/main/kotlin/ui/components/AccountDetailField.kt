@@ -30,6 +30,7 @@ fun AccountDetailField(
     onTextChanged: (String) -> Unit = {},
     keyboardType: KeyboardType = KeyboardType.Text,
     password: Boolean = false,
+    value: String = "",
     modifier: Modifier = Modifier
 ) {
 
@@ -50,7 +51,8 @@ fun AccountDetailField(
             width = 256,
             xAlignment = Alignment.CenterHorizontally,
             unfocusedText = prompt,
-            isPassword = password
+            isPassword = password,
+            value = value,
         )
     }
 }

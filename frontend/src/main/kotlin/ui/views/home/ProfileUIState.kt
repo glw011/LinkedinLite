@@ -1,5 +1,7 @@
 package ui.views.home
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.ImageBitmap
 import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_banner
@@ -39,6 +41,6 @@ data class ProfileHeaderInfo(
     var title: String = "<Placeholder Title>",
     var location: String = "<Placeholder Location>",
     var school: String = "<Placeholder School>",
-    var banner: ImageBitmap? = getBitmapFromDrawableID(Res.drawable.default_banner),
-    var profilePicture: ImageBitmap? = getBitmapFromDrawableID(Res.drawable.default_pfp),
+    var banner: MutableState<ImageBitmap?> = mutableStateOf(getBitmapFromDrawableID(Res.drawable.default_banner)),
+    var profilePicture: MutableState<ImageBitmap?> = mutableStateOf(getBitmapFromDrawableID(Res.drawable.default_pfp)),
 )

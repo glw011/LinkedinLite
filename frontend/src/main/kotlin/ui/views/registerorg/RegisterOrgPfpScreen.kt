@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import ui.components.EditablePfpImage
 import ui.components.styledButton
 import ui.theme.LIGHT_PURPLE
+import util.getBitmapFromFilepath
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -59,7 +60,11 @@ fun openFileChooser(): String {
  * @param onBack Callback function for when the user clicks the back button.
  */
 @Composable
-fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
+fun registerOrgPfpScreen(
+    uiState: RegisterOrgPfpUiState,
+    onContinue: () -> Unit,
+    onBack: () -> Unit
+) {
     var imagePath by remember { mutableStateOf("") }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -86,24 +91,18 @@ fun registerOrgPfpScreen(onContinue: () -> Unit, onBack: () -> Unit) {
             ) {
                 Spacer(modifier = Modifier.padding(top = 32.dp))
 
-                val pfpOnClick = {
-                    imagePath = openFileChooser()
-                }
-                val pfpModifier = Modifier
-                    .fillMaxHeight(0.3f)
-                if (imagePath.isEmpty()) {
-                    EditablePfpImage(
-                        imageBitmap = null,
-                        modifier = pfpModifier,
-                        onClick = pfpOnClick
-                    )
-                } else {
-                    EditablePfpImage(
-                        imagePath = imagePath,
-                        modifier = pfpModifier,
-                        onClick = pfpOnClick
-                    )
-                }
+                EditablePfpImage(
+                    imageBitmap = uiState.profilePicture.value,
+                    modifier = Modifier.fillMaxHeight(0.3f),
+                    onClick = {
+                        imagePath = openFileChooser()
+                        val bitmap = getBitmapFromFilepath(imagePath)
+                        if (bitmap != null) {
+                            uiState.profilePicture.value = bitmap
+                        }
+                    }
+                )
+
                 Text(
                     text = "Please upload a profile picture for your organization",
                     color = MaterialTheme.colorScheme.onBackground,

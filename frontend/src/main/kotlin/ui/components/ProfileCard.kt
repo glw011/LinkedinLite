@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ui.views.home.exampleTags
 import ui.views.home.postShape
 
 val CARD_SHAPE = RoundedCornerShape(16.dp)
@@ -123,6 +122,7 @@ fun ProfileMembersCard(
 fun ProfileTagsCard(
     title: String,
     subtitle: String = "",
+    tags: List<String> = emptyList(),
     modifier: Modifier = Modifier
 ) {
     ProfileCard(
@@ -133,12 +133,12 @@ fun ProfileTagsCard(
         LazyHorizontalGrid(
             rows = GridCells.Adaptive(minSize = 40.dp),
         ) {
-            items(exampleTags.size) { index ->
+            items(tags.size) { index ->
                 AssistChip(
                     // TODO: Click brings you to search page with tag filter
                     onClick = { /* Handle tag click */ },
                     label = { Text(
-                        text = exampleTags[index],
+                        text = tags[index],
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.wrapContentHeight().widthIn(min=150.dp)

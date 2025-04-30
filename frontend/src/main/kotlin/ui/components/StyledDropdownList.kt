@@ -57,7 +57,9 @@ fun styledDropDownList(
     width: Int = 256,
     xAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     multiSelect: Boolean = false,
-    noSelectionText: String = ""
+    noSelectionText: String = "",
+    value: String = "",
+    onSelect: (String) -> Unit = {},
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var dropDownIcon by rememberSaveable { mutableStateOf(Icons.Filled.KeyboardArrowDown) }
@@ -100,9 +102,10 @@ fun styledDropDownList(
                             color = Color.LightGray,
                         )
                 ) {
-                    items.forEachIndexed { index, text ->
+                    items.forEachIndexed { _, text ->
                         DropdownMenuItem(
                             onClick = {
+                                onSelect(text)
                                 if (text in selectedItems) {
                                     selectedItems.remove(text)
                                 } else {

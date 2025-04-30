@@ -33,11 +33,9 @@ import ui.theme.LIGHT_PURPLE
  */
 @Composable
 fun registerOrgInfoScreen(
+    uiState: RegisterOrgInfoUiState,
     onContinue: () -> Unit,
     onBack: () -> Unit,
-    onOrgNameChanged: (String) -> Unit,
-    onSchoolNameChanged: (String) -> Unit,
-    onOrgTagsChanged: () -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Main content of the register screen
@@ -58,27 +56,29 @@ fun registerOrgInfoScreen(
             Spacer(modifier = Modifier.padding(top = 32.dp))
 
             AccountDetailField(
-                label = "School Name",
-                prompt = "Enter school name",
-                onTextChanged = onSchoolNameChanged,
+                label = "Organization Name",
+                prompt = "Enter name",
+                onTextChanged = { uiState.orgName = it },
                 keyboardType = KeyboardType.Text,
+                value = uiState.orgName,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.padding(top = 32.dp))
 
             AccountDetailField(
-                label = "Organization Name",
-                prompt = "Enter name",
-                onTextChanged = onOrgNameChanged,
+                label = "School Name",
+                prompt = "Enter school name",
+                onTextChanged = { uiState.schoolName = it },
                 keyboardType = KeyboardType.Text,
+                value = uiState.schoolName,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.padding(top = 32.dp))
 
             Text(
-                text = "Organization Type",
+                text = "Organization Tags",
                 color = MaterialTheme.colorScheme.onBackground,
             )
 
@@ -89,7 +89,16 @@ fun registerOrgInfoScreen(
                 modifier = Modifier.fillMaxWidth(),
                 width = 256,
                 multiSelect = true,
-                noSelectionText = "Select Organization Type",
+                noSelectionText = "Select Organization Tags",
+                value = uiState.orgTags.joinToString(", "),
+                onSelect = {
+                    val selectedTag = it
+                    if (selectedTag in uiState.orgTags) {
+                        uiState.orgTags.remove(selectedTag)
+                    } else {
+                        uiState.orgTags.add(selectedTag)
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.padding(top = 64.dp))

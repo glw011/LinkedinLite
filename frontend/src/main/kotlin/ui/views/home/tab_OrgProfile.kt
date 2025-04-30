@@ -19,8 +19,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import data.DataSource.tags
+import org.example.linkedinliteui.generated.resources.Res
+import org.example.linkedinliteui.generated.resources.default_banner
 import ui.components.DetailEditDialog
 import ui.components.ProfileHeader
 import ui.components.ProfileMembersCard
@@ -28,12 +31,12 @@ import ui.components.ProfilePostsCard
 import ui.components.ProfileRecommendationCard
 import ui.components.ProfileTagsCard
 import ui.views.registerorg.openFileChooser
+import util.getBitmapFromDrawableID
 import util.getBitmapFromFilepath
 
 val headerShape = RoundedCornerShape(16.dp)
 val postShape = RoundedCornerShape(8.dp)
 
-val exampleTags = listOf(tags[0], tags[1], tags[2], tags[9], tags[11], tags[12], tags[14], tags[4], tags[5])
 val exampleMembers = listOf(
     "Harrison Day",
     "Jayden Toussaint",
@@ -64,7 +67,7 @@ val exampleRoles = listOf(
 fun OrgProfileTab(
     uiState: ProfileUiState
 ) {
-    var profileHeaderInfo by rememberSaveable { mutableStateOf(ProfileHeaderInfo()) }
+    val profileHeaderInfo by rememberSaveable { mutableStateOf(ProfileHeaderInfo()) }
     var imagePath by rememberSaveable { mutableStateOf("") }
     var isEditingHeader by rememberSaveable { mutableStateOf(false) }
 
@@ -92,19 +95,19 @@ fun OrgProfileTab(
                     title = uiState.headerInfo.title,
                     location = uiState.headerInfo.location,
                     school = uiState.headerInfo.school,
-                    banner = uiState.headerInfo.banner,
-                    profilePicture = uiState.headerInfo.profilePicture,
+                    banner = uiState.headerInfo.banner.value,
+                    profilePicture = uiState.headerInfo.profilePicture.value,
                     onEditHeader = { isEditingHeader = true },
                     onEditBanner = {
                         imagePath = openFileChooser()
                         if (imagePath.isNotEmpty()) {
-                            uiState.headerInfo.banner = getBitmapFromFilepath(imagePath)
+                            uiState.headerInfo.banner.value = getBitmapFromFilepath(imagePath)
                         }
                     },
                     onEditProfilePicture = {
                         imagePath = openFileChooser()
                         if (imagePath.isNotEmpty()) {
-                            uiState.headerInfo.profilePicture = getBitmapFromFilepath(imagePath)
+                            uiState.headerInfo.profilePicture.value = getBitmapFromFilepath(imagePath)
                         }
                     },
                     modifier = Modifier
@@ -121,6 +124,7 @@ fun OrgProfileTab(
                 )
                 ProfileTagsCard(
                     title = "Tags",
+                    tags = uiState.tags,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(256.dp)
