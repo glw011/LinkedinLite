@@ -42,7 +42,7 @@ public class UserDAO {
 
     public static boolean addUser(String email, String hashedPass, UserType userType) throws SQLException {
 
-        String sql = "INSERT INTO User_Verify (email, pass_hash, type) VALUES ( ?, ?, ?)";
+        String sql = "INSERT INTO User_Verify (email, pass_hash, type) VALUES (?, ?, ?)";
         Connection conn = DBConnection.getConnection();
 
         try(PreparedStatement stmt = conn.prepareStatement(sql)){

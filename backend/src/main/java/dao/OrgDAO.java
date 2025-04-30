@@ -145,13 +145,26 @@ public class OrgDAO extends UserDAO{
     //  also would need 3 additional functions like approveMember(stdId), rejectMember(stdId), getPendingMembers(orgId)
 
     // TODO: Needs implementation
-    public boolean addMember(int orgId, int stdId){
-        return false;
+    public boolean addMember(int orgId, int stdId) throws SQLException{
+        String sql = "INSERT INTO Org_Membership (student_id, org_id) VALUES (?, ?)";
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, stdId);
+            pstmt.setInt(2, orgId);
+
+            return pstmt.executeUpdate() > 0;
+        }
     }
 
     // TODO: Needs implementation
-    public boolean delMember(int orgId, int stdId){
-        return false;
-    }
+    public boolean delMember(int orgId, int stdId) throws SQLException{
+        String sql = "DELETE FROM Org_Membership WHERE student_id = ? AND org_id = ?";
 
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, stdId);
+            pstmt.setInt(2, orgId);
+
+            return pstmt.executeUpdate() > 0;
+        }
+    }
 }
