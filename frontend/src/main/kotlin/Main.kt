@@ -5,8 +5,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import ui.views.home.ProfileUiState
 import ui.theme.MainTheme
+import ui.views.home.ProfileUiState
 import ui.views.home.UI
 import ui.views.loginScreen
 import ui.views.registerorg.RegisterOrgInfoUiState

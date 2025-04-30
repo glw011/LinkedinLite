@@ -31,10 +31,10 @@ fun getDummyPostsList(): List<Post> {
             val desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
             val coms = mutableStateListOf<Comment>().apply {
                 repeat(15) { i ->
-                    add(Comment("user ${i + 1}", "test comment, a bunch of useless text to fill the comment", null))
+                    add(Comment("user ${i + 1}", "test comment, a bunch of useless text to fill the comment. Testing to see if the comments support variable height...", null))
                 }
             }
-            add(Post(null, user, desc, coms))
+            add(Post("Post Title",null, user, desc, coms))
         }
     }.shuffled()
 

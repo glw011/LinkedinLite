@@ -26,6 +26,9 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.60.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.60.0")
     implementation("org.jetbrains.exposed:exposed-crypt:0.60.0")
+    implementation(compose.materialIconsExtended)
+
+
 }
 
 compose.desktop {

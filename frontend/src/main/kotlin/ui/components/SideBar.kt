@@ -12,28 +12,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -158,7 +144,7 @@ fun peopleOrgsTabButton(isSelected: Boolean, onClick: () -> Unit) {
 
         // Person Icon
         Icon(
-            imageVector = Icons.Filled.Person,
+            imageVector = Icons.Filled.People,
             contentDescription = "People / Orgs",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
@@ -299,7 +285,7 @@ fun postTabButton(isSelected: Boolean, onClick: () -> Unit) {
 
         // Add Icon
         Icon(
-            imageVector = Icons.Filled.Add,
+            imageVector = Icons.Filled.AddBox,
             contentDescription = "Home",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
@@ -343,15 +329,8 @@ fun profileTabButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        // Settings Icon
-//        Icon(
-//            imageVector = Icons.Filled.Settings,
-//            contentDescription = "My Profile",
-//            tint = MaterialTheme.colorScheme.onBackground,
-//            modifier = Modifier
-//                .size(32.dp)
-//                .padding(bottom = 4.dp)
-//        )
+
+        // Temporary default pfp
         Image(
             bitmap = userProfilePicture,
             defaultImage = imageResource(Res.drawable.default_pfp),
@@ -359,7 +338,8 @@ fun profileTabButton(
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .size(28.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            alignment = Alignment.Center
         )
         // Selection Indicator
         AnimatedVisibility(

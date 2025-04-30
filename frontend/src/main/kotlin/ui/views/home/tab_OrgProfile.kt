@@ -1,13 +1,7 @@
 package ui.views.home
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,14 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import data.DataSource.tags
-import org.example.linkedinliteui.generated.resources.Res
-import org.example.linkedinliteui.generated.resources.default_banner
-import ui.components.DetailEditDialog
-import ui.components.ProfileHeader
-import ui.components.ProfileMembersCard
-import ui.components.ProfilePostsCard
-import ui.components.ProfileRecommendationCard
-import ui.components.ProfileTagsCard
+import ui.components.*
 import ui.views.registerorg.openFileChooser
 import util.getBitmapFromDrawableID
 import util.getBitmapFromFilepath

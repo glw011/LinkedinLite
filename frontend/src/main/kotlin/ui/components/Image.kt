@@ -1,6 +1,7 @@
 package ui.components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -11,6 +12,7 @@ fun Image(
     defaultImage: ImageBitmap,
     contentDescription: String,
     contentScale: ContentScale = ContentScale.Fit,
+    alignment: Alignment = Alignment.Center,
     modifier: Modifier = Modifier
 ) {
     val image: ImageBitmap
