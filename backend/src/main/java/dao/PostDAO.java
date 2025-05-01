@@ -45,7 +45,7 @@ public class PostDAO {
     }
 
     public static boolean addCommentToPost(int postId, int comtOwnerId, String content){
-        // TODO: Needs implementation once Post_Comments table is added to DB
+        // TODO: Needs implementation once Post_Comments table is added to DB (next sprint)
         return false;
     }
 
