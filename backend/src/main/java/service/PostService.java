@@ -23,7 +23,7 @@ public class PostService {
         if (post.getUserKey() == null || post.getUserKey().trim().isEmpty()) {
             throw new IllegalArgumentException("User identifier is required");
         }
-        return postDAO.insertPost(post);
+        return postDAO.pushPost(post);
     }
 
     /**

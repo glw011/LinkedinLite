@@ -10,7 +10,7 @@ public class Post{
     private Picture postImg;
     private Timestamp postDate;
     private LinkedList<Integer> tags;
-    private LinkedList<Integer> comments;
+    private LinkedList<Comment> comments;
 
     public Post(int id, int ownerId, String content, Timestamp date){
         this.postId = id;
@@ -35,8 +35,8 @@ public class Post{
         this.tags = tagList;
     }
 
-    public LinkedList<Integer> getComments(){return this.comments;}
-    public void setCommentsList(LinkedList<Integer> comments){
+    public LinkedList<Comment> getComments(){return this.comments;}
+    public void setCommentsList(LinkedList<Comment> comments){
         this.comments = comments;
     }
 

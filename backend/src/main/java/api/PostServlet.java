@@ -87,6 +87,7 @@ public class PostServlet extends HttpServlet {
         post.setUserKey(userKey); //  post owner.
         post.setImageFileName(imageFileName);
         // TODO: Set additional fields like timestamp automatically in the service or via the database
+        //      ** DB will set the timestamp automatically when new post is inserted if that matters for your usecase - garrett
 
         // delegate creation of post to service layer
         boolean success = false;

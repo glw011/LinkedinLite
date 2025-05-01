@@ -149,8 +149,7 @@ public class UserDAO {
      * that is within past 7 days (can be more or less??) to caller
      */
     public LinkedList<Integer> getAllRecentPosts(int userId) throws SQLException{
-        // TODO: Needs to be implemented
-        return null;
+        return PostDAO.getAllUserPosts(userId);
     }
 
     /**
