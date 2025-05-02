@@ -51,7 +51,7 @@ enum class View {
  */
 @Composable
 fun App() {
-    var currentUser: User? by rememberSaveable { mutableStateOf(null) }
+    var currentUser: User? by rememberSaveable { mutableStateOf(User()) }
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
     val profileUiState by rememberSaveable { mutableStateOf(ProfileUiState()) }
     var registerPfpUiState by rememberSaveable { mutableStateOf(RegisterPfpUIState()) }
@@ -71,7 +71,6 @@ fun App() {
         val onRegister: () -> Unit = {
             // Handle registration logic here
             // For now, just switch to the registration view
-            currentUser = User()
             currentView = View.RegisterSelect
         }
         loginScreen(

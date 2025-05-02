@@ -2,19 +2,28 @@ package ui.components.profilecard
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import ui.components.image.PfpImage
 
 /**
  * Creates a slot for a profile to be used in a recommendation card.
  *
+ * @param name The name of the profile.
+ * @param connection The connection status of the profile.
  * @param modifier The modifier for the profile slot.
  */
 @Composable
 fun ProfileSlot(
+    name: String,
+    connection: String,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -22,17 +31,21 @@ fun ProfileSlot(
     ) {
         PfpImage(
             imageBitmap = null,
+            modifier = Modifier.weight(0.4f)
         )
+        Spacer(modifier = Modifier.width(8.dp))
         Column(
-            modifier = Modifier
+            modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "Name",
+                text = name,
                 style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                text = "x Mutual Friends",
+                text = connection,
                 style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -82,7 +95,13 @@ fun PersonalProfileRecommendationCard(
 ) {
     Column(
         modifier = modifier
-    ) {}
+    ) {
+        ProfileSlot(
+            name = "John Doe",
+            connection = "x Mutual Connections",
+            modifier = Modifier.height(64.dp)
+        )
+    }
 }
 
 /**
@@ -96,5 +115,11 @@ fun OrganizationProfileRecommendationCard(
 ) {
     Column(
         modifier = modifier
-    ) {}
+    ) {
+        ProfileSlot(
+            name = "Louisiana Tech University",
+            connection = "x Tags of Interest",
+            modifier = Modifier.height(64.dp)
+        )
+    }
 }
