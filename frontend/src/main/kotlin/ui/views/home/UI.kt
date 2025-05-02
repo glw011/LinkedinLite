@@ -80,6 +80,7 @@ fun UI(
                             IndividualProfileTab(profileUiState)
                         }
                     "Home" -> homeTab()
+                    "Post" -> postTab()
                     // Add your new tab content composables here
                 }
             }

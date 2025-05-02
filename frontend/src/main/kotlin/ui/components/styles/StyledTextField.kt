@@ -6,7 +6,6 @@ Styled Text Field for LinkedInLite
 package ui.components.styles
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -73,9 +73,10 @@ import androidx.compose.ui.unit.sp
 fun styledTextField(
     onTextChanged: (String) -> Unit,
     width: Int = 256,
+    height: Int = 32,
     xAlignment: Alignment.Horizontal = Alignment.Start,
     unfocusedText: String = "",
-    icon: androidx.compose.ui.graphics.vector.ImageVector = Icons.Filled.Search,
+    icon: ImageVector = Icons.Filled.Search,
     iconAlignment: Alignment = Alignment.CenterStart,
     showIcon: Boolean = false,
     isPassword: Boolean = false,
@@ -86,53 +87,36 @@ fun styledTextField(
     fillMaxWidth: Boolean = false,
     iconClickedFunctionPtr: () -> Unit = {},
     value: String = "",
-    ) {
+    charLimit: Int = Int.MAX_VALUE,
+) {
     var text by remember { mutableStateOf(value) }
     var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    var startPadding = 0.dp
-    var endPadding = 0.dp
 
-    if (showIcon) {
-        if (iconAlignment == Alignment.CenterStart) {
-            startPadding = 36.dp
-            endPadding = 16.dp
-        }
-        else {
-            startPadding = 16.dp
-            endPadding = 36.dp
-        }
-    }
-    else {
-        startPadding = 16.dp
-        endPadding = 16.dp
-    }
+    val startPadding = if (showIcon && iconAlignment == Alignment.CenterStart) 36.dp else 16.dp
+    val endPadding = if (showIcon && iconAlignment != Alignment.CenterStart) 36.dp else 16.dp
 
-    // Text Field
     Box(
-        modifier = Modifier
+        modifier = modifier
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier.width(width.dp))
-            .height(32.dp)
-            .background(Color.LightGray, RoundedCornerShape(32.dp))
-            .border(0.dp, Color.Transparent, RoundedCornerShape(32.dp))
+            .height(height.dp)
+            .background(Color.LightGray, RoundedCornerShape(16.dp))
             .clickable(onClick = onClick),
-        contentAlignment = Alignment.CenterStart
+        contentAlignment = if (height > 32) Alignment.TopStart else Alignment.CenterStart
     ) {
-        // Displayed Text (determined by focus)
         if (text.isEmpty() && !isFocused) {
             Text(
                 text = unfocusedText,
                 color = DarkGray,
                 fontSize = 12.sp,
-                modifier = Modifier.padding(start = startPadding, end = endPadding, bottom = 4.dp)
+                modifier = Modifier.padding(start = startPadding, end = endPadding, top = if (height > 32) 8.dp else 0.dp)
             )
         }
 
-        // Text Box
         BasicTextField(
             value = text,
             onValueChange = {
-                if (canType) {
+                if (canType && it.length <= charLimit) {
                     text = it
                     onTextChanged(it)
                 }
@@ -140,13 +124,16 @@ fun styledTextField(
             textStyle = TextStyle(fontSize = 12.sp, color = DarkGray),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = startPadding, end = endPadding, bottom = 2.dp)
+                .padding(start = startPadding, end = endPadding, top = if (height > 32) 8.dp else 0.dp)
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
                 },
-            singleLine = singleLine,
+            singleLine = singleLine && height <= 32,
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Search),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = if (singleLine) ImeAction.Search else ImeAction.Default
+            ),
             enabled = canType
         )
 
@@ -157,8 +144,8 @@ fun styledTextField(
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp)
                     .align(iconAlignment)
-                    .clickable{iconClickedFunctionPtr()},
-                tint = Color.DarkGray
+                    .clickable { iconClickedFunctionPtr() },
+                tint = DarkGray
             )
         }
     }

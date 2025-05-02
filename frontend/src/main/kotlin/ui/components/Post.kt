@@ -3,7 +3,18 @@ package ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -12,7 +23,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +42,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_pfp
-import org.example.linkedinliteui.generated.resources.default_post
 import org.jetbrains.compose.resources.painterResource
 import ui.components.styles.styledTextField
 import ui.theme.LIGHT_PURPLE
@@ -83,46 +97,47 @@ fun drawPost(post: Post) {
     Spacer(modifier = Modifier.height(64.dp))
 
     Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        val boxModifier = if (post.postImage != null) {
+            if (!commentsOpened.value) {
+                Modifier
+                    .fillMaxWidth(0.5f)
+                    .fillMaxHeight(0.5f)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White)
+            } else {
+                Modifier
+                    .fillMaxWidth(0.5f)
+                    .fillMaxHeight(0.5f)
+                    .aspectRatio(0.75f)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White)
+            }
+        } else {
+            if (!commentsOpened.value) {
+                Modifier
+                    .fillMaxWidth(0.5f)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White)
+            } else {
+                Modifier
+                    .fillMaxWidth(0.5f)
+                    .fillMaxHeight(0.5f)
+                    .aspectRatio(0.75f)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White)
+            }
+        }
+
         Box(
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .fillMaxHeight(0.5f)
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.White), // White background color
+            modifier = boxModifier
         ) {
             if (!commentsOpened.value) {
                 Column() {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(15f)
-                            .background(Color.LightGray) // White background color
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(start = 8.dp).fillMaxHeight(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                modifier = Modifier
-                                    .fillMaxHeight(0.75f)
-                                    .aspectRatio(1f)
-                                    .clip(CircleShape),
-                                alignment = Alignment.Center,
-                                painter = painterResource(Res.drawable.default_pfp),
-                                contentDescription = "Profile Picture",
-                            )
+                    if (post.postImage != null) {
+                        Spacer(modifier = Modifier.weight(1f))
 
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Text(text = post.userName, fontStyle = Typography().h3.fontStyle)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        if (post.postImage != null) {
+                        Box(modifier = Modifier.fillMaxSize()) {
                             Image(
                                 modifier = Modifier
                                     .fillMaxSize(),
@@ -131,66 +146,136 @@ fun drawPost(post: Post) {
                                 contentDescription = "Post Image",
                                 contentScale = ContentScale.Crop
                             )
-                        } else {
-                            Image(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                alignment = Alignment.TopCenter,
-                                painter = painterResource(Res.drawable.default_post),
-                                contentDescription = "Post Image",
-                                contentScale = ContentScale.Crop
-                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.1f)
+                                .aspectRatio(1.75f)
+                                .background(Color.LightGray) // White background color
+                                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
+                        ) {
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Image(
+                                        modifier = Modifier
+                                            .height(16.dp)
+                                            .width(16.dp)
+                                            .clip(CircleShape),
+                                        alignment = Alignment.Center,
+                                        painter = painterResource(Res.drawable.default_pfp),
+                                        contentDescription = "Profile Picture",
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = post.userName,
+                                        fontStyle = Typography().h3.fontStyle
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Icon(
+                                        imageVector = Icons.Filled.ThumbUp,
+                                        contentDescription = "Like",
+                                        tint = likeButtonTint.value,
+                                        modifier = Modifier
+                                            .size(18.dp)
+                                            .clickable { liked.value = !liked.value }
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = Icons.Filled.ChatBubble,
+                                        contentDescription = "Comments",
+                                        tint = commentButtonTint.value,
+                                        modifier = Modifier
+                                            .size(18.dp)
+                                            .clickable {
+                                                commentsOpened.value = !commentsOpened.value
+                                            }
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = Icons.Filled.Share,
+                                        contentDescription = "Share",
+                                        tint = Color.Gray,
+                                        modifier = Modifier
+                                            .size(18.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Row() {
+                                    Text(post.description, fontStyle = Typography().body1.fontStyle)
+                                }
+                            }
                         }
                     }
+                    else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+//                                .fillMaxHeight(0.1f)
+//                                .aspectRatio(1.75f)
+                                .background(Color.LightGray) // White background color
+                                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
+                        ) {
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Image(
+                                        modifier = Modifier
+                                            .height(16.dp)
+                                            .width(16.dp)
+                                            .clip(CircleShape),
+                                        alignment = Alignment.Center,
+                                        painter = painterResource(Res.drawable.default_pfp),
+                                        contentDescription = "Profile Picture",
+                                    )
 
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.1f)
-                            .aspectRatio(1.75f)
-                            .background(Color.LightGray) // White background color
-                            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
-                    ) {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            Row(modifier = Modifier) {
-                                Text(post.title, fontStyle = Typography().h3.fontStyle)
-                                Spacer(modifier = Modifier.weight(1f))
-                                Icon(
-                                    imageVector = Icons.Filled.ThumbUp,
-                                    contentDescription = "Like",
-                                    tint = likeButtonTint.value,
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                        .clickable { liked.value = !liked.value }
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Icon(
-                                    imageVector = Icons.Filled.ChatBubble,
-                                    contentDescription = "Comments",
-                                    tint = commentButtonTint.value,
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                        .clickable { commentsOpened.value = !commentsOpened.value }
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Icon(
-                                    imageVector = Icons.Filled.Share,
-                                    contentDescription = "Share",
-                                    tint = Color.Gray,
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Row() {
-                                Text(post.description, fontStyle = Typography().body1.fontStyle)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = post.userName,
+                                        fontStyle = Typography().h3.fontStyle
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Icon(
+                                        imageVector = Icons.Filled.ThumbUp,
+                                        contentDescription = "Like",
+                                        tint = likeButtonTint.value,
+                                        modifier = Modifier
+                                            .size(18.dp)
+                                            .clickable { liked.value = !liked.value }
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = Icons.Filled.ChatBubble,
+                                        contentDescription = "Comments",
+                                        tint = commentButtonTint.value,
+                                        modifier = Modifier
+                                            .size(18.dp)
+                                            .clickable {
+                                                commentsOpened.value = !commentsOpened.value
+                                            }
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = Icons.Filled.Share,
+                                        contentDescription = "Share",
+                                        tint = Color.Gray,
+                                        modifier = Modifier
+                                            .size(18.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Row() {
+                                    Text(post.description, fontStyle = Typography().body1.fontStyle)
+                                }
                             }
                         }
                     }
                 }
             }
+
             else {
                 Column() {
                     Row(modifier = Modifier.padding(top = 8.dp, start = 8.dp).fillMaxWidth()) {
@@ -235,7 +320,8 @@ fun drawPost(post: Post) {
                             icon = Icons.Filled.ArrowForward,
                             iconAlignment = Alignment.CenterEnd,
                             showIcon = true,
-                            iconClickedFunctionPtr = {postComment(post)}
+                            iconClickedFunctionPtr = {postComment(post)},
+                            height = 33
                         )
                     }
                 }
