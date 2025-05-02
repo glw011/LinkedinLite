@@ -1,6 +1,11 @@
 package ui.views.registerorg
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -20,11 +25,9 @@ import ui.theme.LIGHT_PURPLE
 /**
  * The registration screen allowing the user to input information about his or her organization
  *
+ * @param uiState The current state of the registration screen.
  * @param onContinue Callback function for when the user clicks the continue button.
  * @param onBack Callback function for when the user clicks the back button.
- * @param onOrgNameChanged Callback function for when the user changes the organization name.
- * @param onSchoolNameChanged Callback function for when the user changes the school name.
- * @param onOrgTagsChanged Callback function for when the user changes the organization tags.
  */
 @Composable
 fun registerOrgInfoScreen(

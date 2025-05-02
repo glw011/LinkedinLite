@@ -21,10 +21,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import data.DataSource
-import data.DataSource.tags
 import ui.components.styles.styledButton
 import ui.components.styles.styledDropDownList
 
+/**
+ * A dialog for editing profile tags.
+ *
+ * @param tags The current tags of the profile.
+ * @param onSelect Callback for when a tag is selected.
+ * @param onSave Callback for when the save button is clicked.
+ * @param onCancel Callback for when the cancel button is clicked or dialog is dismissed.
+ */
 @Composable
 fun ProfileTagsEditDialog(
     tags: List<String>,
@@ -49,6 +56,7 @@ fun ProfileTagsEditDialog(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Title
                 Text(
                     text = "Edit Tags",
                     style = MaterialTheme.typography.headlineSmall,
@@ -57,6 +65,7 @@ fun ProfileTagsEditDialog(
                         .align(Alignment.CenterHorizontally),
                 )
 
+                // Tags Dropdown
                 styledDropDownList(
                     items = DataSource.tags,
                     modifier = Modifier
@@ -70,6 +79,7 @@ fun ProfileTagsEditDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Buttons
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

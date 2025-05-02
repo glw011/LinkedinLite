@@ -11,13 +11,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,7 +47,12 @@ import ui.views.home.SEARCH_FILTERS
  * @param items The list of strings to be displayed as options in the dropdown.
  * @param modifier Modifier to apply to the dropdown list layout.
  * @param width The width of the dropdown list. Defaults to 256.
+ * @param xAlignment The horizontal alignment of the dropdown list. Defaults to aenter alignment.
  * @param multiSelect True if multiple selections are allowed, false for single selection. Defaults to false.
+ * @param noSelectionText The text to display when no items are selected. Defaults to an empty string.
+ * @param value The currently selected value. Defaults to an empty string.
+ * @param itemsSelected The list of currently selected items. Defaults to an empty list.
+ * @param onSelect Callback function to be called when an item is selected. It receives the selected item as a parameter.
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

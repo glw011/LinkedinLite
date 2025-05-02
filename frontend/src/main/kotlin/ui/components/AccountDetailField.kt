@@ -22,6 +22,7 @@ import ui.components.styles.styledTextField
  * @param onTextChanged The callback for when the text is changed.
  * @param keyboardType The keyboard type for the text field. (E.g. Email, Password, etc.)
  * @param password Whether the text field will contain a password or not.
+ * @param value The current value of the text field.
  * @param modifier The modifier for the text field.
  */
 @Composable

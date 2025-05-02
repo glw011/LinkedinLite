@@ -19,6 +19,7 @@ import util.openFileChooser
 /**
  * The registration screen allowing the user to upload a profile picture for their organization.
  *
+ * @param uiState The current state of the registration screen.
  * @param onContinue Callback function for when the user clicks the continue button.
  * @param onBack Callback function for when the user clicks the back button.
  */

@@ -6,6 +6,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 
+/**
+ * Creates an image composable. Allows for a nullable bitmap to be passed in.
+ *
+ * @param bitmap The image bitmap to be displayed. Nullable.
+ * @param defaultImage The default image bitmap to be displayed if the provided bitmap is null.
+ * @param contentDescription The content description for accessibility.
+ * @param contentScale The scale type for the image.
+ * @param alignment The alignment of the image within its bounds.
+ * @param modifier The modifier for the image.
+ */
 @Composable
 fun Image(
     bitmap: ImageBitmap?,

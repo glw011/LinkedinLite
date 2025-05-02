@@ -1,6 +1,11 @@
 package ui.views.registerorg
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +23,7 @@ import ui.theme.LIGHT_PURPLE
  *
  * @param onPerson Callback function for when the user selects a personal account.
  * @param onOrg Callback function for when the user selects an organization account.
+ * @param onBack Callback function for when the user clicks the back button.
  */
 @Composable
 fun registerSelectScreen(onPerson: () -> Unit, onOrg: () -> Unit,  onBack: () -> Unit) {

@@ -26,7 +26,6 @@ var pfpModifier = Modifier
 fun PfpImage(
     imageBitmap: ImageBitmap?,
     contentScale: ContentScale = ContentScale.Fit,
-    isClickable: Boolean = true,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {

@@ -10,12 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import java.awt.Image
 
 /**
  * Creates an edit button indicated by a pencil icon.
  *
  * @param onClick The callback for when the button is clicked.
+ * @param icon The icon to be displayed on the button. Defaults to a pencil icon.
  * @param modifier The modifier for the button.
  */
 @Composable

@@ -13,6 +13,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
+/**
+ * A dialog for inviting a new member to a profile.
+ *
+ * @param onCancel Callback for when the cancel button is clicked or dialog is dismissed.
+ */
 @Composable
 fun ProfileMemberInviteDialog(
     onCancel: () -> Unit,

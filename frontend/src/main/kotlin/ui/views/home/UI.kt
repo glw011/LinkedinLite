@@ -5,9 +5,18 @@ Main UI file for LinkedInLite
 
 package ui.views.home
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ui.components.Sidebar
@@ -20,6 +29,8 @@ import ui.theme.DARK_MODE
  * This function sets up the primary layout structure, including the sidebar
  * and the main content area. It manages the currently selected tab and
  * delegates the rendering of content to other composable functions.
+ *
+ * @param profileUiState The UI state of the profile, containing header information and other data.
  */
 @Composable
 fun UI(

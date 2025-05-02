@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,6 +38,16 @@ import androidx.compose.ui.unit.dp
 import ui.components.CloseButton
 import ui.components.image.PfpImage
 
+/**
+ * Creates a surface composable containing a profile picture and member details
+ * of members of an organization for displaying on a profile.
+ *
+ * @param name The name of the member.
+ * @param role The role of the member.
+ * @param profilePicture The profile picture of the member.
+ * @param onClick The callback for when the member is clicked.
+ * @param modifier The modifier for the surface.
+ */
 @Composable
 private fun MemberDetails(
     name: String,
@@ -54,7 +61,6 @@ private fun MemberDetails(
     ) {
         PfpImage(
             imageBitmap = profilePicture,
-            isClickable = false,
             onClick = onClick,
             modifier = Modifier
                 .fillMaxSize()
@@ -89,6 +95,18 @@ private fun MemberDetails(
     }
 }
 
+/**
+ * Creates a member slot for displaying a member's profile picture, name, and role.
+ * The slot is clickable and can be edited if specified.
+ *
+ * @param name The name of the member.
+ * @param role The role of the member.
+ * @param profilePicture The profile picture of the member.
+ * @param isEditable Whether the slot is editable or not.
+ * @param onDelete The callback for when the delete button is clicked.
+ * @param onClick The callback for when the slot is clicked.
+ * @param modifier The modifier for the slot.
+ */
 @Composable
 private fun MemberSlot(
     name: String,
@@ -132,7 +150,9 @@ private fun MemberSlot(
  *
  * @param title The title of the card.
  * @param subtitle The subtitle of the card.
- * @param members A list of member names.
+ * @param members A list of members to be displayed.
+ * @param onMemberClick The callback for when a member is clicked.
+ * @param onAddMemberClick The callback for when the add member button is clicked.
  * @param modifier Modifier to apply to the card.
  */
 @Composable

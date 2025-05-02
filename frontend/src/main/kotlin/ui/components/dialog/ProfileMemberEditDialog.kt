@@ -10,6 +10,14 @@ import androidx.compose.ui.unit.dp
 import ui.components.Field
 import ui.components.profilecard.Member
 
+/**
+ * A dialog for editing a member's role in a profile.
+ *
+ * @param member The member to edit.
+ * @param onRoleChange Callback for when the role is changed.
+ * @param onSave Callback for when the save button is clicked.
+ * @param onCancel Callback for when the cancel button is clicked or dialog is dismissed.
+ */
 @Composable
 fun ProfileMemberEditDialog(
     member: Member,

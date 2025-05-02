@@ -15,7 +15,6 @@ import util.getBitmapFromDrawableID
  * @property interestedPeople A list of people the profile may be interested in.
  * @property relatedOrganizations A list of organizations related to the profile.
  * @property members A list of members associated with the profile. (For organization accounts)
- * @property roles A list of roles associated with the profile.
  * @property tags A list of tags associated with the profile.
  */
 data class ProfileUiState(

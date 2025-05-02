@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +20,15 @@ import ui.components.AccountDetailField
 import ui.components.Field
 import ui.components.styles.styledButton
 
+/**
+ * A dialog that allows the user to edit their account information.
+ *
+ * @param title The title of the dialog.
+ * @param fields The list of fields to be displayed in the dialog.
+ * @param onCancel Callback function for when the user clicks the cancel button.
+ * @param onConfirm Callback function for when the user clicks the confirm button.
+ * @param modifier Optional modifier for styling.
+ */
 @Composable
 fun EditDialog(
     title: String,
@@ -41,6 +47,7 @@ fun EditDialog(
                 modifier = Modifier,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Title
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineMedium,
@@ -50,6 +57,7 @@ fun EditDialog(
                         .align(Alignment.CenterHorizontally)
                 )
 
+                // Fields
                 for (field in fields) {
                     AccountDetailField(
                         label = field.title,
@@ -60,6 +68,7 @@ fun EditDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Buttons
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

@@ -64,6 +64,8 @@ val exampleMembers = exampleNames.mapIndexed { index, name ->
 
 /**
  * The profile tab for organizations in the main screen.
+ *
+ * @param uiState The UI state of the profile.
  */
 @Composable
 fun OrgProfileTab(

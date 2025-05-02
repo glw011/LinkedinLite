@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
  *
  * @param title The title of the card.
  * @param subtitle The subtitle of the card.
+ * @param onEdit Callback for when the edit button is clicked.
  * @param modifier Modifier to apply to the card.
  */
 @Composable
