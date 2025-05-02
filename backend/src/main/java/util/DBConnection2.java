@@ -11,17 +11,17 @@ public class DBConnection2 {
 
     private static final String DB_USER = System.getenv().getOrDefault("DB_USER", "dbuser");
     private static final String DB_PASS = System.getenv().getOrDefault("DB_PASS", "CSC403");
-    private static final String DB_HOST = System.getenv().getOrDefault("DB_HOST", "db");
-    private static final String DB_PORT = System.getenv().getOrDefault("DB_PORT", "3306");
+    private static final String DB_HOST = System.getenv().getOrDefault("DB_HOST", "localhost");
+    //private static final String DB_PORT = System.getenv().getOrDefault("DB_PORT", "3306");
     private static final String DB_NAME = System.getenv().getOrDefault("DB_NAME", "lldb");
 
     // Add allowPublicKeyRetrieval=true
     private static final String DB_URL = String.format(
-            "jdbc:mysql://%s:%s/%s" +
+            "jdbc:mysql://%s/%s" +
                     "?useSSL=false" +
                     "&allowPublicKeyRetrieval=true" +
                     "&serverTimezone=UTC;AUTO_SERVER=TRUE",
-            DB_HOST, DB_PORT, DB_NAME
+            DB_HOST, DB_NAME
     );
 
     static {
@@ -106,8 +106,7 @@ public class DBConnection2 {
     }
 
     public static PreparedStatement getPrepStatement(String sqlStr, String[] colNames) throws SQLException{
-        if(connection == null){getConnection();}
-        return connection.prepareStatement(sqlStr, colNames);
+        return getConnection().prepareStatement(sqlStr, colNames);
     }
 
     /**
