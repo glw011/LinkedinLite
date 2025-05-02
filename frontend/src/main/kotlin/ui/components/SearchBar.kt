@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
+import ui.components.styles.styledDropDownList
+import ui.components.styles.styledTextField
 import ui.views.home.SEARCH_BAR_TEXT
 
 /**

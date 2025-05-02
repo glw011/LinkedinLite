@@ -29,6 +29,7 @@ import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_pfp
 import org.example.linkedinliteui.generated.resources.default_post
 import org.jetbrains.compose.resources.painterResource
+import ui.components.styles.styledTextField
 import ui.theme.LIGHT_PURPLE
 
 /**

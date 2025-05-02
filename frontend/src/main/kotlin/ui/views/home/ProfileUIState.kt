@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_banner
 import org.example.linkedinliteui.generated.resources.default_pfp
+import ui.components.profilecard.Member
 import util.getBitmapFromDrawableID
 
 /**
@@ -21,8 +22,7 @@ data class ProfileUiState(
     var headerInfo: ProfileHeaderInfo = ProfileHeaderInfo(),
     var interestedPeople: List<String> = listOf(),
     var relatedOrganizations: List<String> = listOf(),
-    var members: List<String> = listOf(),
-    var roles: List<String> = listOf(),
+    var members: List<Member> = listOf(),
     var tags: List<String> = listOf(),
 )
 
@@ -36,11 +36,11 @@ data class ProfileUiState(
  * @property profilePicture The ImageBitmap for the profile picture. Nullable.
  */
 data class ProfileHeaderInfo(
-    var name: String = "<Placeholder Name>",
-    var description: String = "<Placeholder Description>",
-    var title: String = "<Placeholder Title>",
-    var location: String = "<Placeholder Location>",
-    var school: String = "<Placeholder School>",
+    var name: String = "",
+    var description: String = "",
+    var title: String = "",
+    var location: String = "",
+    var school: String = "",
     var banner: MutableState<ImageBitmap?> = mutableStateOf(getBitmapFromDrawableID(Res.drawable.default_banner)),
     var profilePicture: MutableState<ImageBitmap?> = mutableStateOf(getBitmapFromDrawableID(Res.drawable.default_pfp)),
 )

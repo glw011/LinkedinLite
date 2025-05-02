@@ -1,12 +1,12 @@
-package ui.components
+package ui.components.image
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_banner
 import org.jetbrains.compose.resources.imageResource
-import ui.components.Image
 
 /**
  * Creates a profile banner image.
@@ -22,6 +22,7 @@ fun Banner(
     Image(
         bitmap = imageBitmap,
         defaultImage = imageResource(Res.drawable.default_banner),
+        contentScale = ContentScale.FillWidth,
         contentDescription = "Profile Banner",
         modifier = modifier
     )

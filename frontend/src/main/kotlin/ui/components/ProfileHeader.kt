@@ -5,9 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,7 +16,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import ui.components.dialog.EditDialog
+import ui.components.image.Banner
+import ui.components.image.EditablePfpImage
 
 /**
  * Creates a dialog window for editing profile details.
@@ -39,70 +39,40 @@ fun DetailEditDialog(
     onSave: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    Dialog(
-        onDismissRequest = onCancel,
-    ) {
-        ElevatedCard(
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .wrapContentHeight()
-                .clip(RoundedCornerShape(16.dp))
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    text = "Edit Profile",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                AccountDetailField(
-                    label = "Name",
-                    prompt = "Enter your name",
-                    onTextChanged = onNameChanged,
-                )
-                AccountDetailField(
-                    label = "Description",
-                    prompt = "Enter your description",
-                    onTextChanged = onDescriptionChanged,
-                )
-                AccountDetailField(
-                    label = "Location",
-                    prompt = "Enter your location",
-                    onTextChanged = onLocationChanged,
-                )
-                AccountDetailField(
-                    label = "School",
-                    prompt = "Enter your school",
-                    onTextChanged = onSchoolChanged,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    styledButton(
-                        text = "Save",
-                        onClick = onSave,
-                        width = 80,
-                    )
-                    styledButton(
-                        text = "Cancel",
-                        onClick = onCancel,
-                        width = 80,
-                    )
-                }
-            }
-        }
-    }
+    val fields: List<Field> = listOf(
+        Field(
+            title = "Name",
+            prompt = "Enter your name",
+            onEdit = onNameChanged,
+        ),
+        Field(
+            title = "Description",
+            prompt = "Enter your description",
+            onEdit = onDescriptionChanged,
+        ),
+        Field(
+            title = "Location",
+            prompt = "Enter your location",
+            onEdit = onLocationChanged,
+        ),
+        Field(
+            title = "School",
+            prompt = "Enter your school",
+            onEdit = onSchoolChanged,
+        ),
+    )
+
+    EditDialog(
+        title = "Edit Profile",
+        fields = fields,
+        onCancel = onCancel,
+        onConfirm = onSave,
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .wrapContentHeight()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    )
 }
 
 /**

@@ -1,4 +1,4 @@
-package ui.components
+package ui.components.image
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment

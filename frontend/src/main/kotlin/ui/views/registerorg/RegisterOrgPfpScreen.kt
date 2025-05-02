@@ -10,38 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ui.components.EditablePfpImage
-import ui.components.styledButton
+import ui.components.image.EditablePfpImage
+import ui.components.styles.styledButton
 import ui.theme.LIGHT_PURPLE
 import util.getBitmapFromFilepath
-import javax.swing.JFileChooser
-import javax.swing.filechooser.FileNameExtensionFilter
-
-/**
- * Opens a file manager dialog on the user system to choose an image file.
- * Accepts jpg, png, and gif files.
- *
- * @return The absolute path of the selected image file as a String. If no file is selected,
- * returns an empty string.
- */
-fun openFileChooser(): String {
-    val fileChooser = JFileChooser()
-    fileChooser.fileFilter =
-        FileNameExtensionFilter("Image Files", "jpg", "png", "gif")
-    val returnValue = fileChooser.showOpenDialog(null)
-
-    val imagePath: String
-
-    // Check if a file was selected
-    if (returnValue == JFileChooser.APPROVE_OPTION) {
-        val selectedFile = fileChooser.selectedFile
-        imagePath = selectedFile.absolutePath
-    } else {
-        imagePath = ""
-    }
-
-    return imagePath
-}
+import util.openFileChooser
 
 /**
  * The registration screen allowing the user to upload a profile picture for their organization.

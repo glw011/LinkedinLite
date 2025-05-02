@@ -1,4 +1,4 @@
-package ui.components
+package ui.components.profilecard
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import ui.components.image.PfpImage
 
 /**
  * Creates a slot for a profile to be used in a recommendation card.

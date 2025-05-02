@@ -1,4 +1,4 @@
-package ui.components
+package ui.components.image
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,10 +9,9 @@ import androidx.compose.ui.layout.ContentScale
 import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_pfp
 import org.jetbrains.compose.resources.imageResource
-import ui.components.Image
 import util.getBitmapFromFilepath
 
-val pfpModifier = Modifier
+var pfpModifier = Modifier
     .fillMaxSize()
 
 /**
@@ -27,6 +26,7 @@ val pfpModifier = Modifier
 fun PfpImage(
     imageBitmap: ImageBitmap?,
     contentScale: ContentScale = ContentScale.Fit,
+    isClickable: Boolean = true,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {

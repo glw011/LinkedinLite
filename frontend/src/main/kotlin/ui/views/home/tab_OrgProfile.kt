@@ -7,24 +7,32 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-import data.DataSource.tags
 import ui.components.*
-import ui.views.registerorg.openFileChooser
-import util.getBitmapFromDrawableID
+import ui.components.profilecard.Member
+import ui.components.dialog.ProfileMemberEditDialog
+import ui.components.dialog.ProfileMemberInviteDialog
+import ui.components.dialog.ProfileTagsEditDialog
+import ui.components.profilecard.ProfileMembersCard
+import ui.components.profilecard.ProfilePostsCard
+import ui.components.profilecard.ProfileRecommendationCard
+import ui.components.profilecard.ProfileTagsCard
+import util.openFileChooser
 import util.getBitmapFromFilepath
 
 val headerShape = RoundedCornerShape(16.dp)
 val postShape = RoundedCornerShape(8.dp)
 
-val exampleMembers = listOf(
+val exampleNames = listOf(
     "Harrison Day",
     "Jayden Toussaint",
     "Chris Leblanc",
@@ -46,6 +54,13 @@ val exampleRoles = listOf(
     "Member",
     "Member"
 )
+val exampleMembers = exampleNames.mapIndexed { index, name ->
+    Member(
+        name = name,
+        role = exampleRoles[index],
+        profilePicture = null // Placeholder for profile picture
+    )
+}
 
 /**
  * The profile tab for organizations in the main screen.
@@ -57,6 +72,10 @@ fun OrgProfileTab(
     val profileHeaderInfo by rememberSaveable { mutableStateOf(ProfileHeaderInfo()) }
     var imagePath by rememberSaveable { mutableStateOf("") }
     var isEditingHeader by rememberSaveable { mutableStateOf(false) }
+    var isInvitingMember by rememberSaveable { mutableStateOf(false) }
+    var isEditingTags by rememberSaveable { mutableStateOf(false) }
+    var memberToEdit: Member? by rememberSaveable { mutableStateOf(null) }
+    var memberToEditRole: String by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -112,14 +131,19 @@ fun OrgProfileTab(
                 ProfileTagsCard(
                     title = "Tags",
                     tags = uiState.tags,
+                    onEdit = { isEditingTags = true },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(256.dp)
                 )
                 ProfileMembersCard(
                     title = "Members",
-                    members = exampleMembers,
-                    roles = exampleRoles,
+                    members = mutableStateListOf(*exampleMembers.toTypedArray()),
+                    onMemberClick = { member ->
+                        memberToEdit = member
+                        memberToEditRole = member.role
+                    },
+                    onAddMemberClick = { isInvitingMember = true },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp)
@@ -180,6 +204,47 @@ fun OrgProfileTab(
                 profileHeaderInfo.location = ""
                 profileHeaderInfo.school = ""
             }
+        )
+    }
+    if (isInvitingMember) {
+        ProfileMemberInviteDialog(
+            onCancel = { isInvitingMember = false }
+        )
+    }
+    if (memberToEdit != null) {
+        ProfileMemberEditDialog(
+            member = memberToEdit!!,
+            onRoleChange = { memberToEditRole = it },
+            onSave = {
+                memberToEdit?.role = memberToEditRole
+                memberToEdit = null
+                memberToEditRole = ""
+            },
+            onCancel = {
+                memberToEdit = null
+                memberToEditRole = ""
+            },
+        )
+    }
+    if (isEditingTags) {
+        var tags = rememberSaveable { mutableStateListOf(*uiState.tags.toTypedArray()) }
+        ProfileTagsEditDialog(
+            tags = tags,
+            onSelect = { selectedTag ->
+                if (selectedTag in tags) {
+                    tags.remove(selectedTag)
+                } else {
+                    tags.add(selectedTag)
+                }
+            },
+            onSave = {
+                isEditingTags = false
+                uiState.tags = tags
+            },
+            onCancel = {
+                isEditingTags = false
+                tags = uiState.tags as SnapshotStateList<String>
+            },
         )
     }
 }

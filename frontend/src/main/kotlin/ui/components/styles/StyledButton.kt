@@ -3,7 +3,7 @@ Harrison Day - 04/11/25
 Styled Button for LinkedInLite
 ------------------------------------------------------------------------------------------------- */
 
-package ui.components
+package ui.components.styles
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

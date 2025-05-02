@@ -13,8 +13,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import data.DataSource.tags
 import ui.components.AccountDetailField
-import ui.components.styledButton
-import ui.components.styledDropDownList
+import ui.components.styles.styledButton
+import ui.components.styles.styledDropDownList
 import ui.theme.LIGHT_PURPLE
 
 /**
@@ -81,7 +81,7 @@ fun registerOrgInfoScreen(
 
             styledDropDownList(
                 items = tags,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier,
                 width = 256,
                 multiSelect = true,
                 noSelectionText = "Select Organization Tags",

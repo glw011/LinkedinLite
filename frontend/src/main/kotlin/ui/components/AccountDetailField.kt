@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import ui.components.styles.styledTextField
 
 /**
  * Creates a text field with a label and a prompt. Used for allowing the user

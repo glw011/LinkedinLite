@@ -30,7 +30,7 @@ import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_pfp
 import org.jetbrains.compose.resources.imageResource
 import ui.theme.LIGHT_PURPLE
-import ui.components.Image
+import ui.components.image.Image
 
 var FadeSpeed by mutableStateOf(100)
 

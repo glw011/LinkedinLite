@@ -9,6 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import java.awt.Image
 
 /**
  * Creates an edit button indicated by a pencil icon.
@@ -19,10 +21,11 @@ import androidx.compose.ui.draw.clip
 @Composable
 fun EditButton(
     onClick: () -> Unit,
+    icon: ImageVector = Icons.Default.Edit,
     modifier: Modifier = Modifier,
 ) {
     Icon(
-        imageVector = Icons.Default.Edit,
+        imageVector = icon,
         contentDescription = "Edit",
         tint = MaterialTheme.colorScheme.onBackground,
         modifier = modifier

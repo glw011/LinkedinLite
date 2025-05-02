@@ -1,4 +1,4 @@
-package ui.components
+package ui.components.image
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.hoverable

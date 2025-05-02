@@ -3,7 +3,7 @@ Jayden Toussaint, Harrison Day - 04/11/25
 Styled Dropdown List for LinkedInLite
 ------------------------------------------------------------------------------------------------- */
 
-package ui.components
+package ui.components.styles
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -50,28 +50,33 @@ fun styledDropDownList(
     multiSelect: Boolean = false,
     noSelectionText: String = "",
     value: String = "",
+    itemsSelected: List<String> = listOf(),
     onSelect: (String) -> Unit = {},
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var dropDownIcon by rememberSaveable { mutableStateOf(Icons.Filled.KeyboardArrowDown) }
-    var selectedText by rememberSaveable { mutableStateOf(items[0]) }
-    val selectedItems = rememberSaveable { mutableStateListOf<String>() }
+    var selectedText: String by rememberSaveable { mutableStateOf(value) }
+    val selectedItems = rememberSaveable { mutableStateListOf(*itemsSelected.toTypedArray()) }
 
     SEARCH_FILTERS = selectedItems
 
     dropDownIcon = Icons.Filled.KeyboardArrowDown
     if (isExpanded) dropDownIcon = Icons.Filled.KeyboardArrowUp
 
-    selectedText = noSelectionText
-    if (multiSelect && !selectedItems.isEmpty())
+    if (selectedItems.isEmpty()) {
+        selectedText = noSelectionText
+    }
+    else if (multiSelect && selectedItems.isNotEmpty()) {
         selectedText = selectedItems.joinToString(", ")
-    else if (!multiSelect && !selectedItems.isEmpty())
+    } else if (!multiSelect && selectedItems.isNotEmpty()) {
         selectedText = selectedItems[0]
+    }
 
     MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             onExpandedChange = { isExpanded = !isExpanded },
+            modifier = modifier,
         ) {
             styledTextField(
                 onTextChanged = { selectedText = it },
