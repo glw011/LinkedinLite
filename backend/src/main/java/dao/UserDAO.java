@@ -21,7 +21,7 @@ public class UserDAO {
         //  else's data (assuming they can manage it throughout each user session) and makes it easy to update any necessary rows?
         String sql = "SELECT user_id FROM User_Verify WHERE email = ? AND pass_hash = ?";
 
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection2.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);

@@ -39,7 +39,16 @@ public class StudentDAO extends UserDAO{
         }
         return false;
     }
-
+    public boolean updateStudent(Student s) throws SQLException {
+        String sql = "UPDATE Students SET fname = ?, lname = ?, major_id = ? WHERE student_id = ?";
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+            pstmt.setString(1, s.getFname());
+            pstmt.setString(2, s.getLname());
+            pstmt.setInt(3, s.getMajor());
+            pstmt.setInt(4, s.getID());
+            return pstmt.executeUpdate() > 0;
+        }
+    }
     public Student getStudentById(int stdId) throws SQLException {
         Student studentObj;
 

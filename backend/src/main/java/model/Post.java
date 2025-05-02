@@ -3,42 +3,63 @@ package model;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 
-public class Post{
+public class Post {
     private int postId;
-    private int owner;
+    private int ownerId;
     private String content;
-    private Picture postImg;
-    private Timestamp postDate;
-    private LinkedList<Integer> tags;
-    private LinkedList<Comment> comments;
+    private Timestamp timestamp;
+    private String userKey;
+    private String imageFileName;
+    private LinkedList<Integer> tagList = new LinkedList<>();
+    private LinkedList<Comment> commentsList = new LinkedList<>();
 
-    public Post(int id, int ownerId, String content, Timestamp date){
-        this.postId = id;
-        this.owner = ownerId;
+    // no-arg for servlet: Post post = new Post();
+    public Post() {}
+
+    // used by DAO: new Post(rs.getInt("post_id"), ..., rs.getTimestamp("post_date"))
+    public Post(int postId, int ownerId, String content, Timestamp timestamp) {
+        this.postId = postId;
+        this.ownerId = ownerId;
         this.content = content;
-        this.postDate = date;
-
-        this.tags = new LinkedList<>();
-        this.comments = new LinkedList<>();
+        this.timestamp = timestamp;
     }
 
-    public int getID(){return this.postId;}
-    public int getOwnerID(){return this.owner;}
+    // --- getters / setters ---
+    public int getPostId() { return postId; }
+    public void setPostId(int postId) { this.postId = postId; }
+    // in model/Post.java
 
-    public String getContent(){return this.content;}
-    public void setContent(String newContent){this.content = newContent;}
-
-    public Timestamp getPostDate(){return this.postDate;}
-
-    public LinkedList<Integer> getTags(){return this.tags;}
-    public void setTagList(LinkedList<Integer> tagList){
-        this.tags = tagList;
+    /** Alias for getPostId(), so existing DAOs that call post.getID() compile. */
+    public int getID() {
+        return getPostId();
     }
 
-    public LinkedList<Comment> getComments(){return this.comments;}
-    public void setCommentsList(LinkedList<Comment> comments){
-        this.comments = comments;
+    /** Alias for getTimestamp(), so you can do Post::getPostDate. */
+    public java.sql.Timestamp getPostDate() {
+        return getTimestamp();
     }
 
-    // TODO: Add image getter/setter methods
+
+    public int getOwnerId() { return ownerId; }
+    public void setOwnerId(int ownerId) { this.ownerId = ownerId; }
+
+    // your service calls getPostText()/setPostText()
+    public String getPostText() { return content; }
+    public void setPostText(String content) { this.content = content; }
+
+    public Timestamp getTimestamp() { return timestamp; }
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
+
+    // your servlet calls setUserKey()/getUserKey()
+    public String getUserKey() { return userKey; }
+    public void setUserKey(String userKey) { this.userKey = userKey; }
+
+    public String getImageFileName() { return imageFileName; }
+    public void setImageFileName(String imageFileName) { this.imageFileName = imageFileName; }
+
+    public LinkedList<Integer> getTagList() { return tagList; }
+    public void setTagList(LinkedList<Integer> tagList) { this.tagList = tagList; }
+
+    public LinkedList<Comment> getCommentsList() { return commentsList; }
+    public void setCommentsList(LinkedList<Comment> commentsList) { this.commentsList = commentsList; }
 }

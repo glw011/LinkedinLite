@@ -1,107 +1,72 @@
+// src/main/java/util/DBConnection2.java
 package util;
 
 import java.sql.*;
-import java.util.Arrays;
 
 public class DBConnection2 {
     private static final boolean DEBUG = true;
 
-    private static final String DB_USER = (System.getenv("DB_USER") != null) ? System.getenv("DB_USER") : "dbuser";
-    private static final String DB_PASS = (System.getenv("DB_PASS") != null) ? System.getenv("DB_PASS") : "CSC403";
-    private static final String DB_HOST = (System.getenv("DB_HOST") != null) ? System.getenv("DB_HOST") : "localhost";
-    private static final String DB_PORT = (System.getenv("DB_PORT") != null) ? System.getenv("DB_PORT") : "3306";
-    private static final String DB_NAME = (System.getenv("DB_NAME") != null) ? System.getenv("DB_NAME") : "lldb";
+    private static final String DB_USER = System.getenv().getOrDefault("DB_USER", "dbuser");
+    private static final String DB_PASS = System.getenv().getOrDefault("DB_PASS", "CSC403");
+    private static final String DB_HOST = System.getenv().getOrDefault("DB_HOST", "db");
+    private static final String DB_PORT = System.getenv().getOrDefault("DB_PORT", "3306");
+    private static final String DB_NAME = System.getenv().getOrDefault("DB_NAME", "lldb");
 
-    private static final String DB_URL = String.format("jdbc:mysql://%s:%s/%s?useSSL=false;AUTO_SERVER=TRUE", DB_HOST, DB_PORT, DB_NAME);
+    // Add allowPublicKeyRetrieval=true
+    private static final String DB_URL = String.format(
+            "jdbc:mysql://%s:%s/%s" +
+                    "?useSSL=false" +
+                    "&allowPublicKeyRetrieval=true" +
+                    "&serverTimezone=UTC",
+            DB_HOST, DB_PORT, DB_NAME
+    );
 
-    private static Connection connection = null;
-    private static Statement statement = null;
-
-
-    public static Connection getConnection() throws SQLException{
-        if(connection == null){
-            try{
-                connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-                if(DEBUG) System.out.println("Connection to DB Successful");
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            if (DEBUG) {
+                System.out.println("MySQL driver loaded");
+                System.out.println("DB_URL = " + DB_URL);
             }
-            //TODO: Add loop to retry connection 2 or 3 times?
-            catch(SQLException e){
-                if(DEBUG) System.out.println("Connection to DB Failed");
-                System.err.println(e);
-                System.err.println(Arrays.toString(e.getStackTrace()));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("MySQL driver missing", e);
+        }
+    }
+
+    private static Connection connection;
+
+    public static Connection getConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            if (DEBUG) System.out.println("Connecting to DB URL: " + DB_URL);
+            try {
+                connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+                if (DEBUG) System.out.println("DB connection established");
+            } catch (SQLException e) {
+                System.err.println("!!! DBConnection FAILED !!!");
+                System.err.println("  errorCode = " + e.getErrorCode());
+                System.err.println("  sqlState  = " + e.getSQLState());
+                System.err.println("  message   = " + e.getMessage());
+                throw e;
             }
         }
         return connection;
     }
 
-    public static Statement getStatement() throws SQLException{      //TODO: Try/Catch reattempt in catch
-        if(connection == null){getConnection();}
-        return connection.createStatement();
+    public static PreparedStatement getPrepStatement(String sql) throws SQLException {
+        return getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
-    public static PreparedStatement getPrepStatement(String sqlStr) throws SQLException{
-        if(connection == null){getConnection();}
-        return connection.prepareStatement(sqlStr);
+    public static PreparedStatement getPrepStatement(String sql, String[] cols) throws SQLException {
+        return getConnection().prepareStatement(sql, cols);
     }
 
-    public static PreparedStatement getPrepStatement(String sqlStr, String[] colNames) throws SQLException{
-        if(connection == null){getConnection();}
-        return connection.prepareStatement(sqlStr, colNames);
-    }
-
-    public static ResultSet queryDB(String query) throws SQLException{
-        return getStatement().executeQuery(query);
+    public static ResultSet queryDB(String sql) throws SQLException {
+        return getConnection().createStatement().executeQuery(sql);
     }
 
     public static void closeDBConnection() throws SQLException {
-        if (statement != null) statement.close();
-        if (connection != null) connection.close();
-    }
-
-/*
-    // TODO: Remove once logic doesn't need to be recycled somewhere
-    public LinkedList<Student> getAllStudents() throws SQLException{
-        LinkedList<Student> studentList = new LinkedList<Student>();
-        String sqlStr =
-                "SELECT DISTINCT" +
-                    "Students.student_id as id," +
-                    "Students.lname as lname," +
-                    "Students.fname as fname," +
-                    "Majors.major_name as major," +
-                    "Majors.major_id as major_id," +
-                    "Colleges.college_name as college," +
-                    "Colleges.college_id as college_id," +
-                    "Schools.name as school," +
-                    "Schools.school_id as school_id," +
-                    "Users.email as email," +
-                    "Entities.bio as bio," +
-                    "Entities.pfp_id as pfp_id" +
-                "FROM" +
-                    "Users JOIN Entities ON Users.user_id = Entities.entity_id" +
-                        "JOIN Students ON Users.user_id = Students.student_id" +
-                        "JOIN Majors ON Students.major_id = Majors.major_id" +
-                        "JOIN Colleges ON Majors.college_id = Colleges.college_id" +
-                        "JOIN Schools ON Colleges.school_id = Schools.school_id";
-
-        ResultSet results = queryDB(sqlStr);
-
-        while(results.next()){
-            Student currStudent = new Student(
-                    results.getInt("id"),
-                    results.getAsciiStream("email").toString(),
-                    results.getAsciiStream("fname").toString(),
-                    results.getAsciiStream("lname").toString(),
-                    DAOManager.getSchool(results.getInt("school_id"))
-            );
-            // TODO: Complete getAllStudents() method
-            //currStudent.setMajor(DBO.majors.get(results.getInt("major_id")));
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
         }
-
-        results.close();
-        return studentList;
     }
-
-*/
 }
-
-
