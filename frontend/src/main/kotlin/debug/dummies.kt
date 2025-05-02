@@ -22,27 +22,23 @@ val defaultPost = getBitmapFromFilepath(Paths.get("").toAbsolutePath().toString(
  *
  * @return A shuffled list of [ProfileData] objects.
  */
-fun getDummyProfileList(): List<ProfileData> {
-    val dummyProfileList = mutableStateListOf<ProfileData>().apply {
-        // Generate 30 user profiles
-        repeat(30) { i ->
-            val name = "user_${(i * 2) + 1000}"
-            val bio = "Made up bio for user ${(i * 2) + 1000}, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
-            add(ProfileData(null, name, bio))
-        }
+val dummyProfileList = mutableStateListOf<ProfileData>().apply {
+    // Generate 30 user profiles
+    repeat(30) { i ->
+        val name = "user_${(i * 2) + 1000}"
+        val bio = "Made up bio for user ${(i * 2) + 1000}, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
+        add(ProfileData(null, name, bio))
+    }
 
-        // Generate 5 organization profiles
-        repeat(5) { i ->
-            val name = "org_${(i * 2) + 1000}"
-            val bio = "Made up bio for organization ${(i * 2) + 1000}, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
-            add(ProfileData(null, name, bio))
-        }
-        // Add a specific organization profile
-        add(ProfileData(null, "LATech AI", "Made up bio for organization LATech AI, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."))
-    }.shuffled() // Shuffle the list to randomize the order
-
-    return dummyProfileList
-}
+    // Generate 5 organization profiles
+    repeat(5) { i ->
+        val name = "org_${(i * 2) + 1000}"
+        val bio = "Made up bio for organization ${(i * 2) + 1000}, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."
+        add(ProfileData(null, name, bio))
+    }
+    // Add a specific organization profile
+    add(ProfileData(null, "LATech AI", "Made up bio for organization LATech AI, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the bio."))
+}.shuffled() // Shuffle the list to randomize the order
 
 /**
  * Generates a list of dummy post data for demonstration purposes.
