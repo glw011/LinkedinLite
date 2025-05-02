@@ -19,6 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import data.AccountType
+import data.User
+import org.jetbrains.skiko.currentNanoTime
 import ui.components.Sidebar
 import ui.components.searchActive
 import ui.theme.DARK_MODE
@@ -31,10 +34,12 @@ import ui.theme.DARK_MODE
  * delegates the rendering of content to other composable functions.
  *
  * @param profileUiState The UI state of the profile, containing header information and other data.
+ * @param currentUser The current user object, containing user information and account type.
  */
 @Composable
 fun UI(
-    profileUiState: ProfileUiState
+    profileUiState: ProfileUiState,
+    currentUser: User,
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight) {
         var selectedTab by remember { mutableStateOf("Home") }
@@ -68,7 +73,12 @@ fun UI(
                 // Switch Tabs
                 when (selectedTab) {
                     "People / Orgs" -> peopleOrgsTabContent()
-                    "My Profile" -> OrgProfileTab(profileUiState)
+                    "My Profile" ->
+                        if (currentUser.accountType == AccountType.ORGANIZATION) {
+                            OrgProfileTab(profileUiState)
+                        } else {
+                            IndividualProfileTab(profileUiState)
+                        }
                     "Home" -> homeTab()
                     // Add your new tab content composables here
                 }
