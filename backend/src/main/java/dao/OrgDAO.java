@@ -2,6 +2,7 @@ package dao;
 
 import model.ModelManager;
 import model.Org;
+import model.Student;
 import model.UserType;
 import util.DBConnection2;
 
@@ -13,7 +14,7 @@ import java.util.LinkedList;
 
 public class OrgDAO extends UserDAO{
 
-    public boolean addOrg(String name, String email, String hashedPass, String schoolName) throws SQLException {
+    public static boolean addOrg(String name, String email, String hashedPass, String schoolName) throws SQLException {
         if(addUser(email, hashedPass, UserType.ORG)){
             int userId = ModelManager.getUserId(email);
             int schoolId = ModelManager.getSchoolIdByName(schoolName);
@@ -38,7 +39,7 @@ public class OrgDAO extends UserDAO{
         return false;
     }
 
-    public Org getOrgById(int orgId) throws SQLException {
+    public static Org getOrgById(int orgId) throws SQLException {
         Org orgObj;
 
         String sqlStr =
@@ -79,7 +80,7 @@ public class OrgDAO extends UserDAO{
     }
 
     // TODO: Same as getAllStudents; Need to implement system to allow for more complex queries without needing 100x functions
-    public HashMap<Integer, Org> getAllOrgs() throws SQLException{
+    public static HashMap<Integer, Org> getAllOrgs() throws SQLException{
         HashMap<Integer, Org> orgMap;
 
         String sqlStr =
@@ -123,7 +124,7 @@ public class OrgDAO extends UserDAO{
         return orgMap;
     }
 
-    public LinkedList<Integer> getAllMembers(int orgId) throws SQLException{
+    public static LinkedList<Integer> getAllMembers(int orgId) throws SQLException{
         String sql = "SELECT student_id FROM Org_Membership WHERE org_id = ?";
         LinkedList<Integer> memberLst;
 
@@ -144,7 +145,7 @@ public class OrgDAO extends UserDAO{
     // TODO: Need to add a membership approval table to store students who have applied to join an org but not yet accepted
     //  also would need 3 additional functions like approveMember(stdId), rejectMember(stdId), getPendingMembers(orgId)
 
-    public boolean addMember(int orgId, int stdId) throws SQLException{
+    public static boolean addMember(int orgId, int stdId) throws SQLException{
         String sql = "INSERT INTO Org_Membership (student_id, org_id) VALUES (?, ?)";
 
         try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
@@ -155,7 +156,7 @@ public class OrgDAO extends UserDAO{
         }
     }
 
-    public boolean delMember(int orgId, int stdId) throws SQLException{
+    public static boolean delMember(int orgId, int stdId) throws SQLException{
         String sql = "DELETE FROM Org_Membership WHERE student_id = ? AND org_id = ?";
 
         try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
@@ -165,4 +166,53 @@ public class OrgDAO extends UserDAO{
             return pstmt.executeUpdate() > 0;
         }
     }
+
+    /**
+     * Inserts an entry containing a student_id, org_id into Pending_Invites table representing a student
+     * being invited to join an org and awaiting that student's approval
+     * @param orgId Unique org_id val of Org inviting the Student
+     * @param stdId Unique student_id val of the Student being invited to join Org
+     * @return true if successful insertion, else false
+     * @throws SQLException if DB error occurs
+     */
+    public static boolean inviteMember(int orgId, int stdId) throws SQLException{
+        // TODO: Needs implementation (DB table needs column indicating whether invite or request)
+        return false;
+    }
+
+    /**
+     * Gets all students who have pending requests for membership to the Org identified by an org_id
+     * @param orgId Unique org_id of the Org seeking all membership requests
+     * @return HashMap containing unique student_id vals of Students awaiting approval as keys, with their Student Obj as vals
+     * @throws SQLException if DB error occurs
+     */
+    public static HashMap<Integer, Student> getAllPendingRequests(int orgId) throws SQLException{
+        // TODO: Needs implementation
+        return null;
+    }
+
+    /**
+     * Removes tuple entry in Pending_Requests and inserts into Org_Membership once approved for membership by Org
+     * @param orgId Unique org_id val of the Org being joined
+     * @param stdId Unique student_id val of the student joining the Org
+     * @return true if removal from Pending_Requests and insertion into Org_Membership are both successful, else false
+     * @throws SQLException if DB error occurs
+     */
+    public static boolean approveMemberRequest(int orgId, int stdId) throws SQLException{
+        // TODO: Needs implementation
+        return false;
+    }
+
+    /**
+     * Removes tuple entry in Pending_Requests and does not insert into Org_Membership when denied by Org
+     * @param orgId Unique org_id val of the Org whose membership was requested
+     * @param stdId Unique student_id val of the student who requested joining the Org
+     * @return true if removal from Pending_Requests successful, else false
+     * @throws SQLException if DB error occurs
+     */
+    public static boolean denyMemberRequest(int orgId, int stdId) throws SQLException{
+        // TODO: Needs implementation
+        return false;
+    }
+
 }

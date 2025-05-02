@@ -6,8 +6,17 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Objects;
 
-// Database Object: Responsible for initial mapping of database and altering mapping as needed
+/**
+ * Responsible for static items in the DB that cannot be altered by a user by storing them as their respective
+ * java objects modeling them and then mapping those objects to a hashmap where their unique id is used as a
+ * key to retrieve the item's model representing it.
+ *
+ * Additionally, maintains a map of all users that is updated whenever a new user is registered, allowing for
+ * the unique user_id of any user to be retrieved via their email address and the user type ('student' or 'org')
+ * to be retrieved via their user_id.
+ */
 public class ModelManager {
+    // initialize hashmaps for mapping/storing all static items contained in DB
     private static HashMap<Integer, School> allSchools;
     private static HashMap<String, Integer> schoolByName;
 
@@ -48,6 +57,7 @@ public class ModelManager {
         populateLists();
     }
 
+    // Populate all mappings (Schools, Fields, Skills, Interests, Majors, User IDs and emails) on server start
     private static void populateLists() throws SQLException{
         populateUsersLists();
         populateSchoolsList();
@@ -57,7 +67,7 @@ public class ModelManager {
         populateMajorsList();
     }
 
-
+    // Get user id, email address, and type of all users stored in DB and add to respective hashmap
     private static void populateUsersLists() throws SQLException{
         String sqlStr = "SELECT * FROM Users";
         ResultSet users = DBConnection2.queryDB(sqlStr);
@@ -74,6 +84,7 @@ public class ModelManager {
 
         users.close();
     }
+    // Get data for all schools in DB, create School obj for each, and map each school's id to its obj in hashmap
     private static void populateSchoolsList() throws SQLException {
         String sqlStr = "SELECT * FROM Schools";
         ResultSet schools = DBConnection2.queryDB(sqlStr);
@@ -93,6 +104,7 @@ public class ModelManager {
 
         schools.close();
     }
+    // Get data for all fields (field of study) in DB, create FoS obj for each, and map each id to its obj in hashmap
     private static void populateFieldsList() throws SQLException{
         String sqlStr = "SELECT * FROM Fields_of_Study";
         ResultSet fields = DBConnection2.queryDB(sqlStr);
@@ -108,6 +120,7 @@ public class ModelManager {
 
         fields.close();
     }
+    // Get data for all skills in DB, create Skill obj for each, and map each id to its obj in hashmap
     private static void populateSkillsList() throws SQLException{
         String sqlStr = "SELECT * FROM Skills";
         ResultSet skills = DBConnection2.queryDB(sqlStr);
@@ -136,6 +149,7 @@ public class ModelManager {
 
         skills.close();
     }
+    // Get data for all interests in DB, create Interest obj for each, and map each id to its obj in hashmap
     private static void populateInterestsList() throws SQLException{
         String sqlStr = "SELECT * FROM Interests";
         ResultSet interests = DBConnection2.queryDB(sqlStr);
@@ -147,7 +161,6 @@ public class ModelManager {
             String currSqlStr = String.format("SELECT * FROM Interest_FoS WHERE interest_id = %d", currInterestId);
             ResultSet field = DBConnection2.queryDB(currSqlStr);
 
-            //TODO: Determine if interest can belong to multiple fields (add while(field.next()) loop) or only 1 field
             field.next();
             int currFieldId = field.getInt("fos_id");
             FoS currField = allFields.get(currFieldId);
@@ -165,6 +178,7 @@ public class ModelManager {
 
         interests.close();
     }
+    // Get data for all majors in DB, create Major obj for each, and map each id to its obj in hashmap
     private static void populateMajorsList() throws SQLException{
         String sqlStr = "SELECT * FROM Majors";
         ResultSet majors = DBConnection2.queryDB(sqlStr);
@@ -213,6 +227,7 @@ public class ModelManager {
         return String.format("SELECT %s FROM %s%s", columnStr, table, conditionStr);
     }
 
+    // Functions to get user type by id, id by email, and map a new user when they are inserted into db
     public static UserType getUserType(int id){return userTypeById.get(id);}
     public static Integer getUserId(String email){return userIdByEmail.get(email);}
     public static void mapNewUser(String email, Integer id, UserType type){
@@ -220,6 +235,7 @@ public class ModelManager {
         userIdByEmail.putIfAbsent(email, id);
     }
 
+    // Functions to get school obj by id, get school id by name, get school obj by name
     public static School getSchool(int id){return allSchools.get(id);}
     public static int getSchoolIdByName(String name){return schoolByName.get(name);}
     public static School getSchoolByName(String name){
@@ -227,6 +243,7 @@ public class ModelManager {
         return null;
     }
 
+    // Functions to get FoS obj by id, get FoS id by name, get FoS obj by name
     public static FoS getFoS(int id){return allFields.get(id);}
     public static int getFoSIdByName(String name){return fieldByName.get(name);}
     public static FoS getFoSByName(String name){
@@ -234,6 +251,7 @@ public class ModelManager {
         return null;
     }
 
+    // Functions to get Skill obj by id, get skill id by name, get Skill obj by name
     public static Skill getSkill(int id){return allSkills.get(id);}
     public static int getSkillIdByName(String name){return skillByName.get(name);}
     public static Skill getSkillByName(String name){
@@ -241,6 +259,7 @@ public class ModelManager {
         return null;
     }
 
+    // Functions to get Interest obj by id, interest id by name, Interest obj by name
     public static Interest getInterest(int id){return allInterests.get(id);}
     public static int getInterestIdByName(String name){return interestByName.get(name);}
     public static Interest getInterestByName(String name){
@@ -248,6 +267,7 @@ public class ModelManager {
         return null;
     }
 
+    // Functions to get Major obj by id, major id by name, Major obj by name
     public static Major getMajor(int id){return allMajors.get(id);}
     public static int getMajorIdByName(String name){return majorByName.get(name);}
     public static Major getMajorByName(String name){

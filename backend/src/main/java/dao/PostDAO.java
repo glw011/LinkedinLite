@@ -12,7 +12,7 @@ public class PostDAO {
 
 
     /**
-     * Inserts a new post into the POST table.
+     * Inserts a new post created by a user(identified by userId) into Posts table.
      *
      * @param userId unique id of the user making the post
      * @param content the content of the post

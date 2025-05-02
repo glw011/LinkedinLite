@@ -4,23 +4,29 @@ package dao;
 import java.sql.*;
 
 import model.*;
-import util.DBConnection;
 import util.DBConnection2;
 import java.util.*;
 
 public class StudentDAO extends UserDAO{
 
     /**
-     * add student to db
+     * Add data from new user of UserType.STUDENT to the DB by inserting row into the User_Verify table and Students table
+     *
+     * @param fname first name of the new student user
+     * @param email email of the new student user
+     * @param hashedPass hashed string resulting from hashing the new student user's password
+     * @param schoolName name of school new student user attends
+     * @param majorName name of the major of the new student user
+     * @return true if data successfully inserted into both the User_Verify and Students tables, else false
+     * @throws SQLException if DB error occurred
      */
-    public boolean addStdnt(String fname, String email, String hashedPass, String schoolName, String majorName) throws SQLException {
+    public static boolean addStdnt(String fname, String email, String hashedPass, String schoolName, String majorName) throws SQLException {
         if(addUser(email, hashedPass, UserType.STUDENT)){
             int userId = ModelManager.getUserId(email);
             int schoolId = ModelManager.getSchoolIdByName(schoolName);
             int majorId = ModelManager.getMajorIdByName(majorName);
 
             String usrSql = "UPDATE Users SET school_id = ? WHERE user_id = ?";
-
             String stdSql = "UPDATE Students SET major_id = ?, fname = ? WHERE student_id = ?";
 
             try (PreparedStatement usrPstmt = DBConnection2.getPrepStatement(usrSql);
@@ -40,7 +46,14 @@ public class StudentDAO extends UserDAO{
         return false;
     }
 
-    public Student getStudentById(int stdId) throws SQLException {
+    /**
+     * Get the data for a student(identified by stdId) as a Student obj
+     *
+     * @param stdId unique user_id/student_id of the student whose data is being retrieved
+     * @return Student object containing that student's data
+     * @throws SQLException if DB error occurred
+     */
+    public static Student getStudentById(int stdId) throws SQLException {
         Student studentObj;
 
         String sqlStr =
@@ -85,10 +98,16 @@ public class StudentDAO extends UserDAO{
         return studentObj;
     }
 
-    // TODO: Duplicate and add Interest obj, Skill obj, School obj, Major obj as param for one duplicate
-    // TODO: OR Duplicate once with String arg for the conditions of search and create function to format condition string
-    //  i.e. "WHERE %s = ? AND %s = ?", "school_id", "interest" (also need to join all tables into the query)
-    public HashMap<Integer, Student> getAllStudents() throws SQLException{
+    /**
+     * Retrieves all users who are students from database along with their relevant data and creates Student obj for each
+     *
+     * @return HashMap containing unique student_id of each student user as a key paired with the Student obj of that student as val
+     * @throws SQLException if DB error occurred
+     */
+    public static HashMap<Integer, Student> getAllStudents() throws SQLException{
+        // TODO: Duplicate and add Interest obj, Skill obj, School obj, Major obj as param for one duplicate
+        // TODO: OR Duplicate once with String arg for the conditions of search and create function to format condition string
+        //  i.e. "WHERE %s = ? AND %s = ?", "school_id", "interest" (also need to join all tables into the query)
         HashMap<Integer, Student> studentMap;
 
         String sqlStr =
@@ -137,27 +156,83 @@ public class StudentDAO extends UserDAO{
         return studentMap;
     }
 
-    // TODO: Needs implementation
-    public boolean setLname(int userId, String lname){
+    /**
+     * Sets last name of the student user identified by userId in the DB to the String passed as lname
+     *
+     * @param userId Unique user_id/student_id of the student user changing their last name
+     * @param lname String containing the last name of the student user
+     * @return true if last name is updated successfully, else false
+     * @throws SQLException if DB error occurred
+     */
+    public static boolean setLName(int userId, String lname) throws SQLException{
+        String sql = "UPDATE Students SET lname = ? WHERE student_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setString(1, lname);
+            pstmt.setInt(2, userId);
+
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    // TODO: Nah fam, once you're in, you're in for life. Ain't no escape from this DB
+    public static boolean deleteStudent(int id) throws SQLException {
         return false;
     }
 
-    // TODO: Nah fam, once you're in, you're in for life. Ain't no escape
-    public boolean deleteStudent(int id) throws SQLException {
+    /**
+     * Adds new a new skill(identified by skillId) to the list of skills attributed to the student(identified by userId)
+     * if that skill is not already attributed to that student(i.e. present in the Student_Skills table).
+     *
+     * @param userId unique user_id/student_id of the student user a skill is being added to
+     * @param skillId unique skill_id of the skill being attributed to the student user
+     * @return true if skill not previously attributed with student and was successfully added to their skills, else false
+     * @throws SQLException if DB error occurred
+     */
+    public static boolean addSkill(int userId, int skillId) throws SQLException{
+        String sql = "INSERT INTO Student_Skills (student_id, skill_id) VALUES (?, ?)";
+
+        LinkedList<Integer> skillLst = getAllSkills(userId);
+        // only add new skill if the user does not already have the skill
+        if(!skillLst.contains(skillId)){
+            try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+                pstmt.setInt(1, userId);
+                pstmt.setInt(2, skillId);
+
+                return pstmt.executeUpdate() > 0;
+            }
+        }
         return false;
     }
 
-    // TODO: Needs implementation
-    public boolean addSkill(int userId, int skillId){
-        return false;
+    /**
+     * Deletes a skill(identified by skillId) associated with a student(identified by userId) from the student's list
+     * of attributed skills if that skill is currently attributed with them.
+     *
+     * @param userId unique user_id/student_id of the student user a skill is being deleted from
+     * @param skillId unique skill_id of the skill being deleted from the student's list of attributed skills
+     * @return true if skill was attributed to user and successfully deleted, else false
+     * @throws SQLException if DB error occurs
+     */
+    public static boolean delSkill(int userId, int skillId) throws SQLException{
+        String sql = "DELETE FROM Student_Skills WHERE student_id = ? AND skill_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, skillId);
+
+            return pstmt.executeUpdate() >0;
+        }
     }
 
-    // TODO: Needs implementation
-    public boolean delSkill(int userId, int skillId){
-        return false;
-    }
-
-    public LinkedList<Integer> getAllSkills(int stdId) throws SQLException{
+    /**
+     * Gets list of skill ids for all skills attributed to a student(identified by stdId)
+     *
+     * @param stdId unique user_id/student_id of the student whose skills are being retrieved from the DB
+     * @return LinkedList of integer vals where each val in the list is the skill_id for a skill attributed to student
+     * @throws SQLException if DB error occurred
+     */
+    public static LinkedList<Integer> getAllSkills(int stdId) throws SQLException{
         String sql = "SELECT skill_id FROM Student_Skills WHERE student_id = ?";
         LinkedList<Integer> skillLst;
 
@@ -175,7 +250,15 @@ public class StudentDAO extends UserDAO{
         return skillLst;
     }
 
-    public LinkedList<Integer> getAllOrgs(int stdId) throws SQLException{
+    /**
+     * Gets the ids of all orgs a student(identified by stdId) is currently a member of
+     *
+     * @param stdId unique user_id/student_id of the student whose memberships are being retrieved
+     * @return LinkedList of integer vals where each val in list is the unique org_id identifying an org the student
+     *  is a member of
+     * @throws SQLException if DB error occurred
+     */
+    public static LinkedList<Integer> getAllOrgs(int stdId) throws SQLException{
         String sql = "SELECT org_id FROM Org_Membership WHERE student_id = ?";
         LinkedList<Integer> orgLst;
 
@@ -193,87 +276,55 @@ public class StudentDAO extends UserDAO{
         return orgLst;
     }
 
+    /**
+     * Inserts student_id and org_id into Pending_Requests table when Student requests membership in Org
+     *
+     * @param stdId Unique student_id val for Student requesting membership
+     * @param orgId Unique org_id val for Org that Student is requesting membership into
+     * @return true if insertion successful, else false
+     * @throws SQLException If DB error occurs
+     */
+    public static boolean requestMembership(int stdId, int orgId) throws SQLException{
+        // TODO: Needs implementation next sprint
+        return false;
+    }
+
+    /**
+     * Gets all Orgs a Student has pending invites to join as a member
+     *
+     * @param stdId Unique student_id of Student seeking all pending invites
+     * @return HashMap containing unique org_id vals of Orgs with invites as keys, with their Org obj as vals
+     * @throws SQLException if DB error occurs
+     */
+    public static HashMap<Integer, Org> getAllPendingInvites(int stdId) throws SQLException{
+        // TODO: Needs implementation next sprint
+        return null;
+    }
+
+    /**
+     * Removes tuple entry in Pending_Invites and inserts it into Org_Membership once approval granted by student
+     *
+     * @param stdId Unique student_id val of Student invited by Org
+     * @param orgId Unique org_id val of Org that invited Student to become member
+     * @return true if removal from Pending_Invites and inserts it into Org_Membership
+     * @throws SQLException if DB error occurs
+     */
+    public static boolean approveOrgInvite(int stdId, int orgId) throws SQLException{
+        // TODO: Needs implementation next sprint
+        return false;
+    }
+
+    /**
+     * Removes tuple entry in Pending_Invites and does not insert it into Org_Membership once student denies invite
+     *
+     * @param stdId Unique student_id val of Student invited by Org
+     * @param orgId Unique org_id val of Org that invited Student to become member
+     * @return true if removal from Pending_Invites successful, else false
+     * @throws SQLException if DB error occurs
+     */
+    public static boolean denyOrgInvite(int stdId, int orgId) throws SQLException{
+        // TODO:Needs implementation next sprint
+        return false;
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-//package dao;
-//
-//import model.Student;
-//import util.DBConnection;
-//
-//import java.sql.*;
-//import java.util.*;
-//
-//public class StudentDAO {
-//
-//    public List<Student> getAllStudents() throws Exception {
-//        List<Student> students = new ArrayList<>();
-//        String sql = "SELECT * FROM STUDENT";
-//
-//        try (Connection conn = DBConnection.getConnection();
-//             PreparedStatement stmt = conn.prepareStatement(sql);
-//             ResultSet rs = stmt.executeQuery()) {
-//
-//            while (rs.next()) {
-//                Student s = new Student();
-//                s.setStdntId(rs.getInt("stdnt_id"));
-//                s.setFname(rs.getString("fname"));
-//                s.setLname(rs.getString("lname"));
-//                s.setMajorId(rs.getInt("major_id"));
-//                students.add(s);
-//            }
-//        }
-//        return students;
-//    }
-//
-//    public Student getStudentById(int id) throws Exception {
-//        String sql = "SELECT * FROM STUDENT WHERE stdnt_id = ?";
-//        try (Connection conn = DBConnection.getConnection();
-//             PreparedStatement stmt = conn.prepareStatement(sql)) {
-//            stmt.setInt(1, id);
-//            ResultSet rs = stmt.executeQuery();
-//            if (rs.next()) {
-//                Student s = new Student();
-//                s.setStdntId(rs.getInt("stdnt_id"));
-//                s.setFname(rs.getString("fname"));
-//                s.setLname(rs.getString("lname"));
-//                s.setMajorId(rs.getInt("major_id"));
-//                return s;
-//            }
-//        }
-//        return null;
-//    }
-//
-//    public boolean insertStudent(Student s) throws Exception {
-//        String sql = "INSERT INTO STUDENT (fname, lname, major_id) VALUES (?, ?, ?)";
-//        try (Connection conn = DBConnection.getConnection();
-//             PreparedStatement stmt = conn.prepareStatement(sql)) {
-//            stmt.setString(1, s.getFname());
-//            stmt.setString(2, s.getLname());
-//            stmt.setInt(3, s.getMajorId());
-//            return stmt.executeUpdate() > 0;
-//        }
-//    }
-//
-//    public boolean updateStudent(Student s) throws Exception {
-//        String sql = "UPDATE STUDENT SET fname = ?, lname = ?, major_id = ? WHERE stdnt_id = ?";
-//        try (Connection conn = DBConnection.getConnection();
-//             PreparedStatement stmt = conn.prepareStatement(sql)) {
-//            stmt.setString(1, s.getFname());
-//            stmt.setString(2, s.getLname());
-//            stmt.setInt(3, s.getMajorId());
-//            stmt.setInt(4, s.getStdntId());
-//            return stmt.executeUpdate() > 0;
-//        }
-//    }
-//
-
-//}

@@ -1,11 +1,13 @@
 package dao;
 
 import java.sql.*;
+
+import model.Picture;
+import model.School;
 import model.UserType;
 import model.ModelManager;
 import util.DBConnection;
 import util.DBConnection2;
-import dao.PostDAO;
 import java.util.*;
 
 public class UserDAO {
@@ -39,7 +41,15 @@ public class UserDAO {
         }
     }
 
-
+    /**
+     * Adds a new user to the DB by inserting their email, hashed password, and user type into the User_Verify table
+     *
+     * @param email the email address of the new user being added
+     * @param hashedPass the hashed string resulting from the hash operation performed on the user's defined password
+     * @param userType the type of user being added. The UserType enum is used to define those types
+     * @return true if the user was successfully added to the DB, else false
+     * @throws SQLException if DB error occurred
+     */
     public static boolean addUser(String email, String hashedPass, UserType userType) throws SQLException {
 
         String sql = "INSERT INTO User_Verify (email, pass_hash, type) VALUES (?, ?, ?)";
@@ -61,9 +71,14 @@ public class UserDAO {
     }
 
     /**
-     * set bio for an authenticated user.
+     * Set the bio for the profile of a user(identified by userId) by updating the 'bio' column of the Users table
+     *
+     * @param userId the unique user_id of the user whose bio is being set
+     * @param bio the String containing the bio which a user has set
+     * @return true if the Users table was successfully updated, else false
+     * @throws SQLException if DB error occurred
      */
-    public boolean setBio(int userId, String bio) throws SQLException {
+    public static boolean setBio(int userId, String bio) throws SQLException {
         String sql = "UPDATE Users SET bio = ? WHERE user_id = ?";
 
         try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
@@ -74,7 +89,14 @@ public class UserDAO {
         }
     }
 
-    public String getBio(int userId) throws SQLException{
+    /**
+     * Gets the bio associated with a user(identified by userId) from the Users table
+     *
+     * @param userId unique user_id of the user whose bio is being retrieved
+     * @return the string consisting of the bio associated with the user
+     * @throws SQLException if DB error occurred
+     */
+    public static String getBio(int userId) throws SQLException{
         String sql = "SELECT bio FROM Users WHERE user_id = ?";
         String bio;
 
@@ -90,12 +112,15 @@ public class UserDAO {
     }
 
     /**
-     * adds post
-     * assume token contains the stdmtID and POST table exists
-     * columns ==  post_owner, post_txt, and timestamp (with NOW() used for the current timestamp).
+     * Adds a post containing only text and no image which was created by a user(identified by userId) to the Posts table
+     *
+     * @param userId unique user_id for the user who created the post being added
+     * @param postText String consisting of the text portion of the post being added
+     * @param tagList LinkedList of integer vals where each val is the interest_id of the tag assigned to the post
+     * @return true if the post was successfully added to the DB
+     * @throws SQLException id DB error occurred
      */
-    public boolean addPost(int userId, String postText, LinkedList<Integer> tagList) throws SQLException {
-        // TODO: Handle how image uploads are handled when uploaded with a post
+    public static boolean addPost(int userId, String postText, LinkedList<Integer> tagList) throws SQLException {
         String sql = "INSERT INTO Posts (owner_id, content) VALUES (?, ?)";
 
         try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql, new String[] {"post_id"})) {
@@ -104,7 +129,39 @@ public class UserDAO {
             int newPostId = pstmt.executeUpdate();
             boolean postSuccess = newPostId > 0;
             if(postSuccess){
-                // TODO: Create PostManager obj which holds hashmap containing Post objects made in last 5-7 days as vals, post_id as key??
+                String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
+                PreparedStatement tagPstmt = DBConnection2.getPrepStatement(tagSql);
+                for (Integer tag : tagList) {
+                    tagPstmt.setInt(1, newPostId);
+                    tagPstmt.setInt(2, tag);
+                    tagPstmt.executeUpdate();
+                }
+            }
+            return postSuccess;
+        }
+    }
+
+
+    /**
+     * Adds a post containing both text and an image which was created by a user(identified by userId) to the Posts table
+     *
+     * @param userId unique user_id for the user who created the post being added
+     * @param postText String consisting of the text portion of the post being added
+     * @param tagList LinkedList of integer vals where each val is the interest_id of the tag assigned to the post
+     * @return true if the post was successfully added to the DB
+     * @throws SQLException id DB error occurred
+     */
+    public static boolean addPost(int userId, String postText, Picture postImg, LinkedList<Integer> tagList) throws SQLException {
+        String sql = "INSERT INTO Posts (owner_id, content) VALUES (?, ?)";
+
+        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql, new String[] {"post_id"})) {
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, postText);
+            int newPostId = pstmt.executeUpdate();
+            boolean postSuccess = newPostId > 0;
+            if(postSuccess){
+                // TODO: Handle insertion of the image into the DB
+
                 String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
                 PreparedStatement tagPstmt = DBConnection2.getPrepStatement(tagSql);
                 for (Integer tag : tagList) {
@@ -118,9 +175,13 @@ public class UserDAO {
     }
 
     /**
-     * deletes given p[ost by ID
+     * Deletes a post(identified by postId) by removing its entry from the Posts table
+     *
+     * @param postId unique post_id for the post being deleted
+     * @return true if the entry was successfully removed from Posts table
+     * @throws SQLException if DB error occurred
      */
-    public boolean delPost(int postId) throws SQLException {
+    public static boolean delPost(int postId) throws SQLException {
         String tagsSql = "DELETE FROM Post_Tags WHERE post_id = ?";
         String postSql = "DELETE FROM POST WHERE post_id = ?";
         try(PreparedStatement postPstmt = DBConnection2.getPrepStatement(postSql);
@@ -137,25 +198,33 @@ public class UserDAO {
         }
         return false;
     }
+
     /**
-     * Receives user_id int as arg and returns LinkedList of all postIds owned by given userId to caller
+     * Gets all posts a user(identified by userId) has ever created
+     *
+     * @param userId unique user_id of the user whose posts are being retrieved
+     * @return LinkedList of integer vals where each val is a unique post_id for a post created by userId
+     * @throws SQLException if DB error occurred
      */
-    public LinkedList<Integer> getAllUserPosts(int userId) throws SQLException{
+    public static LinkedList<Integer> getAllUserPosts(int userId) throws SQLException{
+        return PostDAO.getAllUserPosts(userId);
+    }
+
+    // TODO: Not currently implemented
+    public static LinkedList<Integer> getAllRecentPosts(int userId) throws SQLException{
         return PostDAO.getAllUserPosts(userId);
     }
 
     /**
-     * Receives user_id int as arg and returns LinkedList of all postIds owned by given userId having a timestamp
-     * that is within past 7 days (can be more or less??) to caller
+     * Inserts an entry into User_Interests table representing that a user(identified by userId) has indicated a
+     * particular interest(identified by interestId)
+     *
+     * @param userId unique user_id of the user who has indicated the interest
+     * @param interestId unique interest_id for the interest which the user indicated
+     * @return true if the entry successfully inserted into User_Interests, else false
+     * @throws SQLException if DB error occurred
      */
-    public LinkedList<Integer> getAllRecentPosts(int userId) throws SQLException{
-        return PostDAO.getAllUserPosts(userId);
-    }
-
-    /**
-     * adds an interest to user's profile.
-     */
-    public boolean addInterest(int userId, int interestId) throws SQLException {
+    public static boolean addInterest(int userId, int interestId) throws SQLException {
         String sql = "INSERT INTO User_Interests (user_id, interest_id) VALUES (?, ?)";
 
         try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
@@ -166,9 +235,15 @@ public class UserDAO {
     }
 
     /**
-     * removes an interest from user's profile.
+     * Removes the entry from the User_Interests table representing a user(identified by userId) is no longer
+     * has a particular interest(indicated by interestId)
+     *
+     * @param userId unique user_id for user who no longer has the interest
+     * @param interestId unique interest_id for the interest userId no longer has
+     * @return true if the entry is successfully deleted from User_Interests table, else false
+     * @throws SQLException if DB error occurred
      */
-    public boolean delInterest(int userId, int interestId) throws SQLException {
+    public static boolean delInterest(int userId, int interestId) throws SQLException {
         String sql = "DELETE FROM User_Interests WHERE user_id = ? AND interest_id = ?";
 
         try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
@@ -179,9 +254,13 @@ public class UserDAO {
     }
 
     /**
-     * Receives user_id int as arg and returns LinkedList of all interestIds associated with given userId to caller
+     * Gets the list of all interests which a user(identified userId) has indicated
+     *
+     * @param userId unique user_id for the user whose list of interests is being retrieved
+     * @return LinkedList of integer vals where each val is the unique interest_id that user has indicated
+     * @throws SQLException if DB error occurred
      */
-    public LinkedList<Integer> getAllInterests(int userId) throws SQLException{
+    public static LinkedList<Integer> getAllInterests(int userId) throws SQLException{
         String sql = "SELECT interest_id FROM User_Interests WHERE user_id = ?";
         LinkedList<Integer> intrstLst;
 
@@ -200,10 +279,15 @@ public class UserDAO {
     }
 
     /**
-     * sets user identified by myUserId to follow user identified by userIdToFollow
-     * inserts new row into Follows table with columns user_id=myUserId and following_id=userIdToFollow
+     * Inserts tuple pair into Follows table so the user(identified by myUserId) follows the user(identified by userIdToFollow)
+     *
+     * @param myUserId unique user_id of the user wishing to follow userIdToFollow
+     * @param userIdToFollow unique user_id of the user being followed by myUserId
+     * @return true if tuple pair indicating myUserId is following userIdToFollow was successfully inserted into Follows
+     *         table, else false
+     * @throws SQLException if DB error occurred
      */
-    public boolean followUser(int myUserId, int userIdToFollow) throws SQLException {
+    public static boolean followUser(int myUserId, int userIdToFollow) throws SQLException {
         String sql = "INSERT INTO Follows (user_id, following_id) VALUES (?, ?)";
 
         try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
@@ -214,10 +298,14 @@ public class UserDAO {
     }
 
     /**
-     * sets user identified by myUserId to unfollow user identified by userIdToUnfollow
-     * Deletes row in Follows table where columns user_id=myUserId and following_id=userIdToUnfollow
+     * Removes the tuple pair from Follows table for the user(identified by userId) following the user(identified by userIdToUnfollow)
+     *
+     * @param myUserId unique user_id of the user who no longer wishes to follow the user userIdToUnfollow
+     * @param userIdToUnfollow unique user_id of the user who will no longer be followed by userId
+     * @return true if the tuple was successfully deleted from Follows table, else false
+     * @throws SQLException if DB error occurred
      */
-    public boolean unfollowUser(int myUserId, int userIdToUnfollow) throws SQLException {
+    public static boolean unfollowUser(int myUserId, int userIdToUnfollow) throws SQLException {
         String sql = "DELETE FROM Follows WHERE entity_id = ? AND following_id = ?";
 
         try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
@@ -228,9 +316,13 @@ public class UserDAO {
     }
 
     /**
-     * Receives user_id int as arg and returns to caller a LinkedList of all ids being followed by passed user_id
+     * Gets list of all users that are being followed by a user(identified by userId)
+     *
+     * @param userId unique user_id of the user whose list is being retrieved
+     * @return LinkedList of integer vals where each int is the unique user_id of a user the given user is following
+     * @throws SQLException if DB error occurred
      */
-    public LinkedList<Integer> getAllFollowedUsers(int userId) throws SQLException{
+    public static LinkedList<Integer> getAllFollowedUsers(int userId) throws SQLException{
         String sql = "SELECT following_id FROM Follows WHERE user_id = ?";
         LinkedList<Integer> followsLst;
 
@@ -248,9 +340,13 @@ public class UserDAO {
     }
 
     /**
-     * Receives user_id int as arg and returns to caller a LinkedList of all ids that are following passed user_id
+     * Gets list of all users that are following a user(identified by userId)
+     *
+     * @param userId unique user_id of the user whose list is being retrieved
+     * @return LinkedList of integer vals where each int is the unique user_id of a user following the given user
+     * @throws SQLException if DB error occurred
      */
-    public LinkedList<Integer> getAllUsersFollowing(int userId) throws SQLException{
+    public static LinkedList<Integer> getAllUsersFollowing(int userId) throws SQLException{
         String sql = "SELECT user_id FROM Follows WHERE following_id = ?";
         LinkedList<Integer> followrLst;
 
@@ -267,7 +363,15 @@ public class UserDAO {
         return followrLst;
     }
 
-    public boolean setSchool(int userId, int schoolId) throws SQLException{
+    /**
+     * Updates the school_id entry for the user(identified by userId) in the Users table with the id of the new school
+     *
+     * @param userId unique user_id for the user whose school_id is being updated
+     * @param schoolId unique school_id for the school the user is setting as their new school
+     * @return true if the update to the Users table was successful, else false
+     * @throws SQLException if DB error occurred
+     */
+    public static boolean setSchool(int userId, int schoolId) throws SQLException{
         String sql = "UPDATE Users SET school_id = ? WHERE user_id = ?";
 
         try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql);){
@@ -278,44 +382,75 @@ public class UserDAO {
         }
     }
 
-    public Integer getSchool(int userId) throws SQLException{
+    /**
+     * Gets the school id of a user(identified by userId) from the Users table which is used to return the School
+     * object from ModelManager
+     *
+     * @param userId unique user_id of the user whose school is being retrieved
+     * @return School object containing the data for that school
+     * @throws SQLException if DB error occurred
+     */
+    public static School getSchool(int userId) throws SQLException{
         String sql = "SELECT school_id FROM Users WHERE user_id = ?";
         int schoolId;
+        School school = null;
 
         try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
 
-            schoolId = rs.getInt("school_id");
-
+            if(rs.next()){
+                schoolId = rs.getInt("school_id");
+                school = ModelManager.getSchool(schoolId);
+            }
             rs.close();
         }
-        return schoolId;
+        return school;
     }
 
-    public LinkedList<Integer> getAllOwnedImages(int userId){
+    public static LinkedList<Integer> getAllOwnedImages(int userId){
         // TODO: Needs to be implemented
         return null;
     }
 
-    public boolean setProfileImg(int userId, int imgId){
+    public static boolean setProfileImg(int userId, int imgId){
         // TODO: Needs to be implemented
         return false;
     }
 
-    public Integer getProfileImg(int userId) throws SQLException{
+    /**
+     * gets profile image for a user(identified by userid) and creates Picture obj for the image
+     *
+     * @param userId unique user_id for the user whose profile img is being retrieved
+     * @return Picture object containing the image data (including location of the image)
+     * @throws SQLException if DB error occurred
+     */
+    public static Picture getProfileImg(int userId) throws SQLException{
         String sql = "SELECT pfp_id FROM Users WHERE user_id = ?";
-        int pfpId;
+        Picture pfp = null;
 
         try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
 
-            pfpId = rs.getInt("pfp_id");
+            if(rs.next()){
+                int pfpId = rs.getInt("pfp_id");
 
+                String imgSql = "SELECT * FROM Pictures WHERE img_id = ?";
+                try(PreparedStatement imgPstmt = DBConnection2.getPrepStatement(imgSql)){
+                    imgPstmt.setInt(1, pfpId);
+
+                    ResultSet imgRs = pstmt.executeQuery();
+                    if(imgRs.next()){
+                        pfp = new Picture(pfpId, userId);
+                        // TODO: get url and remaining attributes from imgRs and add to pfp
+                    }
+                    imgRs.close();
+                }
+            }
             rs.close();
         }
-        return pfpId;
+        return pfp;
     }
 }
 
