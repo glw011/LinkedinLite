@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import data.DataSource
-import data.DataSource.tags
 import ui.components.styles.styledButton
 import ui.components.styles.styledDropDownList
 

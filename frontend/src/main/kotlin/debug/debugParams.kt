@@ -1,3 +1,4 @@
 package debug
 
-const val generateDummies: Boolean = true
+const val generateDummies = true
+const val debug = false
