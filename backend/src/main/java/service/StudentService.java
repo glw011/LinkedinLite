@@ -2,93 +2,61 @@ package service;
 
 import dao.StudentDAO;
 import model.Student;
-import java.util.HashMap;
-//import dao.MajorDAO;
-import model.School;
-import model.Major;
+
+import java.sql.SQLException;
+import java.util.*;
 
 public class StudentService {
     private final StudentDAO studentDAO = new StudentDAO();
 
     /**
-     * Retrieves all students, enriches each student by computing a display name,
-     * and sorts them alphabetically by last name.
-     *
-     * @return a sorted list of enriched Student objects.
-     * @throws Exception if no data is available or a database error occurs.
+     * Returns all students as a sorted List.
      */
-
-    public HashMap<Integer, Student> getAllStudents() throws Exception {
-        HashMap<Integer, Student> students = studentDAO.getAllStudents();
-        if (students == null) {
-            throw new Exception("No student data available.");
-        }
-
-    // DO STUFF...
-    // LIKE CREATE A DISPLAY NAME OR WHATEVER
-//        for (Student s : students) {
-//            String displayName = s.getFname() + " " + s.getLname();
-//            s.setDisplayName(displayName);
-//        }
-//     OR...
-        // sort students by last name (case-insensitive).
-//        students.sort((s1, s2) -> s1.getLname().compareToIgnoreCase(s2.getLname()));
-        return students;
-    }
-
-
-//    public Student getStudentProfile(int studentId) throws Exception {
-//        Student student = studentDAO.getStudentById(studentId);
-//        if (student == null) {
-//            throw new Exception("Student not found");
-//        }
-//
-//        Major major = majorDAO.getMajorById(student.getMajorId());
-//        if (major != null) {
-//            student.setMajor(major);
-//            student.setSchool(major.getSchool()); // Retrieve the school associated with this major.
-//        }
-//        return student;
-//    }
-
-
-    /**
-     * Retrieves a student by ID after validating the input and enriching the data.
-     *
-     * @param id the student's ID
-     * @return the corresponding enriched Student object
-     * @throws Exception if the ID is invalid or the student is not found.
-     */
-    public Student getStudentById(int id) throws Exception {
-        if (id <= 0) {
-            throw new IllegalArgumentException("Student id must be positive");
-        }
-        Student student = studentDAO.getStudentById(id);
-        if (student == null) {
-            throw new Exception("Student with id " + id + " not found.");
-        }
-
-        return student;
+    public List<Student> getAllStudents() throws SQLException {
+        HashMap<Integer, Student> map = studentDAO.getAllStudents(); // :contentReference[oaicite:9]{index=9}
+        List<Student> list = new ArrayList<>(map.values());
+        list.sort(Comparator.comparing(Student::getLname, String.CASE_INSENSITIVE_ORDER));
+        return list;
     }
 
     /**
-     * Adds a new student to the database.
+     * Returns a single student.
      */
-    public boolean addStdnt(int stdntId, String fname, String lname, String email, String hashedPass, String schoolName, int majorId) throws Exception {
-        return studentDAO.addStdnt(stdntId, fname, lname, email, hashedPass, schoolName, majorId);
+    public Student getStudentById(int id) throws SQLException {
+        if (id <= 0) throw new IllegalArgumentException("Invalid ID");
+        Student s = studentDAO.getStudentById(id);    // :contentReference[oaicite:10]{index=10}
+        if (s == null) throw new SQLException("Not found");
+        return s;
     }
 
     /**
-     * Updates an existing student's record.
+     * Adds a new student.
      */
-    public boolean updateStudent(Student s) throws Exception {
+    public boolean addStudent(
+            String fname,
+            String email,
+            String hashedPass,
+            String schoolName,
+            String majorName
+    ) throws SQLException {
+        if (fname == null || email == null || hashedPass == null) {
+            throw new IllegalArgumentException("Missing required fields");
+        }
+        return studentDAO.addStdnt(fname, email, hashedPass, schoolName, majorName); // :contentReference[oaicite:11]{index=11}
+    }
+
+    /**
+     * Deletes a student.
+     */
+    public boolean deleteStudent(int id) throws SQLException {
+        if (id <= 0) throw new IllegalArgumentException("Invalid ID");
+        return studentDAO.deleteStudent(id);         // :contentReference[oaicite:12]{index=12}
+    }
+    public boolean updateStudent(Student s) throws SQLException {
+        if (s.getStdntId() <= 0) {
+            throw new IllegalArgumentException("Missing or invalid student id");
+        }
         return studentDAO.updateStudent(s);
     }
-
-    /**
-     * Deletes a student record.
-     */
-    public boolean deleteStudent(int id) throws Exception {
-        return studentDAO.deleteStudent(id);
-    }
 }
+

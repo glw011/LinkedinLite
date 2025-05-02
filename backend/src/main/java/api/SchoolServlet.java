@@ -1,10 +1,10 @@
+
 package api;
 
 import com.google.gson.Gson;
 import model.School;
 import service.SchoolService;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
@@ -13,142 +13,97 @@ import java.util.List;
 
 @WebServlet("/api/schools/*")
 public class SchoolServlet extends HttpServlet {
-
     private final SchoolService schoolService = new SchoolService();
     private final Gson gson = new Gson();
 
-    /**
-     * Handles GET requests.
-     * If an ID is provided in the URL (e.g., /api/schools/123), returns that School.
-     * Otherwise, returns all schools.
-     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
-        String pathInfo = req.getPathInfo();
-
+        String path = req.getPathInfo();
         try (PrintWriter out = resp.getWriter()) {
-            if (pathInfo != null && pathInfo.length() > 1) {
-                // get specific school by id from URL /api/schools/{id}
-                String idStr = pathInfo.substring(1);
-                try {
-                    int id = Integer.parseInt(idStr);
-                    School school = schoolService.getSchoolById(id);
-                    if (school != null) {
-                        out.print(gson.toJson(school));
-                    } else {
-                        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                        out.print("{\"error\":\"School not found.\"}");
-                    }
-                } catch (NumberFormatException nfe) {
-                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    out.print("{\"error\":\"Invalid school id.\"}");
-                }
+            if (path == null || path.equals("/")) {
+                List<School> all = schoolService.getAllSchools();
+                out.print(gson.toJson(all));
             } else {
-                // return all schools
-                List<School> schools = schoolService.getAllSchools();
-                out.print(gson.toJson(schools));
+                int id = Integer.parseInt(path.substring(1));
+                School s = schoolService.getSchoolById(id);
+                out.print(gson.toJson(s));
             }
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Invalid school ID\"}");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\":\"Failed to load school(s).\"}");
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 
-    /**
-     * Handles POST requests to add a new school.
-     * Expects Content-Type "application/json" with a JSON payload representing a School.
-     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
-        if (req.getContentType() == null || !req.getContentType().startsWith("application/json")) {
+        if (req.getContentType() == null ||
+                !req.getContentType().startsWith("application/json")) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"Content-Type must be application/json.\"}");
+            resp.getWriter().write("{\"error\":\"JSON body required\"}");
             return;
         }
         try {
-            School school = gson.fromJson(req.getReader(), School.class);
-            if (school == null || school.getSchoolName() == null || school.getSchoolName().trim().isEmpty()) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write("{\"error\":\"School name is required.\"}");
-                return;
-            }
-            boolean success = schoolService.addSchool(school);
-            if (success) {
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-                resp.getWriter().write("{\"status\":\"School created.\"}");
-            } else {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                resp.getWriter().write("{\"error\":\"Failed to create school.\"}");
-            }
+            School s = gson.fromJson(req.getReader(), School.class);
+            boolean ok = schoolService.addSchool(s);
+            resp.setStatus(ok ? HttpServletResponse.SC_CREATED : HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{}");
+        } catch (IllegalArgumentException iae) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"" + iae.getMessage() + "\"}");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\":\"School creation failed.\"}");
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 
-    /**
-     * Handles PUT requests to update an existing school.
-     * Expects a JSON payload with updated school details.
-     */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
-        if (req.getContentType() == null || !req.getContentType().startsWith("application/json")) {
+        if (req.getContentType() == null ||
+                !req.getContentType().startsWith("application/json")) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"Content-Type must be application/json.\"}");
+            resp.getWriter().write("{\"error\":\"JSON body required\"}");
             return;
         }
         try {
-            School school = gson.fromJson(req.getReader(), School.class);
-            if (school == null || school.getSchoolId() <= 0) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write("{\"error\":\"Valid school ID is required for update.\"}");
-                return;
-            }
-            boolean success = schoolService.updateSchool(school);
-            if (success) {
-                resp.getWriter().write("{\"status\":\"School updated.\"}");
-            } else {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                resp.getWriter().write("{\"error\":\"Failed to update school.\"}");
-            }
+            School s = gson.fromJson(req.getReader(), School.class);
+            boolean ok = schoolService.updateSchool(s);
+            resp.getWriter().write("{\"status\":\"" + (ok ? "updated" : "failed") + "\"}");
+        } catch (IllegalArgumentException iae) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"" + iae.getMessage() + "\"}");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\":\"School update failed.\"}");
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 
-    /**
-     * Handles DELETE requests to remove a school.
-     * Expects the school id as part of the URL (e.g., /api/schools/123).
-     */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
-        String pathInfo = req.getPathInfo();
-        if (pathInfo == null || pathInfo.length() <= 1) {
+        String path = req.getPathInfo();
+        if (path == null || path.length() <= 1) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"Missing school id.\"}");
+            resp.getWriter().write("{\"error\":\"School ID required\"}");
             return;
         }
+
         try {
-            String idStr = pathInfo.substring(1);
-            int id = Integer.parseInt(idStr);
-            boolean success = schoolService.deleteSchool(id);
-            if (success) {
-                resp.getWriter().write("{\"status\":\"School deleted.\"}");
-            } else {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                resp.getWriter().write("{\"error\":\"Failed to delete school.\"}");
-            }
-        } catch (NumberFormatException nfe) {
+            int id = Integer.parseInt(path.substring(1));
+            boolean ok = schoolService.deleteSchool(id);
+            resp.getWriter().write("{\"status\":\"" + (ok ? "deleted" : "failed") + "\"}");
+        } catch (IllegalArgumentException e) {
+
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"Invalid school id.\"}");
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\":\"School deletion failed.\"}");
+            resp.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 }
