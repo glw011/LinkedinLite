@@ -1,36 +1,44 @@
+// src/main/java/service/StudentService.java
 package service;
 
 import dao.StudentDAO;
 import model.Student;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 public class StudentService {
     private final StudentDAO studentDAO = new StudentDAO();
 
     /**
-     * Returns all students as a sorted List.
+     * Returns all students, sorted by last name.
      */
     public List<Student> getAllStudents() throws SQLException {
-        HashMap<Integer, Student> map = studentDAO.getAllStudents(); // :contentReference[oaicite:9]{index=9}
+        HashMap<Integer, Student> map = studentDAO.getAllStudents();
         List<Student> list = new ArrayList<>(map.values());
         list.sort(Comparator.comparing(Student::getLname, String.CASE_INSENSITIVE_ORDER));
         return list;
     }
 
     /**
-     * Returns a single student.
+     * Returns a single student by ID.
      */
     public Student getStudentById(int id) throws SQLException {
-        if (id <= 0) throw new IllegalArgumentException("Invalid ID");
-        Student s = studentDAO.getStudentById(id);    // :contentReference[oaicite:10]{index=10}
-        if (s == null) throw new SQLException("Not found");
+        if (id <= 0) {
+            throw new IllegalArgumentException("Invalid ID");
+        }
+        Student s = studentDAO.getStudentById(id);
+        if (s == null) {
+            throw new SQLException("Student not found");
+        }
         return s;
     }
 
     /**
-     * Adds a new student.
+     * Creates a new student.
      */
     public boolean addStudent(
             String fname,
@@ -39,24 +47,31 @@ public class StudentService {
             String schoolName,
             String majorName
     ) throws SQLException {
-        if (fname == null || email == null || hashedPass == null) {
+        if (fname == null || fname.isBlank()
+                || email == null || email.isBlank()
+                || hashedPass == null || hashedPass.isBlank()) {
             throw new IllegalArgumentException("Missing required fields");
         }
-        return studentDAO.addStdnt(fname, email, hashedPass, schoolName, majorName); // :contentReference[oaicite:11]{index=11}
+        return studentDAO.addStdnt(fname, email, hashedPass, schoolName, majorName);
     }
 
     /**
-     * Deletes a student.
+     * Updates an existing student.
      */
-    public boolean deleteStudent(int id) throws SQLException {
-        if (id <= 0) throw new IllegalArgumentException("Invalid ID");
-        return studentDAO.deleteStudent(id);         // :contentReference[oaicite:12]{index=12}
-    }
     public boolean updateStudent(Student s) throws SQLException {
-        if (s.getStdntId() <= 0) {
+        if (s == null || s.getID() <= 0) {
             throw new IllegalArgumentException("Missing or invalid student id");
         }
         return studentDAO.updateStudent(s);
     }
-}
 
+    /**
+     * Deletes a student (and related data).
+     */
+    public boolean deleteStudent(int id) throws SQLException {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Invalid ID");
+        }
+        return studentDAO.deleteStudent(id);
+    }
+}
