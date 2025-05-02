@@ -29,8 +29,8 @@ public class StudentDAO extends UserDAO{
             String usrSql = "UPDATE Users SET school_id = ? WHERE user_id = ?";
             String stdSql = "UPDATE Students SET major_id = ?, fname = ? WHERE student_id = ?";
 
-            try (PreparedStatement usrPstmt = DBConnection2.getPrepStatement(usrSql);
-                PreparedStatement stdPstmt = DBConnection2.getPrepStatement(stdSql))
+            try (PreparedStatement usrPstmt = DBConnection2.getPstmt(usrSql);
+                 PreparedStatement stdPstmt = DBConnection2.getPstmt(stdSql))
             {
                 usrPstmt.setInt(1, schoolId);
                 usrPstmt.setInt(2, userId);
@@ -72,7 +72,7 @@ public class StudentDAO extends UserDAO{
             "WHERE " +
                 "Users.user_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sqlStr)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sqlStr)){
             pstmt.setInt(1, stdId);
 
             ResultSet results = pstmt.executeQuery();
@@ -124,7 +124,7 @@ public class StudentDAO extends UserDAO{
                 "User_Verify JOIN Users ON User_Verify.user_id = Users.user_id " +
                     "JOIN Students ON Students.student_id = Users.user_id ";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sqlStr)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sqlStr)){
             studentMap = new HashMap<>();
             ResultSet results = pstmt.executeQuery();
 
@@ -167,7 +167,7 @@ public class StudentDAO extends UserDAO{
     public static boolean setLName(int userId, String lname) throws SQLException{
         String sql = "UPDATE Students SET lname = ? WHERE student_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setString(1, lname);
             pstmt.setInt(2, userId);
 
@@ -195,7 +195,7 @@ public class StudentDAO extends UserDAO{
         LinkedList<Integer> skillLst = getAllSkills(userId);
         // only add new skill if the user does not already have the skill
         if(!skillLst.contains(skillId)){
-            try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
                 pstmt.setInt(1, userId);
                 pstmt.setInt(2, skillId);
 
@@ -217,7 +217,7 @@ public class StudentDAO extends UserDAO{
     public static boolean delSkill(int userId, int skillId) throws SQLException{
         String sql = "DELETE FROM Student_Skills WHERE student_id = ? AND skill_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
             pstmt.setInt(2, skillId);
 
@@ -236,7 +236,7 @@ public class StudentDAO extends UserDAO{
         String sql = "SELECT skill_id FROM Student_Skills WHERE student_id = ?";
         LinkedList<Integer> skillLst;
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, stdId);
             ResultSet skills = pstmt.executeQuery();
             skillLst = new LinkedList<>();
@@ -262,7 +262,7 @@ public class StudentDAO extends UserDAO{
         String sql = "SELECT org_id FROM Org_Membership WHERE student_id = ?";
         LinkedList<Integer> orgLst;
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, stdId);
             ResultSet orgs = pstmt.executeQuery();
             orgLst = new LinkedList<>();

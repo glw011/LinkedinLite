@@ -54,7 +54,7 @@ public class UserDAO {
 
         String sql = "INSERT INTO User_Verify (email, pass_hash, type) VALUES (?, ?, ?)";
 
-        try(PreparedStatement stmt = DBConnection2.getPrepStatement(sql, new String[] {"user_id"})){
+        try(PreparedStatement stmt = DBConnection2.getPstmt(sql, new String[] {"user_id"})){
             stmt.setString(1, email);
             stmt.setString(2, hashedPass);
             stmt.setString(3, userType.getStr());
@@ -81,7 +81,7 @@ public class UserDAO {
     public static boolean setBio(int userId, String bio) throws SQLException {
         String sql = "UPDATE Users SET bio = ? WHERE user_id = ?";
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
             pstmt.setString(1, bio);
             pstmt.setInt(2, userId);
 
@@ -100,7 +100,7 @@ public class UserDAO {
         String sql = "SELECT bio FROM Users WHERE user_id = ?";
         String bio;
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
             ResultSet bioRs = pstmt.executeQuery();
 
@@ -123,14 +123,14 @@ public class UserDAO {
     public static boolean addPost(int userId, String postText, LinkedList<Integer> tagList) throws SQLException {
         String sql = "INSERT INTO Posts (owner_id, content) VALUES (?, ?)";
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql, new String[] {"post_id"})) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql, new String[] {"post_id"})) {
             pstmt.setInt(1, userId);
             pstmt.setString(2, postText);
             int newPostId = pstmt.executeUpdate();
             boolean postSuccess = newPostId > 0;
             if(postSuccess){
                 String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
-                PreparedStatement tagPstmt = DBConnection2.getPrepStatement(tagSql);
+                PreparedStatement tagPstmt = DBConnection2.getPstmt(tagSql);
                 for (Integer tag : tagList) {
                     tagPstmt.setInt(1, newPostId);
                     tagPstmt.setInt(2, tag);
@@ -154,7 +154,7 @@ public class UserDAO {
     public static boolean addPost(int userId, String postText, Picture postImg, LinkedList<Integer> tagList) throws SQLException {
         String sql = "INSERT INTO Posts (owner_id, content) VALUES (?, ?)";
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql, new String[] {"post_id"})) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql, new String[] {"post_id"})) {
             pstmt.setInt(1, userId);
             pstmt.setString(2, postText);
             int newPostId = pstmt.executeUpdate();
@@ -163,7 +163,7 @@ public class UserDAO {
                 // TODO: Handle insertion of the image into the DB
 
                 String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
-                PreparedStatement tagPstmt = DBConnection2.getPrepStatement(tagSql);
+                PreparedStatement tagPstmt = DBConnection2.getPstmt(tagSql);
                 for (Integer tag : tagList) {
                     tagPstmt.setInt(1, newPostId);
                     tagPstmt.setInt(2, tag);
@@ -184,8 +184,8 @@ public class UserDAO {
     public static boolean delPost(int postId) throws SQLException {
         String tagsSql = "DELETE FROM Post_Tags WHERE post_id = ?";
         String postSql = "DELETE FROM POST WHERE post_id = ?";
-        try(PreparedStatement postPstmt = DBConnection2.getPrepStatement(postSql);
-            PreparedStatement tagsPstmt = DBConnection2.getPrepStatement(tagsSql))
+        try(PreparedStatement postPstmt = DBConnection2.getPstmt(postSql);
+            PreparedStatement tagsPstmt = DBConnection2.getPstmt(tagsSql))
         {
             postPstmt.setInt(1, postId);
             tagsPstmt.setInt(1, postId);
@@ -227,7 +227,7 @@ public class UserDAO {
     public static boolean addInterest(int userId, int interestId) throws SQLException {
         String sql = "INSERT INTO User_Interests (user_id, interest_id) VALUES (?, ?)";
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
             pstmt.setInt(1, userId);
             pstmt.setInt(2, interestId);
             return pstmt.executeUpdate() > 0;
@@ -246,7 +246,7 @@ public class UserDAO {
     public static boolean delInterest(int userId, int interestId) throws SQLException {
         String sql = "DELETE FROM User_Interests WHERE user_id = ? AND interest_id = ?";
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
             pstmt.setInt(1, userId);
             pstmt.setInt(2, interestId);
             return pstmt.executeUpdate() > 0;
@@ -264,7 +264,7 @@ public class UserDAO {
         String sql = "SELECT interest_id FROM User_Interests WHERE user_id = ?";
         LinkedList<Integer> intrstLst;
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
             ResultSet intrsts = pstmt.executeQuery();
             intrstLst = new LinkedList<>();
@@ -290,7 +290,7 @@ public class UserDAO {
     public static boolean followUser(int myUserId, int userIdToFollow) throws SQLException {
         String sql = "INSERT INTO Follows (user_id, following_id) VALUES (?, ?)";
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
             pstmt.setInt(1, myUserId);
             pstmt.setInt(2, userIdToFollow);
             return pstmt.executeUpdate() > 0;
@@ -308,7 +308,7 @@ public class UserDAO {
     public static boolean unfollowUser(int myUserId, int userIdToUnfollow) throws SQLException {
         String sql = "DELETE FROM Follows WHERE entity_id = ? AND following_id = ?";
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
             pstmt.setInt(1, myUserId);
             pstmt.setInt(2, userIdToUnfollow);
             return pstmt.executeUpdate() > 0;
@@ -326,7 +326,7 @@ public class UserDAO {
         String sql = "SELECT following_id FROM Follows WHERE user_id = ?";
         LinkedList<Integer> followsLst;
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
             pstmt.setInt(1, userId);
             followsLst = new LinkedList<>();
 
@@ -350,7 +350,7 @@ public class UserDAO {
         String sql = "SELECT user_id FROM Follows WHERE following_id = ?";
         LinkedList<Integer> followrLst;
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
             followrLst = new LinkedList<>();
 
@@ -374,7 +374,7 @@ public class UserDAO {
     public static boolean setSchool(int userId, int schoolId) throws SQLException{
         String sql = "UPDATE Users SET school_id = ? WHERE user_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql);){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql);){
             pstmt.setInt(1, schoolId);
             pstmt.setInt(2, userId);
 
@@ -395,7 +395,7 @@ public class UserDAO {
         int schoolId;
         School school = null;
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
 
@@ -429,7 +429,7 @@ public class UserDAO {
         String sql = "SELECT pfp_id FROM Users WHERE user_id = ?";
         Picture pfp = null;
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
 
@@ -437,7 +437,7 @@ public class UserDAO {
                 int pfpId = rs.getInt("pfp_id");
 
                 String imgSql = "SELECT * FROM Pictures WHERE img_id = ?";
-                try(PreparedStatement imgPstmt = DBConnection2.getPrepStatement(imgSql)){
+                try(PreparedStatement imgPstmt = DBConnection2.getPstmt(imgSql)){
                     imgPstmt.setInt(1, pfpId);
 
                     ResultSet imgRs = pstmt.executeQuery();

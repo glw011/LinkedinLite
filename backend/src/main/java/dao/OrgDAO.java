@@ -23,8 +23,8 @@ public class OrgDAO extends UserDAO{
 
             String orgSql = "UPDATE Orgs SET name = ? WHERE org_id = ?";
 
-            try (PreparedStatement usrPstmt = DBConnection2.getPrepStatement(usrSql);
-                 PreparedStatement orgPstmt = DBConnection2.getPrepStatement(orgSql))
+            try (PreparedStatement usrPstmt = DBConnection2.getPstmt(usrSql);
+                 PreparedStatement orgPstmt = DBConnection2.getPstmt(orgSql))
             {
                 usrPstmt.setInt(1, schoolId);
                 usrPstmt.setInt(2, userId);
@@ -56,7 +56,7 @@ public class OrgDAO extends UserDAO{
             "WHERE " +
                 "Users.user_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sqlStr)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sqlStr)){
             pstmt.setInt(1, orgId);
 
             ResultSet results = pstmt.executeQuery();
@@ -95,7 +95,7 @@ public class OrgDAO extends UserDAO{
                 "User_Verify JOIN Users ON User_Verify.user_id = Users.user_id " +
                 "JOIN Orgs ON Orgs.org_id = Users.user_id ";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sqlStr)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sqlStr)){
             orgMap = new HashMap<>();
             ResultSet results = pstmt.executeQuery();
 
@@ -128,7 +128,7 @@ public class OrgDAO extends UserDAO{
         String sql = "SELECT student_id FROM Org_Membership WHERE org_id = ?";
         LinkedList<Integer> memberLst;
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, orgId);
             ResultSet members = pstmt.executeQuery();
             memberLst = new LinkedList<>();
@@ -148,7 +148,7 @@ public class OrgDAO extends UserDAO{
     public static boolean addMember(int orgId, int stdId) throws SQLException{
         String sql = "INSERT INTO Org_Membership (student_id, org_id) VALUES (?, ?)";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, stdId);
             pstmt.setInt(2, orgId);
 
@@ -159,7 +159,7 @@ public class OrgDAO extends UserDAO{
     public static boolean delMember(int orgId, int stdId) throws SQLException{
         String sql = "DELETE FROM Org_Membership WHERE student_id = ? AND org_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, stdId);
             pstmt.setInt(2, orgId);
 

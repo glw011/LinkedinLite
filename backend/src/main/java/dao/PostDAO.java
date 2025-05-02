@@ -25,7 +25,7 @@ public class PostDAO {
         String sql = "INSERT INTO Posts (owner_id, content) VALUES (?, ?)";
 
 
-        try (PreparedStatement stmt = DBConnection2.getPrepStatement(sql, new String[] {"post_id"})) {
+        try (PreparedStatement stmt = DBConnection2.getPstmt(sql, new String[] {"post_id"})) {
             stmt.setInt(1, userId);
             stmt.setString(2, content);
 
@@ -33,7 +33,7 @@ public class PostDAO {
 
             if ((postId > 0)&&(!tags.isEmpty())) {
                 String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
-                try(PreparedStatement pstmt = DBConnection2.getPrepStatement(tagSql)){
+                try(PreparedStatement pstmt = DBConnection2.getPstmt(tagSql)){
                     for(int tag : tags){
                         pstmt.setInt(1, postId);
                         pstmt.setInt(2, tag);
@@ -60,7 +60,7 @@ public class PostDAO {
         LinkedList<Post> posts = new LinkedList<>();
         String sql = "SELECT * FROM Posts";
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Post post = new Post(
@@ -90,7 +90,7 @@ public class PostDAO {
     public static boolean updatePost(int postId, String content) throws SQLException {
         String sql = "UPDATE Posts SET content = ? WHERE post_id = ?";
 
-        try (PreparedStatement stmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement stmt = DBConnection2.getPstmt(sql)) {
             stmt.setString(1, content);
             stmt.setInt(2, postId);
 
@@ -108,7 +108,7 @@ public class PostDAO {
     public static boolean delPost(int postId) throws SQLException {
         String sql = "DELETE FROM ? WHERE post_id = ?";
 
-        try (PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)) {
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
             pstmt.setInt(2, postId);
 
             // TODO: Need to delete all comments from Comments table
@@ -135,7 +135,7 @@ public class PostDAO {
         LinkedList<Integer> postLst = new LinkedList<>();
         String sql = "SELECT post_id FROM Posts WHERE owner_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
 
             ResultSet rs = pstmt.executeQuery();
@@ -151,7 +151,7 @@ public class PostDAO {
         LinkedList<Post> postLst = new LinkedList<>();
         String sql = "SELECT * FROM Posts WHERE owner_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
 
             ResultSet rs = pstmt.executeQuery();
@@ -176,7 +176,7 @@ public class PostDAO {
         Post post = null;
         String sql = "SELECT * FROM Posts WHERE post_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, postId);
             ResultSet rs = pstmt.executeQuery();
 
@@ -196,7 +196,7 @@ public class PostDAO {
         LinkedList<Integer> tagLst;
         String sql = "SELECT interest_id FROM Post_Tags WHERE post_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, postId);
             ResultSet rs = pstmt.executeQuery();
 
@@ -213,7 +213,7 @@ public class PostDAO {
         LinkedList<Comment> comtLst;
         String sql = "SELECT * FROM Post_Comments WHERE post_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPrepStatement(sql)){
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, postId);
             ResultSet rs = pstmt.executeQuery();
 

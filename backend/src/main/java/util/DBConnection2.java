@@ -51,8 +51,7 @@ public class DBConnection2 {
      * @throws SQLException if DB error occurred
      */
     public static Statement getStatement() throws SQLException{
-        if(connection == null){getConnection();}
-        return connection.createStatement();
+        return getConnection().createStatement();
     }
 
     /**
@@ -63,9 +62,8 @@ public class DBConnection2 {
      * @return prepared statement object that allows variables to be used for values in the query to prevent SQL injection
      * @throws SQLException if DB error occurred
      */
-    public static PreparedStatement getPrepStatement(String sqlStr) throws SQLException{
-        if(connection == null){getConnection();}
-        return connection.prepareStatement(sqlStr);
+    public static PreparedStatement getPstmt(String sqlStr) throws SQLException{
+        return getConnection().prepareStatement(sqlStr);
     }
 
     /**
@@ -80,9 +78,8 @@ public class DBConnection2 {
      * @return prepared statement object that allows variables to be used for values in the query to prevent SQL injection
      * @throws SQLException if DB error occurred
      */
-    public static PreparedStatement getPrepStatement(String sqlStr, String[] colNames) throws SQLException{
-        if(connection == null){getConnection();}
-        return connection.prepareStatement(sqlStr, colNames);
+    public static PreparedStatement getPstmt(String sqlStr, String[] colNames) throws SQLException{
+        return getConnection().prepareStatement(sqlStr, colNames);
     }
 
     /**
