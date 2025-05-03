@@ -18,12 +18,11 @@ dependencies {
 
     // Logback implementation (MAYBE?)
     implementation("ch.qos.logback:logback-classic:1.2.12")
+
+    // mysql dependency
+    implementation("com.mysql:mysql-connector-j:9.2.0")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
 
 tasks.named<War>("war") {
     archiveFileName.set("ROOT.war") // So Docker can use this name
