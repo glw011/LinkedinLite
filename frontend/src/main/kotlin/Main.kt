@@ -1,23 +1,28 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import ui.ProfileViewModel
-import ui.theme.DARK_MODE
+import data.AccountType
+import data.User
+import ui.components.Field
 import ui.theme.MainTheme
-import ui.views.UI
+import ui.views.home.ProfileUiState
+import ui.views.home.UI
 import ui.views.loginScreen
-import ui.views.registerOrgInfoScreen
-import ui.views.registerOrgPfpScreen
-import ui.views.registerOrgScreen
-import ui.views.registerSelectScreen
+import ui.views.register.RegisterInfoUiState
+import ui.views.register.RegisterPfpUIState
+import ui.views.register.registerCredentialsScreen
+import ui.views.register.registerInfoScreen
+import ui.views.registerorg.RegisterOrgInfoUiState
+import ui.views.registerorg.RegisterOrgPfpUiState
+import ui.views.registerorg.registerOrgInfoScreen
+import ui.views.registerorg.registerOrgPfpScreen
+import ui.views.registerorg.registerOrgScreen
+import ui.views.registerorg.registerSelectScreen
+import util.updateScreenDimensions
 import java.awt.Dimension
 
 fun main() = application {
@@ -33,18 +38,28 @@ enum class View {
     Login,
     Home,
     RegisterSelect,
+    RegisterMain,
+    RegisterInfo,
+    RegisterPfp,
     RegisterOrgMain,
     RegisterOrgInfo,
     RegisterOrgPfp,
 }
 
+/**
+ * Main application composable.
+ */
 @Composable
-fun App(profileViewModel: ProfileViewModel = ProfileViewModel()) {
-    // Main function to run the application
+fun App() {
+    var currentUser: User? by rememberSaveable { mutableStateOf(User()) }
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
+    val profileUiState by rememberSaveable { mutableStateOf(ProfileUiState()) }
+    var registerPfpUiState by rememberSaveable { mutableStateOf(RegisterPfpUIState()) }
+    var registerInfoUiState by rememberSaveable { mutableStateOf(RegisterInfoUiState()) }
+    var registerOrgInfoUiState by rememberSaveable { mutableStateOf(RegisterOrgInfoUiState()) }
+    var registerOrgPfpUiState by rememberSaveable { mutableStateOf(RegisterOrgPfpUiState()) }
 
-    // Observe the profileViewModel state
-    val profileState by profileViewModel.uiState.collectAsState()
+    updateScreenDimensions()
 
     if (currentView == View.Login) {
         // Show login screen
@@ -65,11 +80,16 @@ fun App(profileViewModel: ProfileViewModel = ProfileViewModel()) {
     } else if (currentView == View.RegisterSelect) {
         val onPerson: () -> Unit = {
             // Handle person registration logic here
+            currentUser!!.accountType = AccountType.INDIVIDUAL
+            profileUiState.headerInfo.title = "Student"
+            currentView = View.RegisterMain
         }
         val onOrganization: () -> Unit = {
             // Handle organization registration logic here
             // For now, just switch to the organization main view
-            currentView = View.RegisterOrgMain
+            currentUser!!.accountType = AccountType.ORGANIZATION
+            profileUiState.headerInfo.title = "Organization"
+            currentView = View.RegisterMain
         }
         val onBack: () -> Unit = {
             // Handle back logic here
@@ -81,61 +101,83 @@ fun App(profileViewModel: ProfileViewModel = ProfileViewModel()) {
             onOrg = onOrganization,
             onBack = onBack
         )
-    } else if (currentView == View.RegisterOrgMain) {
-        val onContinue: () -> Unit = {
-            // Handle continue logic here
-            // For now, just switch to the registration info view
-            currentView = View.RegisterOrgInfo
-        }
-        val onBack: () -> Unit = {
-            // Handle back logic here
-            // For now, just switch to the registration select view
-            currentView = View.RegisterSelect
-        }
-        registerOrgScreen(
-            onContinue = onContinue,
-            onBack = onBack
+    } else if (currentView == View.RegisterMain) {
+        registerCredentialsScreen(
+            onContinue = {
+                // Handle continue logic here
+                // For now, just switch to the registration info view
+                if (currentUser!!.accountType == AccountType.INDIVIDUAL) {
+                    currentView = View.RegisterInfo
+                } else {
+                    currentView = View.RegisterOrgInfo
+                }
+            },
+            onBack = {
+                // Handle back logic here
+                // For now, just switch to the registration select view
+                currentView = View.RegisterSelect
+            },
+        )
+    } else if (currentView == View.RegisterInfo) {
+        registerInfoScreen(
+            uiState = registerInfoUiState,
+            onContinue = {
+                // Handle continue logic here
+                // For now, just switch to the home view
+                currentView = View.RegisterOrgPfp
+            },
+            onBack = {
+                // Handle back logic here
+                // For now, just switch to the registration main view
+                registerInfoUiState = RegisterInfoUiState()
+                registerPfpUiState = RegisterPfpUIState()
+                currentView = View.RegisterMain
+            },
         )
     } else if (currentView == View.RegisterOrgInfo) {
-        var organizationName by rememberSaveable { mutableStateOf("") }
-        var schoolName by rememberSaveable { mutableStateOf("") }
-        var organizationTags by rememberSaveable { mutableStateOf(listOf<String>()) }
+        // TODO: Add input validation
         val onContinue: () -> Unit = {
-            // Handle continue logic here
-            // For now, just switch to the registration profile picture view
             currentView = View.RegisterOrgPfp
-            profileViewModel.setName(organizationName)
-            profileViewModel.setSchool(schoolName)
         }
         val onBack: () -> Unit = {
-            // Handle back logic here
-            // For now, just switch to the organization main view
-            currentView = View.RegisterOrgMain
+            currentView = View.RegisterMain
+            registerOrgInfoUiState = RegisterOrgInfoUiState()
+            registerOrgPfpUiState = RegisterOrgPfpUiState()
         }
         registerOrgInfoScreen(
+            uiState = registerOrgInfoUiState,
             onContinue = onContinue,
             onBack = onBack,
-            onOrgNameChanged = { organizationName = it },
-            onSchoolNameChanged = { schoolName = it },
-            onOrgTagsChanged = {}
         )
     } else if (currentView == View.RegisterOrgPfp) {
         val onContinue: () -> Unit = {
-            // Handle continue logic here
-            // For now, just switch to the home view
             currentView = View.Home
+            if (currentUser!!.accountType == AccountType.INDIVIDUAL) {
+                profileUiState.headerInfo.name = registerInfoUiState.name + " " + registerInfoUiState.surname
+                profileUiState.headerInfo.school = registerInfoUiState.schoolName
+                profileUiState.tags = registerInfoUiState.tags
+                profileUiState.headerInfo.profilePicture.value = registerOrgPfpUiState.profilePicture.value
+            } else {
+                profileUiState.headerInfo.name = registerOrgInfoUiState.orgName
+                profileUiState.headerInfo.school = registerOrgInfoUiState.schoolName
+                profileUiState.tags = registerOrgInfoUiState.orgTags
+                profileUiState.headerInfo.profilePicture.value = registerOrgPfpUiState.profilePicture.value
+            }
         }
         val onBack: () -> Unit = {
-            // Handle back logic here
-            // For now, just switch to the registration info view
-            currentView = View.RegisterOrgInfo
+            if (currentUser!!.accountType == AccountType.INDIVIDUAL) {
+                currentView = View.RegisterInfo
+            } else {
+                currentView = View.RegisterOrgInfo
+            }
         }
         registerOrgPfpScreen(
+            uiState = registerOrgPfpUiState,
             onContinue = onContinue,
             onBack = onBack
         )
     } else if (currentView == View.Home) {
         // Show home screen
-        UI()
+        UI(profileUiState, currentUser!!)
     }
 }

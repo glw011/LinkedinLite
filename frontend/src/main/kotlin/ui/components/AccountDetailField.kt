@@ -5,18 +5,26 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import ui.components.styles.styledTextField
 
+/**
+ * Creates a text field with a label and a prompt. Used for allowing the user
+ * to enter their account details.
+ *
+ * @param label The label for the text field.
+ * @param prompt The prompt in the text field.
+ * @param onTextChanged The callback for when the text is changed.
+ * @param keyboardType The keyboard type for the text field. (E.g. Email, Password, etc.)
+ * @param password Whether the text field will contain a password or not.
+ * @param value The current value of the text field.
+ * @param modifier The modifier for the text field.
+ */
 @Composable
 fun AccountDetailField(
     label: String,
@@ -24,6 +32,7 @@ fun AccountDetailField(
     onTextChanged: (String) -> Unit = {},
     keyboardType: KeyboardType = KeyboardType.Text,
     password: Boolean = false,
+    value: String = "",
     modifier: Modifier = Modifier
 ) {
 
@@ -44,7 +53,8 @@ fun AccountDetailField(
             width = 256,
             xAlignment = Alignment.CenterHorizontally,
             unfocusedText = prompt,
-            isPassword = password
+            isPassword = password,
+            value = value,
         )
     }
 }

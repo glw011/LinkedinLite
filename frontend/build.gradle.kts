@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.dokka") version "2.0.0"
 }
 
 group = "org.example"
@@ -22,6 +23,10 @@ dependencies {
     implementation(compose.foundation)
     implementation(compose.runtime)
     implementation(compose.components.resources)
+    implementation("org.jetbrains.exposed:exposed-core:0.60.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.60.0")
+    implementation("org.jetbrains.exposed:exposed-crypt:0.60.0")
+    implementation(compose.materialIconsExtended)
 }
 
 compose.desktop {

@@ -1,28 +1,31 @@
 package ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.vector.ImageVector
 
+/**
+ * Creates an edit button indicated by a pencil icon.
+ *
+ * @param onClick The callback for when the button is clicked.
+ * @param icon The icon to be displayed on the button. Defaults to a pencil icon.
+ * @param modifier The modifier for the button.
+ */
 @Composable
 fun EditButton(
     onClick: () -> Unit,
+    icon: ImageVector = Icons.Default.Edit,
     modifier: Modifier = Modifier,
 ) {
-    // Edit button UI
     Icon(
-        imageVector = Icons.Default.Edit,
+        imageVector = icon,
         contentDescription = "Edit",
         tint = MaterialTheme.colorScheme.onBackground,
         modifier = modifier

@@ -9,7 +9,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -24,9 +23,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
@@ -38,12 +37,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.example.linkedinliteui.generated.resources.Res
 import org.example.linkedinliteui.generated.resources.default_pfp
-import org.jetbrains.compose.resources.painterResource
-import ui.theme.DARK_MODE
+import org.jetbrains.compose.resources.imageResource
+import ui.components.image.Image
 import ui.theme.LIGHT_PURPLE
 
 var FadeSpeed by mutableStateOf(100)
@@ -64,7 +64,10 @@ var searchActive by mutableStateOf(false)
  * @param onTabSelected Lambda function to call when a tab is selected.
  */
 @Composable
-fun Sidebar(selectedTab: String, onTabSelected: (String) -> Unit) {
+fun Sidebar(
+    userProfilePicture: ImageBitmap?,
+    selectedTab: String,
+    onTabSelected: (String) -> Unit) {
     Column(
         modifier = Modifier
             .width(64.dp)
@@ -110,6 +113,7 @@ fun Sidebar(selectedTab: String, onTabSelected: (String) -> Unit) {
         Spacer(modifier = Modifier.weight(1f))
 
         profileTabButton(
+            userProfilePicture = userProfilePicture,
             isSelected = selectedTab == "My Profile",
             onClick = {
                 searchActive = false
@@ -154,7 +158,7 @@ fun peopleOrgsTabButton(isSelected: Boolean, onClick: () -> Unit) {
 
         // Person Icon
         Icon(
-            imageVector = Icons.Filled.Person,
+            imageVector = Icons.Filled.People,
             contentDescription = "People / Orgs",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
@@ -295,7 +299,7 @@ fun postTabButton(isSelected: Boolean, onClick: () -> Unit) {
 
         // Add Icon
         Icon(
-            imageVector = Icons.Filled.Add,
+            imageVector = Icons.Filled.AddBox,
             contentDescription = "Home",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
@@ -320,7 +324,11 @@ fun postTabButton(isSelected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun profileTabButton(isSelected: Boolean, onClick: () -> Unit) {
+fun profileTabButton(
+    userProfilePicture: ImageBitmap?,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
     val interactionSource = remember { MutableInteractionSource() }
 
     // Box to contain icon
@@ -335,24 +343,17 @@ fun profileTabButton(isSelected: Boolean, onClick: () -> Unit) {
             ),
         contentAlignment = Alignment.Center
     ) {
-        // Settings Icon
-//        Icon(
-//            imageVector = Icons.Filled.Settings,
-//            contentDescription = "My Profile",
-//            tint = MaterialTheme.colorScheme.onBackground,
-//            modifier = Modifier
-//                .size(32.dp)
-//                .padding(bottom = 4.dp)
-//        )
 
         // Temporary default pfp
         Image(
-            painter = painterResource(Res.drawable.default_pfp),
+            bitmap = userProfilePicture,
+            defaultImage = imageResource(Res.drawable.default_pfp),
             contentDescription = "Default Profile Picture",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .size(28.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            alignment = Alignment.Center
         )
         // Selection Indicator
         AnimatedVisibility(

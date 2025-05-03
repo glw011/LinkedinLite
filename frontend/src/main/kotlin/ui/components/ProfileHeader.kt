@@ -1,51 +1,44 @@
 package ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.layout.layout
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import ui.components.dialog.EditDialog
+import ui.components.image.Banner
+import ui.components.image.EditablePfpImage
 
+/**
+ * Creates a dialog window for editing profile details.
+ *
+ * @param onNameChanged Callback for when the name field is changed.
+ * @param onDescriptionChanged Callback for when the description field is changed.
+ * @param onLocationChanged Callback for when the location field is changed.
+ * @param onSchoolChanged Callback for when the school field is changed.
+ * @param onSave Callback for when the save button is clicked.
+ * @param onCancel Callback for when the cancel button is clicked.
+ */
 @Composable
 fun DetailEditDialog(
     onNameChanged: (String) -> Unit,
@@ -55,72 +48,59 @@ fun DetailEditDialog(
     onSave: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    Dialog(
-        onDismissRequest = onCancel,
-    ) {
-        ElevatedCard(
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .wrapContentHeight()
-                .clip(RoundedCornerShape(16.dp))
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    text = "Edit Profile",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                AccountDetailField(
-                    label = "Name",
-                    prompt = "Enter your name",
-                    onTextChanged = onNameChanged,
-                )
-                AccountDetailField(
-                    label = "Description",
-                    prompt = "Enter your description",
-                    onTextChanged = onDescriptionChanged,
-                )
-                AccountDetailField(
-                    label = "Location",
-                    prompt = "Enter your location",
-                    onTextChanged = onLocationChanged,
-                )
-                AccountDetailField(
-                    label = "School",
-                    prompt = "Enter your school",
-                    onTextChanged = onSchoolChanged,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    styledButton(
-                        text = "Save",
-                        onClick = onSave,
-                        width = 80,
-                    )
-                    styledButton(
-                        text = "Cancel",
-                        onClick = onCancel,
-                        width = 80,
-                    )
-                }
-            }
-        }
-    }
+    val fields: List<Field> = listOf(
+        Field(
+            title = "Name",
+            prompt = "Enter your name",
+            onEdit = onNameChanged,
+        ),
+        Field(
+            title = "Description",
+            prompt = "Enter your description",
+            onEdit = onDescriptionChanged,
+        ),
+        Field(
+            title = "Location",
+            prompt = "Enter your location",
+            onEdit = onLocationChanged,
+        ),
+        Field(
+            title = "School",
+            prompt = "Enter your school",
+            onEdit = onSchoolChanged,
+        ),
+    )
+
+    EditDialog(
+        title = "Edit Profile",
+        fields = fields,
+        onCancel = onCancel,
+        onConfirm = onSave,
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .wrapContentHeight()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    )
 }
 
+/**
+ * Creates a header for a profile. Contains a banner, editable profile picture, and an area for
+ * account details. There are two edit buttons, one for editing the banner one for editing the
+ * basic profile details.
+ *
+ * @param name The name of the user.
+ * @param description The description/bio of the user.
+ * @param title The title of the user (E.g. "Organization" or "Student").
+ * @param location The location of the user (City, State).
+ * @param school The name of the school of the user.
+ * @param banner The imageBitmap of the banner image to be displayed.
+ * @param profilePicture The imageBitmap of the profile picture to be displayed.
+ * @param onEditHeader Callback for when the edit button for the header is clicked.
+ * @param onEditBanner Callback for when the edit button for the banner is clicked.
+ * @param onEditProfilePicture Callback for when the profile picture is clicked.
+ * @param modifier Modifier to be applied to the header.
+ */
 @Composable
 fun ProfileHeader(
     name: String,
@@ -188,6 +168,17 @@ fun ProfileHeader(
     }
 }
 
+/**
+ * Creates the profile details section of the profile header.
+ *
+ * @param name The name of the user.
+ * @param description The description/bio of the user.
+ * @param title The title of the user (E.g. "Organization" or "Student").
+ * @param location The location of the user (City, State).
+ * @param school The name of the school of the user.
+ * @param onEdit Callback for when the edit button is clicked.
+ * @param modifier Modifier to be applied to the details section.
+ */
 @Composable
 fun ProfileHeaderDetails(
     name: String,
@@ -216,7 +207,7 @@ fun ProfileHeaderDetails(
                         .wrapContentHeight()
                 )
                 Text(
-                    text = "Organization at $school",
+                    text = "$title at $school",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
