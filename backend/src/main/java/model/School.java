@@ -23,17 +23,6 @@ public class School {
         this.country    = country;
     }
 
-    // existing 6-arg used by ModelManager
-    public School(int schoolId,
-                  String schoolName,
-                  String city,
-                  String state,
-                  String country,
-                  int    dummy) {
-        this(schoolId, schoolName, city, state, country);
-        // ignore dummy or assign to a field if you want
-    }
-
     public int getSchoolId()         { return schoolId; }
     public void setSchoolId(int id)  { this.schoolId = id; }
     // in model/School.java

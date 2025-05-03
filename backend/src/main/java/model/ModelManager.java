@@ -16,26 +16,29 @@ import java.util.Objects;
  * to be retrieved via their user_id.
  */
 public class ModelManager {
+    private static final boolean DEBUG = true;
+
     // initialize hashmaps for mapping/storing all static items contained in DB
-    private static HashMap<Integer, School> allSchools;
-    private static HashMap<String, Integer> schoolByName;
+    private static HashMap<Integer, School> allSchools = new HashMap<>();
+    private static HashMap<String, Integer> schoolByName = new HashMap<>();
 
-    private static HashMap<Integer, Major> allMajors;
-    private static HashMap<String, Integer> majorByName;
+    private static HashMap<Integer, Major> allMajors = new HashMap<>();
+    private static HashMap<String, Integer> majorByName = new HashMap<>();
 
-    private static HashMap<Integer, FoS> allFields;
-    private static HashMap<String, Integer> fieldByName;
+    private static HashMap<Integer, FoS> allFields = new HashMap<>();
+    private static HashMap<String, Integer> fieldByName = new HashMap<>();
 
-    private static HashMap<Integer, Skill> allSkills;
-    private static HashMap<String, Integer> skillByName;
+    private static HashMap<Integer, Skill> allSkills = new HashMap<>();
+    private static HashMap<String, Integer> skillByName = new HashMap<>();
 
-    private static HashMap<Integer, Interest> allInterests;
-    private static HashMap<String, Integer> interestByName;
+    private static HashMap<Integer, Interest> allInterests = new HashMap<>();
+    private static HashMap<String, Integer> interestByName = new HashMap<>();
 
-    private static HashMap<Integer, UserType> userTypeById;
-    private static HashMap<String, Integer> userIdByEmail;
+    private static HashMap<Integer, UserType> userTypeById = new HashMap<>();
+    private static HashMap<String, Integer> userIdByEmail = new HashMap<>();
 
-    public ModelManager() throws SQLException{
+    public static void initModelManager() throws SQLException{
+        /*
         allSchools = new HashMap<>();
         schoolByName = new HashMap<>();
 
@@ -53,8 +56,10 @@ public class ModelManager {
 
         userTypeById = new HashMap<>();
         userIdByEmail = new HashMap<>();
-
+        */
         populateLists();
+
+
     }
 
     // Populate all mappings (Schools, Fields, Skills, Interests, Majors, User IDs and emails) on server start
@@ -69,7 +74,8 @@ public class ModelManager {
 
     // Get user id, email address, and type of all users stored in DB and add to respective hashmap
     private static void populateUsersLists() throws SQLException{
-        String sqlStr = "SELECT * FROM Users";
+        //String sqlStr = "SELECT * FROM Users JOIN User_Verify ON Users.user_id = User_Verify.user_id";
+        String sqlStr = "SELECT * FROM User_Verify";
         ResultSet users = DBConnection2.queryDB(sqlStr);
 
         while(users.next()){
@@ -92,12 +98,12 @@ public class ModelManager {
         while(schools.next()){
             School currSchool = new School(
                     schools.getInt("school_id"),
-                    schools.getAsciiStream("name").toString(),
-                    schools.getAsciiStream("city").toString(),
-                    schools.getAsciiStream("state").toString(),
-                    schools.getAsciiStream("country").toString(),
-                    schools.getInt("zip")
+                    schools.getString("name"),
+                    schools.getString("city"),
+                    schools.getString("state"),
+                    schools.getString("country")
             );
+            if(DEBUG) System.out.println("Adding "+currSchool.getName()+" to allSchools HashMap");
             allSchools.putIfAbsent(currSchool.getId(), currSchool);
             schoolByName.putIfAbsent(currSchool.getName(), currSchool.getId());
         }
@@ -106,13 +112,13 @@ public class ModelManager {
     }
     // Get data for all fields (field of study) in DB, create FoS obj for each, and map each id to its obj in hashmap
     private static void populateFieldsList() throws SQLException{
-        String sqlStr = "SELECT * FROM Fields_of_Study";
+        String sqlStr = "SELECT * FROM FoS";
         ResultSet fields = DBConnection2.queryDB(sqlStr);
 
         while(fields.next()){
             FoS currField = new FoS(
                     fields.getInt("fos_id"),
-                    fields.getAsciiStream("fos_name").toString()
+                    fields.getString("fos_name")
             );
             allFields.putIfAbsent(currField.getID(), currField);
             fieldByName.putIfAbsent(currField.getName(), currField.getID());
@@ -127,7 +133,7 @@ public class ModelManager {
 
         while(skills.next()){
             int currSkillId = skills.getInt("skill_id");
-            String currSkillName = skills.getAsciiStream("skill_name").toString();
+            String currSkillName = skills.getString("skill_name");
 
             String currSqlStr = String.format("SELECT * FROM Skill_FoS WHERE skill_id = %d", currSkillId);
             ResultSet field = DBConnection2.queryDB(currSqlStr);
@@ -156,7 +162,7 @@ public class ModelManager {
 
         while(interests.next()){
             int currInterestId = interests.getInt("interest_id");
-            String currInterestName = interests.getAsciiStream("interest_name").toString();
+            String currInterestName = interests.getString("interest_name");
 
             String currSqlStr = String.format("SELECT * FROM Interest_FoS WHERE interest_id = %d", currInterestId);
             ResultSet field = DBConnection2.queryDB(currSqlStr);

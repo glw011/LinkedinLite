@@ -18,9 +18,10 @@ public class DBConnection2 {
     // Add allowPublicKeyRetrieval=true
     private static final String DB_URL = String.format(
             "jdbc:mysql://%s/%s" +
+                    //"; AUTO_SERVER=TRUE" +
                     "?useSSL=false" +
                     "&allowPublicKeyRetrieval=true" +
-                    "&serverTimezone=UTC;AUTO_SERVER=TRUE",
+                    "&serverTimezone=UTC",
             DB_HOST, DB_NAME
     );
 

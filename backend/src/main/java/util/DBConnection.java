@@ -15,7 +15,7 @@ public class DBConnection {
     // construct JDBC URL using the retrieved values
     private static final String URL = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME + "?useSSL=false";
 
-    public static Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }

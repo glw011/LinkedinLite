@@ -236,7 +236,7 @@ public class UserService {
      */
     public int fetchSchool(int userId) {
         try {
-            return userDAO.getSchool(userId);
+            return userDAO.getSchool(userId).getId();
         } catch (SQLException e) {
             throw new ServiceException("Error fetching school", e);
         }
@@ -255,7 +255,7 @@ public class UserService {
      */
     public int fetchProfileImage(int userId) {
         try {
-            return userDAO.getProfileImg(userId);
+            return userDAO.getProfileImg(userId).getID();
         } catch (SQLException e) {
             throw new ServiceException("Error fetching profile image", e);
         }

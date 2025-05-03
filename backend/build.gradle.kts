@@ -18,6 +18,8 @@ dependencies {
 
     // Logback implementation (MAYBE?)
     implementation("ch.qos.logback:logback-classic:1.2.12")
+
+    implementation("com.mysql:mysql-connector-j:9.2.0")
 }
 
 java {
