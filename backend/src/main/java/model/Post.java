@@ -1,78 +1,65 @@
 package model;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.util.LinkedList;
 
 public class Post {
+    private int postId;
+    private int ownerId;
+    private String content;
+    private Timestamp timestamp;
+    private String userKey;
+    private String imageFileName;
+    private LinkedList<Integer> tagList = new LinkedList<>();
+    private LinkedList<Comment> commentsList = new LinkedList<>();
 
-    private int postId;              // unique identifier for post (primary key)
-    private String postText;         //  main content
-    private String userKey;          // identifier for user who created  post
-    private String imageFileName;    // nmame of image file associated with post (optional)
-    private LocalDateTime timestamp; //  date/time post was created
+    // no-arg for servlet: Post post = new Post();
+    public Post() {}
 
-    // Default constructor
-    public Post() {
-    }
-
-    // Parameterized constructor
-    public Post(int postId, String postText, String userKey, String imageFileName, LocalDateTime timestamp) {
+    // used by DAO: new Post(rs.getInt("post_id"), ..., rs.getTimestamp("post_date"))
+    public Post(int postId, int ownerId, String content, Timestamp timestamp) {
         this.postId = postId;
-        this.postText = postText;
-        this.userKey = userKey;
-        this.imageFileName = imageFileName;
+        this.ownerId = ownerId;
+        this.content = content;
         this.timestamp = timestamp;
     }
 
-    // getters and setters
+    // --- getters / setters ---
+    public int getPostId() { return postId; }
+    public void setPostId(int postId) { this.postId = postId; }
+    // in model/Post.java
 
-    public int getPostId() {
-        return postId;
+    /** Alias for getPostId(), so existing DAOs that call post.getID() compile. */
+    public int getID() {
+        return getPostId();
     }
 
-    public void setPostId(int postId) {
-        this.postId = postId;
+    /** Alias for getTimestamp(), so you can do Post::getPostDate. */
+    public java.sql.Timestamp getPostDate() {
+        return getTimestamp();
     }
 
-    public String getPostText() {
-        return postText;
-    }
 
-    public void setPostText(String postText) {
-        this.postText = postText;
-    }
+    public int getOwnerId() { return ownerId; }
+    public void setOwnerId(int ownerId) { this.ownerId = ownerId; }
 
-    public String getUserKey() {
-        return userKey;
-    }
+    // your service calls getPostText()/setPostText()
+    public String getPostText() { return content; }
+    public void setPostText(String content) { this.content = content; }
 
-    public void setUserKey(String userKey) {
-        this.userKey = userKey;
-    }
+    public Timestamp getTimestamp() { return timestamp; }
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
 
-    public String getImageFileName() {
-        return imageFileName;
-    }
+    // your servlet calls setUserKey()/getUserKey()
+    public String getUserKey() { return userKey; }
+    public void setUserKey(String userKey) { this.userKey = userKey; }
 
-    public void setImageFileName(String imageFileName) {
-        this.imageFileName = imageFileName;
-    }
+    public String getImageFileName() { return imageFileName; }
+    public void setImageFileName(String imageFileName) { this.imageFileName = imageFileName; }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
+    public LinkedList<Integer> getTagList() { return tagList; }
+    public void setTagList(LinkedList<Integer> tagList) { this.tagList = tagList; }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    @Override
-    public String toString() {
-        return "Post{" +
-                "postId=" + postId +
-                ", postText='" + postText + '\'' +
-                ", userKey='" + userKey + '\'' +
-                ", imageFileName='" + imageFileName + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
+    public LinkedList<Comment> getCommentsList() { return commentsList; }
+    public void setCommentsList(LinkedList<Comment> commentsList) { this.commentsList = commentsList; }
 }

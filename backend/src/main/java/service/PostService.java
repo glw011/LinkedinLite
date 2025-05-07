@@ -2,64 +2,54 @@ package service;
 
 import dao.PostDAO;
 import model.Post;
+
+import java.sql.SQLException;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class PostService {
-    private final PostDAO postDAO = new PostDAO();
-
     /**
-     * Adds a new post after validating the post content.
-     *
-     * @param post the Post object to insert
-     * @return true if the post is successfully inserted; false otherwise.
-     * @throws Exception if validation fails or a database error occurs.
+     * Creates a new post.
+     * @param userId  ID of the poster
+     * @param content non‐empty text
+     * @param tags    list of interest IDs
+     * @return true if inserted
+     * @throws SQLException on DB error
      */
-    public boolean addPost(Post post) throws Exception {
-        // validate post text is provided.
-        if (post.getPostText() == null || post.getPostText().trim().isEmpty()) {
-            throw new IllegalArgumentException("Post text cannot be empty");
+    public boolean addPost(int userId, String content, LinkedList<Integer> tags) throws SQLException {
+        if (content == null || content.trim().isEmpty()) {
+            throw new IllegalArgumentException("Post content cannot be empty");
         }
-        // validate that the user key is set (opt)
-        if (post.getUserKey() == null || post.getUserKey().trim().isEmpty()) {
-            throw new IllegalArgumentException("User identifier is required");
-        }
-        return postDAO.insertPost(post);
+        return PostDAO.pushPost(userId, content, tags);
     }
 
     /**
-     * Retrieves all posts and sorts them by timestamp in descending order.
-     *
-     * @return a list of Post objects sorted by most recent.
-     * @throws Exception if a database error occurs.
+     * Fetches all posts, sorted by date descending.
      */
-    public List<Post> getAllPosts() throws Exception {
-        List<Post> posts = postDAO.getAllPosts();
-        if (posts == null) {
-            throw new Exception("No posts available");
-        }
-        //sort posts most recent first.
-        posts.sort((p1, p2) -> p2.getTimestamp().compareTo(p1.getTimestamp()));
+    public List<Post> getAllPosts() throws SQLException {
+        List<Post> posts = PostDAO.getAllPosts();
+        posts.sort(Comparator.comparing(Post::getPostDate).reversed());
         return posts;
     }
 
     /**
-     * Updates an existing post.
+     * Updates a post’s content.
      */
-    public boolean updatePost(Post post) throws Exception {
-        if (post.getPostId() <= 0) {
-            throw new IllegalArgumentException("Post id must be valid for update");
+    public boolean updatePost(int postId, String content) throws SQLException {
+        if (postId <= 0) {
+            throw new IllegalArgumentException("Invalid post ID");
         }
-        return postDAO.updatePost(post);
+        return PostDAO.updatePost(postId, content);
     }
 
     /**
-     * Deletes a post by its id.
+     * Deletes a post.
      */
-    public boolean deletePost(int postId) throws Exception {
+    public boolean deletePost(int postId) throws SQLException {
         if (postId <= 0) {
-            throw new IllegalArgumentException("Invalid post id");
+            throw new IllegalArgumentException("Invalid post ID");
         }
-        return postDAO.deletePost(postId);
+        return PostDAO.delPost(postId);
     }
 }
-

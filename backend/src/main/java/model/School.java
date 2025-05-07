@@ -1,61 +1,52 @@
 package model;
-@SuppressWarnings("unused")
+
 public class School {
-    private int schoolId;
+    private int    schoolId;
     private String schoolName;
     private String city;
     private String state;
     private String country;
-    // default
-    public School() {
-    }
-    // param'd
-    public School(int schoolId, String schoolName, String city, String state, String country) {
-        this.schoolId = schoolId;
+
+    // no-arg for DAO
+    public School() {}
+
+    // *** ADD THIS 5-ARGCTOR ***
+    public School(int schoolId,
+                  String schoolName,
+                  String city,
+                  String state,
+                  String country) {
+        this.schoolId   = schoolId;
         this.schoolName = schoolName;
-        this.city = city;
-        this.state = state;
-        this.country = country;
+        this.city       = city;
+        this.state      = state;
+        this.country    = country;
     }
-    // getters and setters
-    public int getSchoolId() {
-        return schoolId;
+
+    public int getSchoolId()         { return schoolId; }
+    public void setSchoolId(int id)  { this.schoolId = id; }
+    // in model/School.java
+
+    /** Alias so ModelManager.getAllSchools() can key by getId(). */
+    public int getId() {
+        return getSchoolId();
     }
-    public void setSchoolId(int schoolId) {
-        this.schoolId = schoolId;
+
+    /** Alias so ModelManager can map by name. */
+    public String getName() {
+        return getSchoolName();
     }
-    public String getSchoolName() {
-        return schoolName;
-    }
-    public void setSchoolName(String schoolName) {
-        this.schoolName = schoolName;
-    }
-    public String getCity() {
-        return city;
-    }
-    public void setCity(String city) {
-        this.city = city;
-    }
-    public String getState() {
-        return state;
-    }
-    public void setState(String state) {
-        this.state = state;
-    }
-    public String getCountry() {
-        return country;
-    }
-    public void setCountry(String country) {
-        this.country = country;
-    }
-    @Override
-    public String toString() {
-        return "School{" +
-                "schoolId=" + schoolId +
-                ", schoolName='" + schoolName + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", country='" + country + '\'' +
-                '}';
-    }
+
+
+    public String getSchoolName()        { return schoolName; }
+    public void   setSchoolName(String n){ this.schoolName = n; }
+
+    public String getCity()        { return city; }
+    public void   setCity(String c){ this.city = c; }
+
+    public String getState()         { return state; }
+    public void   setState(String s) { this.state = s; }
+
+    public String getCountry()          { return country; }
+    public void   setCountry(String c)  { this.country = c; }
 }

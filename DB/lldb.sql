@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 03, 2025 at 12:03 AM
+-- Generation Time: May 03, 2025 at 02:26 AM
 -- Server version: 10.11.11-MariaDB-0ubuntu0.24.04.2
 -- PHP Version: 8.3.6
 
@@ -319,7 +319,7 @@ CREATE TABLE `Orgs` (
 
 INSERT INTO `Orgs` (`org_id`, `org_name`) VALUES
 (5, 'Organization'),
-(11, '\"NEW ORG\"');
+(11, 'NEW ORG');
 
 -- --------------------------------------------------------
 
@@ -483,7 +483,12 @@ CREATE TABLE `Students` (
 --
 
 INSERT INTO `Students` (`student_id`, `major_id`, `fname`, `lname`) VALUES
-(10, NULL, '\"NEW STUDENT\"', NULL);
+(10, NULL, '\"NEW STUDENT\"', NULL),
+(12, 47, 'garrett', NULL),
+(13, NULL, '\"NEW STUDENT\"', NULL),
+(14, NULL, '\"NEW STUDENT\"', NULL),
+(15, NULL, '\"NEW STUDENT\"', NULL),
+(16, NULL, '\"NEW STUDENT\"', NULL);
 
 -- --------------------------------------------------------
 
@@ -516,7 +521,12 @@ CREATE TABLE `Users` (
 
 INSERT INTO `Users` (`user_id`, `bio`, `user_type`, `school_id`, `pfp_id`) VALUES
 (10, NULL, 'student', NULL, NULL),
-(11, NULL, 'org', NULL, NULL);
+(11, NULL, 'org', NULL, NULL),
+(12, NULL, 'student', 1, NULL),
+(13, NULL, 'student', NULL, NULL),
+(14, NULL, 'student', NULL, NULL),
+(15, NULL, 'student', NULL, NULL),
+(16, NULL, 'student', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -549,14 +559,30 @@ CREATE TABLE `User_Verify` (
 
 INSERT INTO `User_Verify` (`user_id`, `email`, `pass_hash`, `join_date`, `type`) VALUES
 (10, 'stdnt@test.com', 'hash', '2025-05-02 14:27:24', 'student'),
-(11, 'org@test.com', 'hash', '2025-05-02 14:27:24', 'org');
+(11, 'org@test.com', 'hash', '2025-05-02 14:27:24', 'org'),
+(12, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:34:49', 'student'),
+(13, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:34:52', 'student'),
+(14, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:36:54', 'student'),
+(15, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:36:57', 'student'),
+(16, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:55:15', 'student');
 
 --
 -- Triggers `User_Verify`
 --
 DELIMITER $$
-CREATE TRIGGER `user_added` AFTER INSERT ON `User_Verify` FOR EACH ROW BEGIN
-	INSERT INTO Users (user_id, user_type) VALUES (NEW.user_id, NEW.type)$$
+CREATE TRIGGER user_added 
+AFTER INSERT ON User_Verify 
+FOR EACH ROW 
+BEGIN
+	INSERT INTO Users (user_id, user_type) VALUES (NEW.user_id, NEW.type);
+    
+	IF NEW.type = 'student' THEN
+    	INSERT INTO Students (student_id) VALUES (NEW.user_id);
+    ELSEIF NEW.type = 'org' THEN
+    	INSERT INTO Orgs (org_id) VALUES (NEW.user_id);
+    END IF;
+  
+END $$
 DELIMITER ;
 
 --
@@ -738,7 +764,7 @@ ALTER TABLE `Skills`
 -- AUTO_INCREMENT for table `User_Verify`
 --
 ALTER TABLE `User_Verify`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
