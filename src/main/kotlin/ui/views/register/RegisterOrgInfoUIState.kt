@@ -1,4 +1,4 @@
-package ui.views.registerorg
+package ui.views.register
 
 import androidx.compose.runtime.mutableStateListOf
 

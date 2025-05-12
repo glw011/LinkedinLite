@@ -1,4 +1,4 @@
-package ui.views.registerorg
+package ui.views.register
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface

@@ -3,9 +3,6 @@ package ui.views.home
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.ImageBitmap
-import org.example.linkedinlite.generated.resources.Res
-import org.example.linkedinlite.generated.resources.default_banner
-import org.example.linkedinlite.generated.resources.default_pfp
 import ui.components.profilecard.Member
 import util.getBitmapFromDrawableID
 
@@ -40,6 +37,6 @@ data class ProfileHeaderInfo(
     var title: String = "",
     var location: String = "",
     var school: String = "",
-    var banner: MutableState<ImageBitmap?> = mutableStateOf(getBitmapFromDrawableID(Res.drawable.default_banner)),
-    var profilePicture: MutableState<ImageBitmap?> = mutableStateOf(getBitmapFromDrawableID(Res.drawable.default_pfp)),
+    var banner: MutableState<ImageBitmap?> = mutableStateOf(null),
+    var profilePicture: MutableState<ImageBitmap?> = mutableStateOf(null),
 )
