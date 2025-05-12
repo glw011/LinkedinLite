@@ -2,6 +2,7 @@ package service;
 
 import dao.SchoolDAO;
 import model.School;
+
 import java.util.List;
 
 public class SchoolService {
