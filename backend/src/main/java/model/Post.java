@@ -10,6 +10,7 @@ public class Post {
     private Timestamp timestamp;
     private String userKey;
     private String imageFileName;
+    private Picture postImage;
     private LinkedList<Integer> tagList = new LinkedList<>();
     private LinkedList<Comment> commentsList = new LinkedList<>();
 
@@ -22,6 +23,7 @@ public class Post {
         this.ownerId = ownerId;
         this.content = content;
         this.timestamp = timestamp;
+        this.postImage = null;
     }
 
     // --- getters / setters ---
@@ -56,6 +58,9 @@ public class Post {
 
     public String getImageFileName() { return imageFileName; }
     public void setImageFileName(String imageFileName) { this.imageFileName = imageFileName; }
+
+    public void setPostImage(Picture img){this.postImage = img;}
+    public Picture getPostImage(){return this.postImage;}
 
     public LinkedList<Integer> getTagList() { return tagList; }
     public void setTagList(LinkedList<Integer> tagList) { this.tagList = tagList; }

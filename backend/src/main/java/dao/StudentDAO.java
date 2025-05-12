@@ -68,7 +68,7 @@ public class StudentDAO extends UserDAO{
         Student studentObj;
 
         String sqlStr =
-            "SELECT DISTINCT" +
+            "SELECT DISTINCT " +
                 "Students.student_id as id, " +
                 "Students.fname as fname, " +
                 "Students.lname as lname, " +

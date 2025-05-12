@@ -3,6 +3,8 @@ package dao;
 import model.Comment;
 import model.Post;
 import util.DBConnection2;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -205,8 +207,119 @@ public class PostDAO {
             while(rs.next()){
                 tagLst.add(rs.getInt("interest_id"));
             }
+            rs.close();
         }
         return tagLst;
+    }
+
+    public static LinkedList<Post> getRecentPostsByInterest(int interestId) throws SQLException{
+        LinkedList<Post> postLst = new LinkedList<>();
+        String sql =
+                "SELECT DISTINCT " +
+                        "Post_Tags.interest_id as interest_id, " +
+                        "Posts.post_id as post_id, " +
+                        "Posts.owner_id as owner_id, " +
+                        "Posts.content as content, " +
+                        "Posts.img_id as img_id, " +
+                        "Posts.post_date as post_date, " +
+                    "FROM " +
+                        "Post_Tags JOIN Posts ON Post_Tags.post_id = Posts.post_id " +
+                    "ORDER BY " +
+                        "Posts.post_date ASC " +
+                    "WHERE " +
+                        "Post_Tags.interest_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, interestId);
+
+            ResultSet posts = pstmt.executeQuery();
+
+            while(posts.next()){
+                int postId = posts.getInt("post_id");
+                Post currPost = new Post(postId, posts.getInt("owner_id"), posts.getString("content"), posts.getTimestamp("post_date"));
+
+                int imgId = posts.getInt("img_id");
+                if(imgId > 0){
+                    try{
+                        currPost.setPostImage(PictureDAO.getImgObj(imgId));
+                    }
+                    catch(IOException e){
+                        System.err.println(e.getMessage());
+                        e.printStackTrace(System.err);
+                    }
+                }
+
+                currPost.setCommentsList(getPostCommentsById(postId));
+                currPost.setTagList(getPostTagsById(postId));
+
+                postLst.add(currPost);
+            }
+            posts.close();
+
+            return postLst;
+        }
+    }
+
+    public static LinkedList<Post> getRecentPostsByInterest(LinkedList<Integer> interestIdLst) throws SQLException{
+        LinkedList<Post> postLst = new LinkedList<>();
+        String sql =
+                "SELECT DISTINCT " +
+                        "Post_Tags.interest_id as interest_id, " +
+                        "Posts.post_id as post_id, " +
+                        "Posts.owner_id as owner_id, " +
+                        "Posts.content as content, " +
+                        "Posts.img_id as img_id, " +
+                        "Posts.post_date as post_date, " +
+                    "FROM " +
+                        "Post_Tags JOIN Posts ON Post_Tags.post_id = Posts.post_id " +
+                    "ORDER BY " +
+                        "Posts.post_date ASC " +
+                    "WHERE ";
+
+        String condition = "Post_Tags.interest_id = ?";
+        int n = interestIdLst.size();
+        String currConditions = "";
+        for(int i=0; i < n; i++){
+            if(i == (n-1)) currConditions += condition;
+            else{
+                currConditions = String.join(currConditions, String.format("%s OR ", condition));
+            }
+        }
+
+        sql = String.join(sql, currConditions);
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            int i = 1;
+            for(int interestId : interestIdLst){
+                pstmt.setInt(i, interestId);
+            }
+
+            ResultSet posts = pstmt.executeQuery();
+
+            while(posts.next()){
+                int postId = posts.getInt("post_id");
+                Post currPost = new Post(postId, posts.getInt("owner_id"), posts.getString("content"), posts.getTimestamp("post_date"));
+
+                int imgId = posts.getInt("img_id");
+                if(imgId > 0){
+                    try{
+                        currPost.setPostImage(PictureDAO.getImgObj(imgId));
+                    }
+                    catch(IOException e){
+                        System.err.println(e.getMessage());
+                        e.printStackTrace(System.err);
+                    }
+                }
+
+                currPost.setCommentsList(getPostCommentsById(postId));
+                currPost.setTagList(getPostTagsById(postId));
+
+                postLst.add(currPost);
+            }
+            posts.close();
+
+            return postLst;
+        }
     }
 
     public static LinkedList<Comment> getPostCommentsById(int postId) throws SQLException{
@@ -221,12 +334,15 @@ public class PostDAO {
 
             while(rs.next()){
                 Comment comt = new Comment(
-                        // TODO: Needs to be finished when comments are implemented
+                        rs.getInt("comment_id"),
+                        rs.getInt("owner_id"),
+                        rs.getInt("post_id"),
+                        rs.getString("content"),
+                        rs.getTimestamp("timestamp")
                 );
                 comtLst.add(comt);
             }
         }
-        // TODO: Return comtLst when comments are implemented
         return null;
     }
 }
