@@ -98,6 +98,15 @@ fun Sidebar(
 
         Spacer(modifier = Modifier.weight(1f))
 
+        notificationTabButton(
+            isSelected = selectedTab == "Notifications",
+            onClick = {
+                searchActive = false
+                onTabSelected("Notifications")
+                println("Notifications Tab")
+            }
+        )
+
         profileTabButton(
             userProfilePicture = userProfilePicture,
             isSelected = selectedTab == "My Profile",
@@ -287,6 +296,49 @@ fun postTabButton(isSelected: Boolean, onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.AddBox,
             contentDescription = "Home",
+            tint = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier
+                .size(32.dp)
+                .padding(bottom = 4.dp)
+        )
+
+        // Selection Indicator
+        AnimatedVisibility(
+            visible = isSelected,
+            enter = fadeIn(animationSpec = tween(durationMillis = FadeSpeed)),
+            exit = fadeOut(animationSpec = tween(durationMillis = FadeSpeed))
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(start = 48.dp, bottom = 4.dp)
+                    .size(width = 4.dp, height = 32.dp)
+                    .background(LIGHT_PURPLE, shape = RoundedCornerShape(32.dp))
+            )
+        }
+    }
+}
+
+@Composable
+fun notificationTabButton(isSelected: Boolean, onClick: () -> Unit) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    // Box to contain icon
+    Box(
+        modifier = Modifier
+            .size(64.dp)
+            .width(64.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+
+        // Search Icon
+        Icon(
+            imageVector = Icons.Filled.Notifications,
+            contentDescription = "Notifications",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .size(32.dp)

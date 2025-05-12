@@ -36,13 +36,34 @@ data class User(
     var surname: String = "",
     var schoolName: String = "",
     var tags: MutableList<String> = mutableListOf(),
+    var followers: MutableList<User> = mutableListOf(),
+    var following: MutableList<User> = mutableListOf(),
+    var associates: MutableList<User> = mutableListOf(),
     var profilePicture: ImageBitmap? = null,
     var banner: ImageBitmap? = null,
     var location: String = "",
     var description: String = "",
     var title: String = "",
     var accountType: AccountType = AccountType.INDIVIDUAL,
-    var id: Int = 0
-)
+
+    private val id: Int = getNextId()
+) {
+    companion object {
+        private var nextId = 0
+
+        private fun getNextId(): Int {
+            return nextId++
+        }
+    }
+
+    /**
+     * Returns the unique ID of the user.
+     *
+     * @return The unique ID of the user.
+     */
+    fun getId(): Int {
+        return id
+    }
+}
 
 var current_user: User = User()

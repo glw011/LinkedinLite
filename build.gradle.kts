@@ -27,7 +27,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.60.0")
     implementation("org.jetbrains.exposed:exposed-crypt:0.60.0")
     implementation(compose.materialIconsExtended)
-    implementation(project(":backend"))}
+    implementation(project(":backend"))
+    implementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13.2")
+}
 
 compose.desktop {
     application {
