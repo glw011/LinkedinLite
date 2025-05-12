@@ -128,7 +128,7 @@ public class StudentDAO extends UserDAO{
         HashMap<Integer, Student> studentMap;
 
         String sqlStr =
-            "SELECT DISTINCT" +
+            "SELECT DISTINCT " +
                 "Students.student_id as id, " +
                 "Students.fname as fname, " +
                 "Students.lname as lname, " +
