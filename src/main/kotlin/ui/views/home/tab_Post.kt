@@ -177,5 +177,5 @@ fun changePhoto(onPhotoSelected: (ImageBitmap?) -> Unit) {
  */
 fun uploadPost(newPost: NewPost) {
     println("Uploading post: $newPost")
-    PostDAO.pushPost(current_user.id, newPost.description +" "+ newPost.photo.toString(), LinkedList())
+    PostDAO.pushPost(current_user.id, newPost.description, LinkedList())
 }
