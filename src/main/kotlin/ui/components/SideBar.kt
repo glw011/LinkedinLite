@@ -354,7 +354,7 @@ fun notificationTabButton(isSelected: Boolean, onClick: () -> Unit) {
             Box(
                 modifier = Modifier
                     .padding(start = 48.dp, bottom = 4.dp)
-                    .size(width = 6.dp, height = 6.dp)
+                    .size(width = 4.dp, height = 32.dp)
                     .background(LIGHT_PURPLE, shape = RoundedCornerShape(32.dp))
             )
         }

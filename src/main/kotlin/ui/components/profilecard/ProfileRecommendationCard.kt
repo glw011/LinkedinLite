@@ -9,8 +9,10 @@ import androidx.compose.ui.unit.dp
 import data.AccountType
 import data.User
 import data.current_user
+import testUsers
 import ui.components.image.PfpImage
 
+// TODO: Replace with actual user list
 fun getRecommendedUsers(users: List<User>, accountType: AccountType?): List<User> {
     val possibleUsers = users.toMutableList()
 
@@ -74,9 +76,12 @@ fun getRecommendedUsers(users: List<User>, accountType: AccountType?): List<User
         userScores[user] = currentScore
     }
 
+    // TODO: Randomly sample users with the same score to recommend
+    // TODO: Only include two users from the same organization
+    // TODO: Get connections type (E.g. x followers, y associates, etc.) and return it
     val recommendedUsers = userScores.entries
         .sortedByDescending { it.value }
-        .take(5)
+        .take(4)
         .map { it.key }
 
     for (user in recommendedUsers) {
@@ -108,11 +113,12 @@ fun ProfileSlot(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
                 text = name,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
@@ -167,13 +173,20 @@ fun PersonalProfileRecommendationCard(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ProfileSlot(
-            name = "John Doe",
-            connection = "x Mutual Connections",
-            modifier = Modifier.height(64.dp)
+        val profiles = getRecommendedUsers(
+            users = testUsers, // TODO: Replace with actual user list
+            accountType = AccountType.INDIVIDUAL
         )
+        for (profile in profiles) {
+            ProfileSlot(
+                name = profile.name,
+                connection = "x Tags of Interest",
+                modifier = Modifier.height(64.dp)
+            )
+        }
     }
 }
 
@@ -187,12 +200,19 @@ fun OrganizationProfileRecommendationCard(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        ProfileSlot(
-            name = "Louisiana Tech University",
-            connection = "x Tags of Interest",
-            modifier = Modifier.height(64.dp)
+        val profiles = getRecommendedUsers(
+            users = testUsers, // TODO: Replace with actual user list
+            accountType = AccountType.ORGANIZATION
         )
+        for (profile in profiles) {
+            ProfileSlot(
+                name = profile.name,
+                connection = "x Tags of Interest",
+                modifier = Modifier.height(64.dp)
+            )
+        }
     }
 }
