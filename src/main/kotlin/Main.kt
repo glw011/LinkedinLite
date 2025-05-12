@@ -5,9 +5,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import dao.StudentDAO
 import data.AccountType
 import data.User
-import model.ModelManager
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
@@ -19,14 +19,16 @@ import ui.views.register.registerInfoScreen
 import ui.views.registerorg.*
 import util.updateScreenDimensions
 import java.awt.Dimension
+import dao.*
+import model.*
+import service.*
+import util.*
 
 fun main() = application {
-    ModelManager.initModelManager()
-
     Window(onCloseRequest = ::exitApplication, title = "LinkedInLite") {
         window.minimumSize = Dimension(800, 600)
         MainTheme {
-            App()
+            App() // or pass sdao into App if needed
         }
     }
 }
