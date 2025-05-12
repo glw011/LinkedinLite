@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 03, 2025 at 12:03 AM
+-- Generation Time: May 12, 2025 at 09:31 PM
 -- Server version: 10.11.11-MariaDB-0ubuntu0.24.04.2
 -- PHP Version: 8.3.6
 
@@ -337,6 +337,30 @@ CREATE TABLE `Org_Membership` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `Pending_Invites`
+--
+
+CREATE TABLE `Pending_Invites` (
+  `student_id` int(11) DEFAULT NULL,
+  `org_id` int(11) DEFAULT NULL,
+  `invite_date` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Pending_Requests`
+--
+
+CREATE TABLE `Pending_Requests` (
+  `org_id` int(11) DEFAULT NULL,
+  `student_id` int(11) DEFAULT NULL,
+  `request_date` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `Pictures`
 --
 
@@ -359,6 +383,20 @@ CREATE TABLE `Posts` (
   `post_date` datetime DEFAULT current_timestamp(),
   `img_id` int(11) DEFAULT NULL,
   `content` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Post_Comments`
+--
+
+CREATE TABLE `Post_Comments` (
+  `comment_id` int(11) NOT NULL,
+  `owner_id` int(11) DEFAULT NULL,
+  `post_id` int(11) DEFAULT NULL,
+  `content` text DEFAULT NULL,
+  `comment_date` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -483,7 +521,12 @@ CREATE TABLE `Students` (
 --
 
 INSERT INTO `Students` (`student_id`, `major_id`, `fname`, `lname`) VALUES
-(10, NULL, '\"NEW STUDENT\"', NULL);
+(10, NULL, '\"NEW STUDENT\"', NULL),
+(12, 47, 'garrett', NULL),
+(13, NULL, '\"NEW STUDENT\"', NULL),
+(14, NULL, '\"NEW STUDENT\"', NULL),
+(15, NULL, '\"NEW STUDENT\"', NULL),
+(16, NULL, '\"NEW STUDENT\"', NULL);
 
 -- --------------------------------------------------------
 
@@ -516,7 +559,12 @@ CREATE TABLE `Users` (
 
 INSERT INTO `Users` (`user_id`, `bio`, `user_type`, `school_id`, `pfp_id`) VALUES
 (10, NULL, 'student', NULL, NULL),
-(11, NULL, 'org', NULL, NULL);
+(11, NULL, 'org', NULL, NULL),
+(12, NULL, 'student', 1, NULL),
+(13, NULL, 'student', NULL, NULL),
+(14, NULL, 'student', NULL, NULL),
+(15, NULL, 'student', NULL, NULL),
+(16, NULL, 'student', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -525,7 +573,7 @@ INSERT INTO `Users` (`user_id`, `bio`, `user_type`, `school_id`, `pfp_id`) VALUE
 --
 
 CREATE TABLE `User_Interests` (
-  `entity_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `interest_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -549,14 +597,30 @@ CREATE TABLE `User_Verify` (
 
 INSERT INTO `User_Verify` (`user_id`, `email`, `pass_hash`, `join_date`, `type`) VALUES
 (10, 'stdnt@test.com', 'hash', '2025-05-02 14:27:24', 'student'),
-(11, 'org@test.com', 'hash', '2025-05-02 14:27:24', 'org');
+(11, 'org@test.com', 'hash', '2025-05-02 14:27:24', 'org'),
+(12, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:34:49', 'student'),
+(13, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:34:52', 'student'),
+(14, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:36:54', 'student'),
+(15, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:36:57', 'student'),
+(16, 'glw011@latech.edu', 'hashstring', '2025-05-02 20:55:15', 'student');
 
 --
 -- Triggers `User_Verify`
 --
 DELIMITER $$
-CREATE TRIGGER `user_added` AFTER INSERT ON `User_Verify` FOR EACH ROW BEGIN
-	INSERT INTO Users (user_id, user_type) VALUES (NEW.user_id, NEW.type)$$
+CREATE TRIGGER user_added 
+AFTER INSERT ON User_Verify 
+FOR EACH ROW 
+BEGIN
+	INSERT INTO Users (user_id, user_type) VALUES (NEW.user_id, NEW.type);
+    
+	IF NEW.type = 'student' THEN
+    	INSERT INTO Students (student_id) VALUES (NEW.user_id);
+    ELSEIF NEW.type = 'org' THEN
+    	INSERT INTO Orgs (org_id) VALUES (NEW.user_id);
+    END IF;
+  
+END $$
 DELIMITER ;
 
 --
@@ -611,6 +675,20 @@ ALTER TABLE `Org_Membership`
   ADD KEY `orgmbr_stdnt_fk` (`student_id`);
 
 --
+-- Indexes for table `Pending_Invites`
+--
+ALTER TABLE `Pending_Invites`
+  ADD KEY `inv_fk` (`student_id`),
+  ADD KEY `inv_fk2` (`org_id`);
+
+--
+-- Indexes for table `Pending_Requests`
+--
+ALTER TABLE `Pending_Requests`
+  ADD KEY `req_fk` (`student_id`),
+  ADD KEY `req_fk2` (`org_id`);
+
+--
 -- Indexes for table `Pictures`
 --
 ALTER TABLE `Pictures`
@@ -624,6 +702,14 @@ ALTER TABLE `Posts`
   ADD PRIMARY KEY (`post_id`),
   ADD KEY `post_owner_fk` (`owner_id`),
   ADD KEY `post_img_fk` (`img_id`);
+
+--
+-- Indexes for table `Post_Comments`
+--
+ALTER TABLE `Post_Comments`
+  ADD PRIMARY KEY (`comment_id`),
+  ADD KEY `comment_owner_fk` (`owner_id`),
+  ADD KEY `comment_parent_fk` (`post_id`);
 
 --
 -- Indexes for table `Post_Tags`
@@ -679,7 +765,7 @@ ALTER TABLE `Users`
 -- Indexes for table `User_Interests`
 --
 ALTER TABLE `User_Interests`
-  ADD PRIMARY KEY (`entity_id`,`interest_id`),
+  ADD PRIMARY KEY (`user_id`,`interest_id`),
   ADD KEY `entintrst_intrst_fk` (`interest_id`);
 
 --
@@ -723,6 +809,12 @@ ALTER TABLE `Posts`
   MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `Post_Comments`
+--
+ALTER TABLE `Post_Comments`
+  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `Schools`
 --
 ALTER TABLE `Schools`
@@ -738,7 +830,32 @@ ALTER TABLE `Skills`
 -- AUTO_INCREMENT for table `User_Verify`
 --
 ALTER TABLE `User_Verify`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `Pending_Invites`
+--
+ALTER TABLE `Pending_Invites`
+  ADD CONSTRAINT `inv_fk` FOREIGN KEY (`student_id`) REFERENCES `Students` (`student_id`),
+  ADD CONSTRAINT `inv_fk2` FOREIGN KEY (`org_id`) REFERENCES `Orgs` (`org_id`);
+
+--
+-- Constraints for table `Pending_Requests`
+--
+ALTER TABLE `Pending_Requests`
+  ADD CONSTRAINT `req_fk` FOREIGN KEY (`student_id`) REFERENCES `Students` (`student_id`),
+  ADD CONSTRAINT `req_fk2` FOREIGN KEY (`org_id`) REFERENCES `Orgs` (`org_id`);
+
+--
+-- Constraints for table `Post_Comments`
+--
+ALTER TABLE `Post_Comments`
+  ADD CONSTRAINT `comment_owner_fk` FOREIGN KEY (`owner_id`) REFERENCES `Users` (`user_id`),
+  ADD CONSTRAINT `comment_parent_fk` FOREIGN KEY (`post_id`) REFERENCES `Posts` (`post_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
