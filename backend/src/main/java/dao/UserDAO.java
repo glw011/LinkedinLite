@@ -1,14 +1,17 @@
 package dao;
 
-import java.sql.*;
-
+import model.ModelManager;
 import model.Picture;
 import model.School;
 import model.UserType;
-import model.ModelManager;
-import util.DBConnection;
 import util.DBConnection2;
-import java.util.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class UserDAO {
 

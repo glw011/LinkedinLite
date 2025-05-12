@@ -1,30 +1,60 @@
 package util
 
-import javax.swing.JFileChooser
-import javax.swing.filechooser.FileNameExtensionFilter
-
-/**
- * Opens a file manager dialog on the user system to choose an image file.
- * Accepts jpg, png, and gif files.
- *
- * @return The absolute path of the selected image file as a String. If no file is selected,
- * returns an empty string.
- */
 fun openFileChooser(): String {
-    val fileChooser = JFileChooser()
-    fileChooser.fileFilter =
-        FileNameExtensionFilter("Image Files", "jpg", "png", "gif")
-    val returnValue = fileChooser.showOpenDialog(null)
+    val os = System.getProperty("os.name").lowercase()
 
-    val imagePath: String
+    return try {
+        when {
+            os.contains("linux") -> {
+                when {
+                    isCommandAvailable("kdialog") -> {
+                        ProcessBuilder("kdialog", "--getopenfilename")
+                            .start().inputStream.bufferedReader().readLine().orEmpty()
+                    }
+                    isCommandAvailable("zenity") -> {
+                        ProcessBuilder("zenity", "--file-selection")
+                            .start().inputStream.bufferedReader().readLine().orEmpty()
+                    }
+                    else -> {
+                        println("No file picker available: please install 'kdialog' or 'zenity'")
+                        ""
+                    }
+                }
+            }
 
-    // Check if a file was selected
-    if (returnValue == JFileChooser.APPROVE_OPTION) {
-        val selectedFile = fileChooser.selectedFile
-        imagePath = selectedFile.absolutePath
-    } else {
-        imagePath = ""
+            os.contains("mac") -> {
+                ProcessBuilder("osascript", "-e", "POSIX path of (choose file)")
+                    .start().inputStream.bufferedReader().readLine().orEmpty()
+            }
+
+            os.contains("windows") -> {
+                val command = listOf(
+                    "powershell", "-Command",
+                    "Add-Type -AssemblyName System.Windows.Forms; " +
+                            "\$dialog = New-Object System.Windows.Forms.OpenFileDialog; " +
+                            "\$dialog.Filter = '...'; " +
+                            "if (\$dialog.ShowDialog() -eq 'OK') { Write-Output \$dialog.FileName }"
+                )
+
+                ProcessBuilder(command)
+                    .redirectErrorStream(true)
+                    .start().inputStream.bufferedReader().readLine().orEmpty()
+            }
+
+            else -> ""
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
     }
+}
 
-    return imagePath
+private fun isCommandAvailable(command: String): Boolean {
+    return try {
+        ProcessBuilder("which", command)
+            .start()
+            .waitFor() == 0
+    } catch (e: Exception) {
+        false
+    }
 }

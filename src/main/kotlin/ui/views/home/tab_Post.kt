@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import dao.PostDAO
+import data.current_user
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ui.components.styles.styledButton
@@ -34,6 +36,7 @@ import ui.components.styles.styledTextField
 import ui.theme.LIGHT_PURPLE
 import util.getBitmapFromFilepath
 import util.openFileChooser
+import java.util.*
 
 /**
  * Data class representing a new post with an optional photo and a description.
@@ -174,4 +177,5 @@ fun changePhoto(onPhotoSelected: (ImageBitmap?) -> Unit) {
  */
 fun uploadPost(newPost: NewPost) {
     println("Uploading post: $newPost")
+    PostDAO.pushPost(current_user.id, newPost.description +" "+ newPost.photo.toString(), LinkedList())
 }

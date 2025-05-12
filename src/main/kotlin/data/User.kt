@@ -42,4 +42,7 @@ data class User(
     var description: String = "",
     var title: String = "",
     var accountType: AccountType = AccountType.INDIVIDUAL,
+    var id: Int = 0
 )
+
+var current_user: User = User()

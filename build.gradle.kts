@@ -33,6 +33,8 @@ compose.desktop {
     application {
         mainClass = "MainKt" // Specify the full package path to MainKt
 
+        jvmArgs += "-Dsun.java2d.opengl=true"
+
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "LinkedInLiteUI"

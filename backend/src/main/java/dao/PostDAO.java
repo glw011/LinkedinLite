@@ -3,9 +3,10 @@ package dao;
 import model.Comment;
 import model.Post;
 import util.DBConnection2;
-import java.sql.SQLException;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 
 public class PostDAO {

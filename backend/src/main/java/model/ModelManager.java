@@ -1,6 +1,7 @@
 package model;
 
 import util.DBConnection2;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
