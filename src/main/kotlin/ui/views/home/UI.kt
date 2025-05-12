@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import data.AccountType
 import data.User
+import data.current_user
 import ui.components.Sidebar
 import ui.components.searchActive
 import ui.theme.DARK_MODE
@@ -64,13 +65,14 @@ fun UI(
                 when (selectedTab) {
                     "People / Orgs" -> peopleOrgsTabContent()
                     "My Profile" ->
-                        if (currentUser.accountType == AccountType.ORGANIZATION) {
+                        if (current_user.accountType == AccountType.ORGANIZATION) {
                             OrgProfileTab(profileUiState)
                         } else {
                             IndividualProfileTab(profileUiState)
                         }
                     "Home" -> homeTab()
                     "Post" -> postTab()
+                    "Notifications" -> NotificationsTab()
                     // Add your new tab content composables here
                 }
             }

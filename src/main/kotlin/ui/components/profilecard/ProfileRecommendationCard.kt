@@ -6,7 +6,85 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import data.AccountType
+import data.User
+import data.current_user
 import ui.components.image.PfpImage
+
+fun getRecommendedUsers(users: List<User>, accountType: AccountType?): List<User> {
+    val possibleUsers = users.toMutableList()
+
+    // Remove the current user from the list
+    possibleUsers.removeIf { it.getId() == current_user.getId() }
+
+    // Filter users based on the account type
+    if (accountType == AccountType.ORGANIZATION) {
+        // Remove users that are not organizations
+        possibleUsers.removeIf { it.accountType != AccountType.ORGANIZATION }
+    } else if (accountType == AccountType.INDIVIDUAL) {
+        // Remove users that are not individuals
+        possibleUsers.removeIf { it.accountType != AccountType.INDIVIDUAL }
+    }
+
+    // Remove users that are already followed
+    possibleUsers.removeIf { current_user.following.contains(it) }
+
+    val userScores = hashMapOf<User, Int>()
+
+    // Calculate scores for each user based on tags, followers, and associates
+    for (user in possibleUsers) {
+        var currentScore = 0
+
+        for (tag in user.tags) {
+            if (current_user.tags.contains(tag)) {
+                currentScore++
+            }
+        }
+
+        for (follower in user.followers) {
+            if (current_user.followers.contains(follower)) {
+                currentScore++
+            }
+        }
+
+        for (associate in user.associates) {
+            if (current_user.associates.contains(associate)) {
+                currentScore += 2
+            } else {
+                for (tag in associate.tags) {
+                    if (current_user.tags.contains(tag)) {
+                        currentScore++
+                    }
+                }
+            }
+        }
+
+        // If the current user and target user are both students, compare the tags in their organizations
+        val bothUsersAreStudents = current_user.accountType == AccountType.INDIVIDUAL && user.accountType == AccountType.INDIVIDUAL
+        if (bothUsersAreStudents) {
+            // Get the tags of the organizations associated with both users
+            val currentUserOrgTags = current_user.associates.flatMap { it.tags }.toSet()
+            val targetUserOrgTags = user.associates.flatMap { it.tags }.toSet()
+
+            // Calculate the score based on the intersection of tags
+            currentScore += currentUserOrgTags.intersect(targetUserOrgTags).size
+        }
+
+        // Record the score for the user
+        userScores[user] = currentScore
+    }
+
+    val recommendedUsers = userScores.entries
+        .sortedByDescending { it.value }
+        .take(5)
+        .map { it.key }
+
+    for (user in recommendedUsers) {
+        println(user.name + ": " + userScores[user])
+    }
+
+    return recommendedUsers
+}
 
 /**
  * Creates a slot for a profile to be used in a recommendation card.
