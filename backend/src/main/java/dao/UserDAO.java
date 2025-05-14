@@ -4,22 +4,20 @@ import model.ModelManager;
 import model.Picture;
 import model.School;
 import model.UserType;
+import service.UserService;
 import util.DBConnection2;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
-import java.security.MessageDigest;
-
-import java.util.Base64;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.LinkedList;
 
 public class UserDAO {
@@ -500,6 +498,18 @@ public class UserDAO {
         }
         return pfp;
     }
+
+    public LinkedList<Object> searchProfiles(String searchText) {
+        try {
+            LinkedList<Object> results = new LinkedList<>();
+            results.addAll(StudentDAO.searchStudentsByName(searchText));
+            results.addAll(OrgDAO.searchOrgsByName(searchText));
+            return results;
+        } catch (SQLException e) {
+            throw new UserService.UserServiceException("Error performing filtered search", e);
+        }
+    }
+
 }
 
 

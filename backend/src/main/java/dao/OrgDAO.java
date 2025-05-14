@@ -43,7 +43,7 @@ public class OrgDAO extends UserDAO{
         Org orgObj;
 
         String sqlStr =
-            "SELECT DISTINCT" +
+            "SELECT DISTINCT " +
                 "Orgs.org_id as id, " +
                 "Orgs.name as name, " +
                 "User_Verify.email as email, " +
@@ -84,9 +84,9 @@ public class OrgDAO extends UserDAO{
         HashMap<Integer, Org> orgMap;
 
         String sqlStr =
-            "SELECT DISTINCT" +
+            "SELECT DISTINCT " +
                 "Orgs.org_id as id, " +
-                "Orgs.name as name, " +
+                "Orgs.org_name as name, " +
                 "User_Verify.email as email, " +
                 "Users.bio as bio, " +
                 "Users.pfp_id as pfp_id, " +
@@ -214,5 +214,52 @@ public class OrgDAO extends UserDAO{
         // TODO: Needs implementation
         return false;
     }
+
+    public static LinkedList<Org> searchOrgsByName(String search) throws SQLException {
+        String sql =
+                "SELECT DISTINCT " +
+                        "Orgs.org_id AS id, " +
+                        "Orgs.org_name AS name, " +
+                        "User_Verify.email AS email, " +
+                        "Users.bio AS bio, " +
+                        "Users.pfp_id AS pfp_id, " +
+                        "Users.school_id AS school_id " +
+                        "FROM Orgs " +
+                        "JOIN Users ON Orgs.org_id = Users.user_id " +
+                        "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+                        "WHERE LOWER(Orgs.org_name) LIKE ?";
+
+        LinkedList<Org> results = new LinkedList<>();
+
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
+            pstmt.setString(1, search.toLowerCase() + "%");
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                Org org = new Org(
+                        id,
+                        rs.getString("email"),
+                        rs.getString("name"),
+                        ModelManager.getSchool(rs.getInt("school_id"))
+                );
+
+                org.setBio(rs.getString("bio"));
+                org.setProfilePic(rs.getInt("pfp_id"));
+                org.setInterestList(getAllInterests(id));
+                org.setMembersList(getAllMembers(id));
+                org.setFollowingList(getAllFollowedUsers(id));
+                org.setPostsList(getAllUserPosts(id));
+                org.setOwnedImgsList(getAllOwnedImages(id));
+
+                results.add(org);
+            }
+
+            rs.close();
+        }
+
+        return results;
+    }
+
 
 }

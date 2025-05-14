@@ -5,7 +5,6 @@ import model.Post;
 import util.DBConnection2;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

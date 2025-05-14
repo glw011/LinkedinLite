@@ -8,15 +8,16 @@ package ui.views.home
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import data.DataSource.searchFilters
-import debug.generateDummies
-import debug.getDummyProfileList
+import data.getProfilesFromSearch
 import ui.components.profilePreview
 import ui.components.searchActive
 import ui.components.searchBar
@@ -71,31 +72,45 @@ fun peopleOrgsTabContent() {
             dropdownItems = searchFilters
         )
 
-        val profileList: List<ProfileData> = if (generateDummies)
-            getDummyProfileList()
-        else
-            getDummyProfileList() // Same for now, need to get real data
-
         // Filtered profiles based on search bar text
         val filteredProfiles by remember {
             derivedStateOf {
                 if (SEARCH_BAR_TEXT.isEmpty()) {
-                    profileList
+                    emptyList()
                 }
                 else {
-                    profileList.filter { profile ->
-                        profile.name.contains(SEARCH_BAR_TEXT, ignoreCase = true)
-                    }
+                    getProfilesFromSearch(SEARCH_BAR_TEXT)
                 }
             }
         }
 
-        if (filteredProfiles.isEmpty()) {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text(text = "No Results")
+        if (SEARCH_BAR_TEXT.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 64.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Text(
+                    text = "Search for a User or Organization",
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
-        }
-        else {
+        } else if (filteredProfiles.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 64.dp), // pushes it down a bit from the top
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Text(
+                    text = "No Results",
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        } else {
             LazyColumn(
                 modifier = Modifier.width(1024.dp),
                 horizontalAlignment = Alignment.Start

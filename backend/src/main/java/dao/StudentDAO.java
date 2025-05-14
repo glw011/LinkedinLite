@@ -344,4 +344,59 @@ public class StudentDAO extends UserDAO{
         return false;
     }
 
+    public static LinkedList<Student> searchStudentsByName(String search) throws SQLException {
+        String sql =
+                "SELECT DISTINCT " +
+                        "Students.student_id AS id, " +
+                        "Students.fname AS fname, " +
+                        "Students.lname AS lname, " +
+                        "User_Verify.email AS email, " +
+                        "Users.bio AS bio, " +
+                        "Users.pfp_id AS pfp_id, " +
+                        "Students.major_id AS major_id, " +
+                        "Users.school_id AS school_id " +
+                        "FROM Students " +
+                        "JOIN Users ON Students.student_id = Users.user_id " +
+                        "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+                        "WHERE LOWER(Students.fname) LIKE ? OR LOWER(Students.lname) LIKE ?";
+
+        LinkedList<Student> list = new LinkedList<>();
+
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
+            String pattern = search.toLowerCase() + "%";
+            pstmt.setString(1, pattern);
+            pstmt.setString(2, pattern);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                Student s = new Student(
+                        id,
+                        rs.getString("email"),
+                        rs.getString("fname"),
+                        rs.getString("lname"),
+                        ModelManager.getSchool(rs.getInt("school_id"))
+                );
+
+                s.setBio(rs.getString("bio"));
+                s.setMajor(rs.getInt("major_id"));
+                s.setProfilePic(rs.getInt("pfp_id"));
+                s.setSkillList(getAllSkills(id));
+                s.setInterestList(getAllInterests(id));
+                s.setOrgList(getAllOrgs(id));
+                s.setFollowingList(getAllFollowedUsers(id));
+                s.setPostsList(getAllUserPosts(id));
+                s.setOwnedImgsList(getAllOwnedImages(id));
+
+                list.add(s);
+            }
+
+            rs.close();
+        }
+
+        return list;
+    }
+
+
 }
