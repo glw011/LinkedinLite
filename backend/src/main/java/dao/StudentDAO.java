@@ -358,14 +358,18 @@ public class StudentDAO extends UserDAO{
                         "FROM Students " +
                         "JOIN Users ON Students.student_id = Users.user_id " +
                         "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
-                        "WHERE LOWER(Students.fname) LIKE ? OR LOWER(Students.lname) LIKE ?";
+                        "WHERE " +
+                        "LOWER(Students.fname) LIKE ? OR " +
+                        "LOWER(Students.lname) LIKE ? OR " +
+                        "LOWER(CONCAT(Students.fname, ' ', Students.lname)) LIKE ?";
 
         LinkedList<Student> list = new LinkedList<>();
 
         try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
             String pattern = search.toLowerCase() + "%";
-            pstmt.setString(1, pattern);
-            pstmt.setString(2, pattern);
+            pstmt.setString(1, pattern); // fname
+            pstmt.setString(2, pattern); // lname
+            pstmt.setString(3, pattern); // full name (fname + lname)
 
             ResultSet rs = pstmt.executeQuery();
 
@@ -397,6 +401,4 @@ public class StudentDAO extends UserDAO{
 
         return list;
     }
-
-
 }

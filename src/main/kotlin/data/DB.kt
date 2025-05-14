@@ -21,9 +21,13 @@ fun getProfilesFromSearch(searchText: String): List<ProfileData> {
             is Student -> {
                 val fname = user.fname?.lowercase() ?: ""
                 val lname = user.lname?.lowercase() ?: ""
+                val fullname = (fname + " " + lname)
 
-                // Optional: skip non-matches if DAO is ever relaxed to wider matches
-                if (!fname.startsWith(lowerSearch) && !lname.startsWith(lowerSearch)) return@mapNotNull null
+                if (
+                    !fname.startsWith(lowerSearch) &&
+                    !lname.startsWith(lowerSearch) &&
+                    !fullname.startsWith(lowerSearch)
+                ) return@mapNotNull null
 
                 ProfileData(
                     pfp = null,
