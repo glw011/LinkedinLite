@@ -428,14 +428,19 @@ public class UserDAO {
         return school;
     }
 
-    public static LinkedList<Integer> getAllOwnedImages(int userId){
-        // TODO: Needs to be implemented
-        return null;
-    }
+    public static LinkedList<Integer> getAllOwnedImages(int userId) throws SQLException{
+        String sql = "SELECT img_id FROM Pictures WHERE owner_id = ?";
+        LinkedList<Integer> imgLst = new LinkedList<>();
 
-    public static boolean setProfileImg(int userId, int imgId){
-        // TODO: Needs to be implemented
-        return false;
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, userId);
+            ResultSet imgIds = pstmt.executeQuery();
+            while(imgIds.next()){
+                imgLst.add(imgIds.getInt("img_id"));
+            }
+            if(!imgLst.isEmpty()) return imgLst;
+        }
+        return null;
     }
 
     /**
@@ -445,32 +450,58 @@ public class UserDAO {
      * @return Picture object containing the image data (including location of the image)
      * @throws SQLException if DB error occurred
      */
-    public static Picture getProfileImg(int userId) throws SQLException{
-        String sql = "SELECT pfp_id FROM Users WHERE user_id = ?";
-        Picture pfp = null;
+    public static BufferedImage getProfileImg(int userId) throws SQLException, IOException{
+        String sql = "SELECT DISTINCT Pictures.img_url as img_url FROM Users JOIN Pictures ON Users.pfp_id = Pictures.img_id WHERE Users.user_id = ?";
 
         try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
-
             if(rs.next()){
-                int pfpId = rs.getInt("pfp_id");
-
-                String imgSql = "SELECT * FROM Pictures WHERE img_id = ?";
-                try(PreparedStatement imgPstmt = DBConnection2.getPstmt(imgSql)){
-                    imgPstmt.setInt(1, pfpId);
-
-                    ResultSet imgRs = pstmt.executeQuery();
-                    if(imgRs.next()){
-//                        pfp = new Picture(pfpId, userId);
-                        // TODO: get url and remaining attributes from imgRs and add to pfp
-                    }
-                    imgRs.close();
+                String imgUrl = rs.getString("img_url");
+                File imgFile = new File(imgUrl);
+                if((imgFile.exists())&&(imgFile.canRead())){
+                    return ImageIO.read(imgFile);
                 }
             }
-            rs.close();
         }
-        return pfp;
+        return null;
+    }
+
+    public static boolean setProfileImg(int userId, int imgId) throws SQLException{
+        String sql = "UPDATE Users SET pfp_id = ? WHERE user_id = ?";
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, imgId);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public static int getProfileImgId(int userId) throws SQLException{
+        String sql = "SELECT pfp_id FROM Users WHERE user_id = ?";
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                int imgId = rs.getInt("pfp_id");
+                if(imgId > 0) return imgId;
+            }
+        }
+        return -1;
+    }
+
+    public static Picture getProfileImgObj(int userId) throws SQLException{
+        int pfpId = getProfileImgId(userId);
+        if(pfpId > 0){
+            try{
+                return PictureDAO.getImgObj(pfpId);
+            }
+
+            catch(IOException e){
+                System.err.println(e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        }
+        return null;
     }
 }
 
