@@ -74,7 +74,7 @@ public class OrgService {
      * Retrieve all Orgs in the system.
      * @throws OrgServiceException on SQL error
      */
-    public Map<Integer, Org> getAllOrgs() {
+    public static Map<Integer, Org> getAllOrgs() {
         try {
             return OrgDAO.getAllOrgs();
         } catch (SQLException e) {
@@ -117,7 +117,7 @@ public class OrgService {
             return OrgDAO.getAllMembers(orgId);
         } catch (SQLException e) {
             throw new OrgServiceException(
-                    "Error listing members for org " + orgId, e);cd
+                    "Error listing members for org " + orgId, e);
         }
     }
 

@@ -10,67 +10,112 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
+import java.security.SecureRandom;
+import java.security.spec.KeySpec;
+import java.security.MessageDigest;
+
+import java.util.Base64;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class UserDAO {
 
+    // PBKDF2 stuff
+    private static final String  PBKDF2_ALGO    = "PBKDF2WithHmacSHA256";
+    private static final int     SALT_BYTES     = 16;         // 128-bit salt
+    private static final int     ITERATIONS     = 100_000;
+    private static final int     DERIVED_KEY_BITS = 256;
+
     /**
-     * Authenticates a user based on email and hashed password.
-     * Returns a token string ("hkey") if successful, or null if not.
-     * temp token using id and timestamp
+     * Authenticates a user based on email and **raw** password.
+     * Returns a token string if successful, or null if not.
      */
-    public String authUser(String email, String hashedPass) throws SQLException {
-        // TODO: Should we just simplify this to return user_id to frontend after authorize and they keep track of and pass
-        //  it back to us anytime user wants to take any type of user action?? Lets us pretend to ensure no one is changing someone
-        //  else's data (assuming they can manage it throughout each user session) and makes it easy to update any necessary rows?
-        String sql = "SELECT user_id FROM User_Verify WHERE email = ? AND pass_hash = ?";
+    public String authUser(String email, String rawPass) throws SQLException {
+        String sql = "SELECT user_id, pass_hash FROM User_Verify WHERE email = ?";
 
         try (Connection conn = DBConnection2.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);
-            stmt.setString(2, hashedPass);
-
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    int userId = rs.getInt("user_id");
-                    // PLACEHOLDER
-                    return "token_" + userId + "_" + System.currentTimeMillis();
-                } else {
-                    return null;
+                if (!rs.next()) {
+                    return null;  // user nonexistent
                 }
+                int userId = rs.getInt("user_id");
+                String stored = rs.getString("pass_hash");      // format: salt:hash
+
+                // split and decode
+                String[] parts = stored.split(":", 2);
+                byte[] salt = Base64.getDecoder().decode(parts[0]);
+                byte[] hash = Base64.getDecoder().decode(parts[1]);
+
+                // recompute PBKDF2 on rawPass using same salt/params
+                byte[] testHash = pbkdf2(rawPass.toCharArray(), salt);
+
+                if (!MessageDigest.isEqual(hash, testHash)) {
+                    return null;  // password incorrecty
+                }
+
+                // success
+                return "token_" + userId + "_" + System.currentTimeMillis();
             }
         }
     }
 
     /**
-     * Adds a new user to the DB by inserting their email, hashed password, and user type into the User_Verify table
-     *
-     * @param email the email address of the new user being added
-     * @param hashedPass the hashed string resulting from the hash operation performed on the user's defined password
-     * @param userType the type of user being added. The UserType enum is used to define those types
-     * @return true if the user was successfully added to the DB, else false
-     * @throws SQLException if DB error occurred
+     * Adds a new user by hashing the raw password with PBKDF2 and storing salt:hash.
      */
-    public static boolean addUser(String email, String hashedPass, UserType userType) throws SQLException {
+    public static boolean addUser(String email, String rawPass, UserType userType) throws SQLException {
+        // generate salt
+        byte[] salt = new byte[SALT_BYTES];
+        try {
+            SecureRandom.getInstanceStrong().nextBytes(salt);
+        } catch (Exception e) {
+            throw new RuntimeException("SecureRandom not available", e);
+        }
+
+        // derive PBKDF2 hash
+        byte[] hash = pbkdf2(rawPass.toCharArray(), salt);
+
+        // encode salt and hash as Base64
+        String stored = Base64.getEncoder().encodeToString(salt)
+                + ":" +
+                Base64.getEncoder().encodeToString(hash);
 
         String sql = "INSERT INTO User_Verify (email, pass_hash, type) VALUES (?, ?, ?)";
 
-        try(PreparedStatement stmt = DBConnection2.getPstmt(sql, new String[] {"user_id"})){
+        try (PreparedStatement stmt = DBConnection2.getPstmt(sql, new String[]{"user_id"})) {
             stmt.setString(1, email);
-            stmt.setString(2, hashedPass);
+            stmt.setString(2, stored);
             stmt.setString(3, userType.getStr());
 
             int newId = stmt.executeUpdate();
             boolean success = newId > 0;
-            if(success) ModelManager.mapNewUser(email, newId, userType);
+            if (success) {
+                ModelManager.mapNewUser(email, newId, userType);
+            }
             return success;
-        } catch(SQLException e) {
+
+        } catch (SQLException e) {
             System.err.println(e.getErrorCode());
-            System.err.println(Arrays.toString(e.getStackTrace()));
+            e.printStackTrace();
+            return false;
         }
-        return false;
+    }
+
+    // PBKDF2 Helper
+    private static byte[] pbkdf2(char[] pass, byte[] salt) {
+        try {
+            KeySpec spec = new PBEKeySpec(pass, salt, ITERATIONS, DERIVED_KEY_BITS);
+            SecretKeyFactory skf = SecretKeyFactory.getInstance(PBKDF2_ALGO);
+            return skf.generateSecret(spec).getEncoded();
+        } catch (Exception e) {
+            throw new RuntimeException("PBKDF2 error", e);
+        }
     }
 
     /**
@@ -445,7 +490,7 @@ public class UserDAO {
 
                     ResultSet imgRs = pstmt.executeQuery();
                     if(imgRs.next()){
-                        pfp = new Picture(pfpId, userId);
+//                        pfp = new Picture(pfpId, userId);
                         // TODO: get url and remaining attributes from imgRs and add to pfp
                     }
                     imgRs.close();
