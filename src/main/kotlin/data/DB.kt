@@ -1,34 +1,55 @@
 package data
 
-open class Entity
+import model.Org
+import model.Student
+import service.UserService
+import ui.views.home.ProfileData
 
 /**
- * This class represents a person in our system.
+ * Searches the database for users (students or organizations) whose names start with the given text.
+ * Converts each match into a [ProfileData] object for UI rendering.
  *
- * @param email The email address of the person. Must be a valid email format.
- * @constructor Creates a new Person object.
+ * @param searchText The search string entered by the user. Matching is case-insensitive and starts-with based.
+ * @return A list of [ProfileData] containing user display data for each matching student or organization.
  */
-public data class Person(val email: String) : Entity() {}
+fun getProfilesFromSearch(searchText: String): List<ProfileData> {
+    val lowerSearch = searchText.lowercase()
+    val rawResults = UserService().searchProfiles(lowerSearch)
 
-/**
- * This class represents an organization.
- *
- * @param name The name of the organization.
- */
-public data class Organization(val name: String) : Entity() {}
+    return rawResults.mapNotNull { user ->
+        when (user) {
+            is Student -> {
+                val fname = user.fname?.lowercase() ?: ""
+                val lname = user.lname?.lowercase() ?: ""
+                val fullname = (fname + " " + lname)
 
-/**
- * This function queries the database for entities matching the given search text.
- *
- * @param searchText The text to search for.
- * @return A list of [Entity] objects matching the search criteria.
- * @see Person
- * @see Organization
- */
-fun queryDB(searchText: String): List<Entity> {
-    /*
-        My idea for this was to query the DB and
-        return the top 50 or so best matches.
-    */
-    return emptyList()
+                if (
+                    !fname.startsWith(lowerSearch) &&
+                    !lname.startsWith(lowerSearch) &&
+                    !fullname.startsWith(lowerSearch)
+                ) return@mapNotNull null
+
+                ProfileData(
+                    pfp = null,
+                    name = "${user.fname} ${user.lname}",
+                    bio = user.bio ?: "",
+                    tags = emptyList()
+                )
+            }
+
+            is Org -> {
+                val orgName = user.name?.lowercase() ?: ""
+                if (!orgName.startsWith(lowerSearch)) return@mapNotNull null
+
+                ProfileData(
+                    pfp = null,
+                    name = user.name,
+                    bio = user.bio ?: "",
+                    tags = emptyList()
+                )
+            }
+
+            else -> null
+        }
+    }
 }

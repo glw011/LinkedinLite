@@ -1,7 +1,5 @@
 package dao;
 
-import model.ModelManager;
-
 import java.sql.SQLException;
 
 public class Test {

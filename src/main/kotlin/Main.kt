@@ -13,16 +13,9 @@ import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
 import ui.views.loginScreen
-import ui.views.register.RegisterInfoUiState
-import ui.views.register.RegisterOrgInfoUiState
-import ui.views.register.RegisterPfpUIState
-import ui.views.register.registerCredentialsScreen
-import ui.views.register.registerInfoScreen
-import ui.views.register.registerOrgInfoScreen
+import ui.views.register.*
 import util.updateScreenDimensions
 import java.awt.Dimension
-import ui.views.register.registerPfpScreen
-import ui.views.register.registerSelectScreen
 
 val testUsers = listOf(
     User(

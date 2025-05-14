@@ -1,10 +1,10 @@
 package service;
 
+import dao.OrgDAO;
+import dao.StudentDAO;
 import dao.UserDAO;
-
 import model.Org;
 import model.Student;
-
 
 import java.sql.SQLException;
 import java.util.*;
@@ -64,6 +64,18 @@ public class UserService {
             super(msg, cause);
         }
     }
+
+    public LinkedList<Object> searchProfiles(String searchText) {
+        try {
+            LinkedList<Object> results = new LinkedList<>();
+            results.addAll(StudentDAO.searchStudentsByName(searchText));
+            results.addAll(OrgDAO.searchOrgsByName(searchText));
+            return results;
+        } catch (SQLException e) {
+            throw new UserServiceException("Error performing filtered search", e);
+        }
+    }
+
 }
 
 

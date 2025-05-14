@@ -1,7 +1,6 @@
 package debug
 
 import androidx.compose.runtime.mutableStateListOf
-import ui.components.Comment
 import ui.components.Post
 import ui.views.home.ProfileData
 import util.getBitmapFromFilepath
@@ -55,26 +54,23 @@ fun getDummyProfileList(): List<ProfileData> {
  */
 val dummyPostList = mutableStateListOf<Post>().apply {
     // Generate 5 posts without images
-    repeat(5) { i ->
-        val user = "user_${(i * 2) + 1000}"
-        val desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the description. Adding more text to see if the posts support dynamic height..."
-        val coms = mutableStateListOf<Comment>().apply {
-            repeat(15) { i ->
-                add(Comment("user ${i + 1}", "test comment, a bunch of useless text to fill the comment. Testing to see if the comments support variable height...", null))
-            }
-        }
-        add(Post("Post Title", null, user, desc, coms))
-    }
+//    PostService().allPosts.forEach() { post ->
+//        add(Post(
+//            "",
+//            null,
+//            StudentService().getStudentById(post.ownerId).fname,
+//            description = post.postText,
+//            comments = List<Comment>(
+//                size = TODO(),
+//                init = TODO()
+//            ).apply {  },
+//        ))
+//    }
 
-    // Generate 5 posts with images
-    repeat(5) { i ->
-        val user = "user_${(i * 3) + 1000}"
-        val desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Arbitrary text to fill up the description."
-        val coms = mutableStateListOf<Comment>().apply {
-            repeat(15) { i ->
-                add(Comment("user ${i + 1}", "test comment, a bunch of useless text to fill the comment. Testing to see if the comments support variable height...", null))
-            }
-        }
-        add(Post("Post Title", defaultPost, user, desc, coms))
-    }
+    add(Post(
+        postImage = null,
+        userName = "Harison Day",
+        description = "Test post, fill out the description section... Tons of arbitrary text to make a post",
+        comments = listOf(),
+    ))
 }.shuffled() // Shuffle the list to randomize the order

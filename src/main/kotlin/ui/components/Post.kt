@@ -47,18 +47,16 @@ data class Comment(
 /**
  * Represents a post in the application.
  *
- * @property title The title of the post
  * @property postImage The image attached to the post, can be null
  * @property userName The name of the user who created the post
  * @property description The main content/description of the post
  * @property comments List of comments associated with the post
  */
 data class Post(
-    val title: String = "",
     val postImage: ImageBitmap?,
     val userName: String = "",
     val description: String = "",
-    val comments: List<Comment>
+    val comments: List<Comment> = listOf(),
 )
 
 /**
@@ -358,7 +356,7 @@ fun postComment(post: Post) {
  * @TODO Implement actual like functionality with backend integration
  */
 fun likePost(post: Post) {
-    println("Like Post ${post.title}")
+    println("Like Post")
 }
 
 /**
