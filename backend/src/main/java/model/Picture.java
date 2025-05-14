@@ -13,8 +13,6 @@ public class Picture{
         this.ownerId = ownerId;
         this.path = path;
         this.image = image;
-
-        // TODO: EVERYTHING
     }
 
     public int getID(){return this.imgId;}

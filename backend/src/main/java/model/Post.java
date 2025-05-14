@@ -46,8 +46,8 @@ public class Post {
     public void setOwnerId(int ownerId) { this.ownerId = ownerId; }
 
     // your service calls getPostText()/setPostText()
-    public String getPostText() { return content; }
-    public void setPostText(String content) { this.content = content; }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
 
     public Timestamp getTimestamp() { return timestamp; }
     public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
