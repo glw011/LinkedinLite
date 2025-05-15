@@ -13,7 +13,7 @@ public class MajorDAO {
 
     public static int getMajorIdByName(String name){return ModelManager.getMajorIdByName(name);}
 
-    public static Major getSchoolByName(String name){
+    public static Major getMajorByName(String name){
         return ModelManager.getMajorByName(name);
     }
 

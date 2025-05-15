@@ -142,9 +142,6 @@ public class OrgDAO extends UserDAO{
         return memberLst;
     }
 
-    // TODO: Need to add a membership approval table to store students who have applied to join an org but not yet accepted
-    //  also would need 3 additional functions like approveMember(stdId), rejectMember(stdId), getPendingMembers(orgId)
-
     public static boolean addMember(int orgId, int stdId) throws SQLException{
         String sql = "INSERT INTO Org_Membership (student_id, org_id) VALUES (?, ?)";
 
@@ -176,18 +173,39 @@ public class OrgDAO extends UserDAO{
      * @throws SQLException if DB error occurs
      */
     public static boolean inviteMember(int orgId, int stdId) throws SQLException{
-        // TODO: Needs implementation (DB table needs column indicating whether invite or request)
-        return false;
+        String sql = "INSERT INTO Pending_Invites (student_id, org_id) VALUES (?, ?)";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, stdId);
+            pstmt.setInt(2, orgId);
+
+            return pstmt.executeUpdate() > 0;
+        }
     }
 
     /**
      * Gets all students who have pending requests for membership to the Org identified by an org_id
      * @param orgId Unique org_id of the Org seeking all membership requests
-     * @return HashMap containing unique student_id vals of Students awaiting approval as keys, with their Student Obj as vals
+     * @return LinkedList containing Student Objs of students who have requested membership to an org(identified by orgId)
      * @throws SQLException if DB error occurs
      */
-    public static HashMap<Integer, Student> getAllPendingRequests(int orgId) throws SQLException{
-        // TODO: Needs implementation
+    public static LinkedList<Student> getAllPendingRequests(int orgId) throws SQLException{
+        String sql = "SELECT student_id FROM Pending_Requests WHERE org_id = ?";
+        LinkedList<Student> stdLst = new LinkedList<>();
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, orgId);
+
+            ResultSet stdIds = pstmt.executeQuery();
+
+            while(stdIds.next()){
+                Student currStd = StudentDAO.getStudentById(stdIds.getInt("student_id"));
+                stdLst.add(currStd);
+            }
+            stdIds.close();
+
+            if(!stdLst.isEmpty()) return stdLst;
+        }
         return null;
     }
 
@@ -199,7 +217,17 @@ public class OrgDAO extends UserDAO{
      * @throws SQLException if DB error occurs
      */
     public static boolean approveMemberRequest(int orgId, int stdId) throws SQLException{
-        // TODO: Needs implementation
+        boolean addSuccess = addMember(orgId, stdId);
+        if(addSuccess){
+            String sql = "DELETE FROM Pending_Requests WHERE org_id = ? AND student_id = ?";
+
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setInt(1, orgId);
+                pstmt.setInt(2, stdId);
+
+                return pstmt.executeUpdate() > 0;
+            }
+        }
         return false;
     }
 
@@ -211,8 +239,14 @@ public class OrgDAO extends UserDAO{
      * @throws SQLException if DB error occurs
      */
     public static boolean denyMemberRequest(int orgId, int stdId) throws SQLException{
-        // TODO: Needs implementation
-        return false;
+        String sql = "DELETE FROM Pending_Requests WHERE org_id = ? AND student_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, orgId);
+            pstmt.setInt(2, stdId);
+
+            return pstmt.executeUpdate() > 0;
+        }
     }
 
     public static LinkedList<Org> searchOrgsByName(String search) throws SQLException {
