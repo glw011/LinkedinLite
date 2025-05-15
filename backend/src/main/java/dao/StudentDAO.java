@@ -1,10 +1,7 @@
 
 package dao;
 
-import model.ModelManager;
-import model.Org;
-import model.Student;
-import model.UserType;
+import model.*;
 import util.DBConnection2;
 
 import java.sql.PreparedStatement;
@@ -12,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
 
 public class StudentDAO extends UserDAO{
 
@@ -122,9 +121,6 @@ public class StudentDAO extends UserDAO{
      * @throws SQLException if DB error occurred
      */
     public static HashMap<Integer, Student> getAllStudents() throws SQLException{
-        // TODO: Duplicate and add Interest obj, Skill obj, School obj, Major obj as param for one duplicate
-        // TODO: OR Duplicate once with String arg for the conditions of search and create function to format condition string
-        //  i.e. "WHERE %s = ? AND %s = ?", "school_id", "interest" (also need to join all tables into the query)
         HashMap<Integer, Student> studentMap;
 
         String sqlStr =
@@ -192,7 +188,7 @@ public class StudentDAO extends UserDAO{
         }
     }
 
-    // TODO: Nah fam, once you're in, you're in for life. Ain't no escape from this DB
+    // Nah fam, once you're in, you're in for life. Ain't no escape from this DB
     public static boolean deleteStudent(int id) throws SQLException {
         return false;
     }
@@ -439,180 +435,338 @@ public class StudentDAO extends UserDAO{
         return list;
     }
 
-    // TODO
-    public static LinkedList<Student> searchStudentsByMajor(String search) throws SQLException {
-        String sql =
-                "SELECT DISTINCT " +
-                        "Students.student_id AS id, " +
-                        "Students.fname AS fname, " +
-                        "Students.lname AS lname, " +
-                        "User_Verify.email AS email, " +
-                        "Users.bio AS bio, " +
-                        "Users.pfp_id AS pfp_id, " +
-                        "Students.major_id AS major_id, " +
-                        "Users.school_id AS school_id " +
-                        "FROM Students " +
-                        "JOIN Users ON Students.student_id = Users.user_id " +
-                        "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+    public static LinkedList<Student> searchStudentsBySchool(String schoolName) throws SQLException {
+        LinkedList<Student> resultLst = new LinkedList<>();
+        ResultSet rs;
+        int schoolId = SchoolDAO.getSchoolIdByName(schoolName);
+
+        if(schoolId > 0){
+            String sql =
+                    "SELECT DISTINCT " +
+                            "Students.student_id AS id, " +
+                            "Students.fname AS fname, " +
+                            "Students.lname AS lname, " +
+                            "User_Verify.email AS email, " +
+                            "Users.bio AS bio, " +
+                            "Users.pfp_id AS pfp_id, " +
+                            "Students.major_id AS major_id, " +
+                            "Users.school_id AS school_id " +
+                        "FROM " +
+                            "Students JOIN Users ON Students.student_id = Users.user_id " +
+                                "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+                                "JOIN Schools ON Schools.school_id = Users.school_id " +
                         "WHERE " +
-                        "LOWER(Students.fname) LIKE ? OR " +
-                        "LOWER(Students.lname) LIKE ? OR " +
-                        "LOWER(CONCAT(Students.fname, ' ', Students.lname)) LIKE ?";
+                            "Users.school_id = ?";
 
-        LinkedList<Student> list = new LinkedList<>();
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setInt(1, schoolId);
 
-        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
-            String pattern = search.toLowerCase() + "%";
-            pstmt.setString(1, pattern); // fname
-            pstmt.setString(2, pattern); // lname
-            pstmt.setString(3, pattern); // full name (fname + lname)
-
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                Student s = new Student(
-                        id,
-                        rs.getString("email"),
-                        rs.getString("fname"),
-                        rs.getString("lname"),
-                        ModelManager.getSchool(rs.getInt("school_id"))
-                );
-
-                s.setBio(rs.getString("bio"));
-                s.setMajor(rs.getInt("major_id"));
-                s.setProfilePic(rs.getInt("pfp_id"));
-                s.setSkillList(getAllSkills(id));
-                s.setInterestList(getAllInterests(id));
-                s.setOrgList(getAllOrgs(id));
-                s.setFollowingList(getAllFollowedUsers(id));
-                s.setPostsList(getAllUserPosts(id));
-                s.setOwnedImgsList(getAllOwnedImages(id));
-
-                list.add(s);
+                rs = pstmt.executeQuery();
             }
 
-            rs.close();
+        }
+        else{
+            String sql =
+                    "SELECT DISTINCT " +
+                            "Students.student_id AS id, " +
+                            "Students.fname AS fname, " +
+                            "Students.lname AS lname, " +
+                            "User_Verify.email AS email, " +
+                            "Users.bio AS bio, " +
+                            "Users.pfp_id AS pfp_id, " +
+                            "Students.major_id AS major_id, " +
+                            "Users.school_id AS school_id " +
+                        "FROM " +
+                            "Students JOIN Users ON Students.student_id = Users.user_id " +
+                                "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+                                "JOIN Schools ON Schools.school_id = Users.school_id " +
+                        "WHERE " +
+                            "LOWER(Schools.school_name) LIKE ?";
+
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setString(1, String.join("%", String.join(schoolName.toLowerCase(), "%")));
+
+                rs = pstmt.executeQuery();
+            }
         }
 
-        return list;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            Student std = new Student(
+                    id,
+                    rs.getString("email"),
+                    rs.getString("fname"),
+                    rs.getString("lname"),
+                    ModelManager.getSchool(rs.getInt("school_id"))
+            );
+
+            std.setBio(rs.getString("bio"));
+            std.setMajor(rs.getInt("major_id"));
+            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setSkillList(getAllSkills(id));
+            std.setInterestList(getAllInterests(id));
+            std.setOrgList(getAllOrgs(id));
+            std.setFollowingList(getAllFollowedUsers(id));
+            std.setPostsList(getAllUserPosts(id));
+            std.setOwnedImgsList(getAllOwnedImages(id));
+
+            resultLst.add(std);
+        }
+
+        rs.close();
+
+        return resultLst;
     }
 
-    // TODO
-    public static LinkedList<Student> searchStudentsBySkill(String search) throws SQLException {
-        String sql =
-                "SELECT DISTINCT " +
-                        "Students.student_id AS id, " +
-                        "Students.fname AS fname, " +
-                        "Students.lname AS lname, " +
-                        "User_Verify.email AS email, " +
-                        "Users.bio AS bio, " +
-                        "Users.pfp_id AS pfp_id, " +
-                        "Students.major_id AS major_id, " +
-                        "Users.school_id AS school_id " +
-                        "FROM Students " +
-                        "JOIN Users ON Students.student_id = Users.user_id " +
-                        "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+    public static LinkedList<Student> searchStudentsByMajor(String majorName) throws SQLException {
+        LinkedList<Student> resultLst = new LinkedList<>();
+        ResultSet rs;
+        int majorId = MajorDAO.getMajorIdByName(majorName);
+
+        if(majorId > 0){
+            String sql =
+                    "SELECT DISTINCT " +
+                            "Students.student_id AS id, " +
+                            "Students.fname AS fname, " +
+                            "Students.lname AS lname, " +
+                            "User_Verify.email AS email, " +
+                            "Users.bio AS bio, " +
+                            "Users.pfp_id AS pfp_id, " +
+                            "Students.major_id AS major_id, " +
+                            "Users.school_id AS school_id " +
+                        "FROM " +
+                            "Students JOIN Users ON Students.student_id = Users.user_id " +
+                                "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
                         "WHERE " +
-                        "LOWER(Students.fname) LIKE ? OR " +
-                        "LOWER(Students.lname) LIKE ? OR " +
-                        "LOWER(CONCAT(Students.fname, ' ', Students.lname)) LIKE ?";
+                            "Students.major_id = ?";
 
-        LinkedList<Student> list = new LinkedList<>();
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setInt(1, majorId);
 
-        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
-            String pattern = search.toLowerCase() + "%";
-            pstmt.setString(1, pattern); // fname
-            pstmt.setString(2, pattern); // lname
-            pstmt.setString(3, pattern); // full name (fname + lname)
-
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                Student s = new Student(
-                        id,
-                        rs.getString("email"),
-                        rs.getString("fname"),
-                        rs.getString("lname"),
-                        ModelManager.getSchool(rs.getInt("school_id"))
-                );
-
-                s.setBio(rs.getString("bio"));
-                s.setMajor(rs.getInt("major_id"));
-                s.setProfilePic(rs.getInt("pfp_id"));
-                s.setSkillList(getAllSkills(id));
-                s.setInterestList(getAllInterests(id));
-                s.setOrgList(getAllOrgs(id));
-                s.setFollowingList(getAllFollowedUsers(id));
-                s.setPostsList(getAllUserPosts(id));
-                s.setOwnedImgsList(getAllOwnedImages(id));
-
-                list.add(s);
+                rs = pstmt.executeQuery();
             }
 
-            rs.close();
+        }
+        else{
+            String sql =
+                    "SELECT DISTINCT " +
+                            "Students.student_id AS id, " +
+                            "Students.fname AS fname, " +
+                            "Students.lname AS lname, " +
+                            "User_Verify.email AS email, " +
+                            "Users.bio AS bio, " +
+                            "Users.pfp_id AS pfp_id, " +
+                            "Students.major_id AS major_id, " +
+                            "Users.school_id AS school_id " +
+                        "FROM " +
+                            "Students JOIN Users ON Students.student_id = Users.user_id " +
+                                "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+                                "JOIN Majors ON Majors.major_id = Students.major_id " +
+                        "WHERE " +
+                            "LOWER(Majors.major_name) LIKE ?";
+
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setString(1, String.join("%", String.join(majorName.toLowerCase(), "%")));
+
+                rs = pstmt.executeQuery();
+            }
         }
 
-        return list;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            Student std = new Student(
+                    id,
+                    rs.getString("email"),
+                    rs.getString("fname"),
+                    rs.getString("lname"),
+                    ModelManager.getSchool(rs.getInt("school_id"))
+            );
+
+            std.setBio(rs.getString("bio"));
+            std.setMajor(rs.getInt("major_id"));
+            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setSkillList(getAllSkills(id));
+            std.setInterestList(getAllInterests(id));
+            std.setOrgList(getAllOrgs(id));
+            std.setFollowingList(getAllFollowedUsers(id));
+            std.setPostsList(getAllUserPosts(id));
+            std.setOwnedImgsList(getAllOwnedImages(id));
+
+            resultLst.add(std);
+        }
+
+        rs.close();
+
+        return resultLst;
     }
 
-    // TODO
-    public static LinkedList<Student> searchStudentsByInterest(String search) throws SQLException {
-        String sql =
-                "SELECT DISTINCT " +
-                        "Students.student_id AS id, " +
-                        "Students.fname AS fname, " +
-                        "Students.lname AS lname, " +
-                        "User_Verify.email AS email, " +
-                        "Users.bio AS bio, " +
-                        "Users.pfp_id AS pfp_id, " +
-                        "Students.major_id AS major_id, " +
-                        "Users.school_id AS school_id " +
-                        "FROM Students " +
-                        "JOIN Users ON Students.student_id = Users.user_id " +
-                        "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+    public static LinkedList<Student> searchStudentsBySkill(String skillName) throws SQLException {
+        LinkedList<Student> resultLst = new LinkedList<>();
+        ResultSet rs;
+        int skillId = SkillDAO.getSkillIdByName(skillName);
+
+        if(skillId > 0){
+            String sql =
+                    "SELECT DISTINCT " +
+                            "Students.student_id AS id, " +
+                            "Students.fname AS fname, " +
+                            "Students.lname AS lname, " +
+                            "User_Verify.email AS email, " +
+                            "Users.bio AS bio, " +
+                            "Users.pfp_id AS pfp_id, " +
+                            "Students.major_id AS major_id, " +
+                            "Users.school_id AS school_id " +
+                        "FROM " +
+                            "Students JOIN Users ON Students.student_id = Users.user_id " +
+                                "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+                                "JOIN Student_Skills ON Student_Skills.student_id = Students.student_id " +
+                                "JOIN Skills ON Student_Skills.skill_id = Skills.skill_id " +
                         "WHERE " +
-                        "LOWER(Students.fname) LIKE ? OR " +
-                        "LOWER(Students.lname) LIKE ? OR " +
-                        "LOWER(CONCAT(Students.fname, ' ', Students.lname)) LIKE ?";
+                            "Student_Skills.skill_id = ?";
 
-        LinkedList<Student> list = new LinkedList<>();
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setInt(1, skillId);
 
-        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
-            String pattern = search.toLowerCase() + "%";
-            pstmt.setString(1, pattern); // fname
-            pstmt.setString(2, pattern); // lname
-            pstmt.setString(3, pattern); // full name (fname + lname)
-
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                Student s = new Student(
-                        id,
-                        rs.getString("email"),
-                        rs.getString("fname"),
-                        rs.getString("lname"),
-                        ModelManager.getSchool(rs.getInt("school_id"))
-                );
-
-                s.setBio(rs.getString("bio"));
-                s.setMajor(rs.getInt("major_id"));
-                s.setProfilePic(rs.getInt("pfp_id"));
-                s.setSkillList(getAllSkills(id));
-                s.setInterestList(getAllInterests(id));
-                s.setOrgList(getAllOrgs(id));
-                s.setFollowingList(getAllFollowedUsers(id));
-                s.setPostsList(getAllUserPosts(id));
-                s.setOwnedImgsList(getAllOwnedImages(id));
-
-                list.add(s);
+                rs = pstmt.executeQuery();
             }
 
-            rs.close();
+        }
+        else{
+            String sql =
+                    "SELECT DISTINCT " +
+                            "Students.student_id AS id, " +
+                            "Students.fname AS fname, " +
+                            "Students.lname AS lname, " +
+                            "User_Verify.email AS email, " +
+                            "Users.bio AS bio, " +
+                            "Users.pfp_id AS pfp_id, " +
+                            "Students.major_id AS major_id, " +
+                            "Users.school_id AS school_id " +
+                        "FROM " +
+                            "Students JOIN Users ON Students.student_id = Users.user_id " +
+                                "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+                                "JOIN Student_Skills ON Student_Skills.student_id = Students.student_id " +
+                                "JOIN Skills ON Student_Skills.skill_id = Skills.skill_id " +
+                        "WHERE " +
+                            "LOWER(Skills.skill_name) LIKE ?";
+
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setString(1, String.join("%", String.join(skillName.toLowerCase(), "%")));
+
+                rs = pstmt.executeQuery();
+            }
         }
 
-        return list;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            Student std = new Student(
+                    id,
+                    rs.getString("email"),
+                    rs.getString("fname"),
+                    rs.getString("lname"),
+                    ModelManager.getSchool(rs.getInt("school_id"))
+            );
+
+            std.setBio(rs.getString("bio"));
+            std.setMajor(rs.getInt("major_id"));
+            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setSkillList(getAllSkills(id));
+            std.setInterestList(getAllInterests(id));
+            std.setOrgList(getAllOrgs(id));
+            std.setFollowingList(getAllFollowedUsers(id));
+            std.setPostsList(getAllUserPosts(id));
+            std.setOwnedImgsList(getAllOwnedImages(id));
+
+            resultLst.add(std);
+        }
+
+        rs.close();
+
+        return resultLst;
+    }
+
+    public static LinkedList<Student> searchStudentsByInterest(String interestName) throws SQLException {
+        LinkedList<Student> resultLst = new LinkedList<>();
+        ResultSet rs;
+        int interestId = InterestDAO.getInterestIdByName(interestName);
+
+        if(interestId > 0){
+            String sql =
+                    "SELECT DISTINCT " +
+                            "Students.student_id AS id, " +
+                            "Students.fname AS fname, " +
+                            "Students.lname AS lname, " +
+                            "User_Verify.email AS email, " +
+                            "Users.bio AS bio, " +
+                            "Users.pfp_id AS pfp_id, " +
+                            "Students.major_id AS major_id, " +
+                            "Users.school_id AS school_id " +
+                        "FROM " +
+                            "Students JOIN Users ON Students.student_id = Users.user_id " +
+                                "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+                                "JOIN User_Interests ON User_Interests.user_id = Students.student_id " +
+                                "JOIN Interests ON Interests.interest_id = User_Interests.interest_id " +
+                        "WHERE " +
+                            "User_Interests.interest_id = ?";
+
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setInt(1, interestId);
+
+                rs = pstmt.executeQuery();
+            }
+
+        }
+        else{
+            String sql =
+                    "SELECT DISTINCT " +
+                            "Students.student_id AS id, " +
+                            "Students.fname AS fname, " +
+                            "Students.lname AS lname, " +
+                            "User_Verify.email AS email, " +
+                            "Users.bio AS bio, " +
+                            "Users.pfp_id AS pfp_id, " +
+                            "Students.major_id AS major_id, " +
+                            "Users.school_id AS school_id " +
+                        "FROM " +
+                            "Students JOIN Users ON Students.student_id = Users.user_id " +
+                                "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
+                                "JOIN User_Interests ON User_Interests.user_id = Students.student_id " +
+                                "JOIN Interests ON Interests.interest_id = User_Interests.interest_id " +
+                        "WHERE " +
+                            "LOWER(Interests.interest_name) LIKE ?";
+
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setString(1, String.join("%", String.join(interestName.toLowerCase(), "%")));
+
+                rs = pstmt.executeQuery();
+            }
+        }
+
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            Student std = new Student(
+                    id,
+                    rs.getString("email"),
+                    rs.getString("fname"),
+                    rs.getString("lname"),
+                    ModelManager.getSchool(rs.getInt("school_id"))
+            );
+
+            std.setBio(rs.getString("bio"));
+            std.setMajor(rs.getInt("major_id"));
+            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setSkillList(getAllSkills(id));
+            std.setInterestList(getAllInterests(id));
+            std.setOrgList(getAllOrgs(id));
+            std.setFollowingList(getAllFollowedUsers(id));
+            std.setPostsList(getAllUserPosts(id));
+            std.setOwnedImgsList(getAllOwnedImages(id));
+
+            resultLst.add(std);
+        }
+
+        rs.close();
+
+        return resultLst;
     }
 }

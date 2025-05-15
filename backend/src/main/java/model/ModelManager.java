@@ -226,7 +226,10 @@ public class ModelManager {
 
     // Functions to get school obj by id, get school id by name, get school obj by name
     public static School getSchool(int id){return allSchools.get(id);}
-    public static int getSchoolIdByName(String name){return schoolByName.get(name);}
+    public static int getSchoolIdByName(String name){
+        if(schoolByName.containsKey(name))return schoolByName.get(name);
+        return -1;
+    }
     public static String[] getAllSchoolsList(){
         String[] schoolList = new String[schoolByName.size()];
         int i = 0;
@@ -278,7 +281,10 @@ public class ModelManager {
 
     // Functions to get Skill obj by id, get skill id by name, get Skill obj by name
     public static Skill getSkill(int id){return allSkills.get(id);}
-    public static int getSkillIdByName(String name){return skillByName.get(name);}
+    public static int getSkillIdByName(String name){
+        if(skillByName.containsKey(name)) return skillByName.get(name);
+        return -1;
+    }
     public static String[] getAllSkillsList(){
         String[] skillList = new String[skillByName.size()];
         int i = 0;
@@ -304,7 +310,10 @@ public class ModelManager {
 
     // Functions to get Interest obj by id, interest id by name, Interest obj by name
     public static Interest getInterest(int id){return allInterests.get(id);}
-    public static int getInterestIdByName(String name){return interestByName.get(name);}
+    public static int getInterestIdByName(String name){
+        if(interestByName.containsKey(name)) return interestByName.get(name);
+        return -1;
+    }
     public static String[] getAllInterestsList(){
         String[] interestList = new String[interestByName.size()];
         int i = 0;
@@ -330,7 +339,10 @@ public class ModelManager {
 
     // Functions to get Major obj by id, major id by name, Major obj by name
     public static Major getMajor(int id){return allMajors.get(id);}
-    public static int getMajorIdByName(String name){return majorByName.get(name);}
+    public static int getMajorIdByName(String name){
+        if(majorByName.containsKey(name)) return majorByName.get(name);
+        return -1;
+    }
     public static String[] getAllMajorsList(){
         String[] majorList = new String[majorByName.size()];
         int i = 0;
