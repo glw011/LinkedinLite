@@ -38,42 +38,4 @@ public class SchoolService {
         return schools;
     }
 
-    /**
-     * Adds a new school to the database.
-     * @param school the School object containing the new school information.
-     * @return true if the school was successfully inserted; false otherwise.
-     * @throws Exception if the school data is invalid or a database error occurs.
-     */
-    public boolean addSchool(School school) throws Exception {
-        if (school == null || school.getSchoolName() == null || school.getSchoolName().trim().isEmpty()) {
-            throw new IllegalArgumentException("School data is invalid.");
-        }
-        return schoolDAO.insertSchool(school);
-    }
-
-    /**
-     * Updates an existing school record.
-     * @param school the School object containing updated information. Must have a valid schoolId.
-     * @return true if the update is successful; false otherwise.
-     * @throws Exception if the provided data is invalid or a database error occurs.
-     */
-    public boolean updateSchool(School school) throws Exception {
-        if (school == null || school.getSchoolId() <= 0) {
-            throw new IllegalArgumentException("Invalid school data.");
-        }
-        return schoolDAO.updateSchool(school);
-    }
-
-    /**
-     * Deletes a school record by its ID.
-     * @param id the unique identifier of the school to delete
-     * @return true if deletion is successful; false otherwise.
-     * @throws Exception if the provided id is invalid or a database error occurs.
-     */
-    public boolean deleteSchool(int id) throws Exception {
-        if (id <= 0) {
-            throw new IllegalArgumentException("Invalid school ID: " + id);
-        }
-        return schoolDAO.deleteSchool(id);
-    }
 }
