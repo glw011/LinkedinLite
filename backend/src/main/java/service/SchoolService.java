@@ -17,7 +17,7 @@ public class SchoolService {
      * @throws NotFoundException if no school with that ID exists
      * @throws SchoolServiceException on database errors
      */
-    public School getSchoolById(int id) throws Exception {
+    public School getSchoolById(int id) {
         if (id <= 0) {
             throw new IllegalArgumentException("Invalid school ID: " + id);
         }
@@ -39,7 +39,7 @@ public class SchoolService {
      * @throws NotFoundException if no schools exist
      * @throws SchoolServiceException on database errors
      */
-    public List<String> getAllSchools() throws Exception {
+    public List<String> getAllSchools() {
         
         try {
             String[] schools = schoolDAO.getAllSchoolList();
