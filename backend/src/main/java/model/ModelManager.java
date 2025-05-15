@@ -5,6 +5,7 @@ import util.DBConnection2;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -39,28 +40,7 @@ public class ModelManager {
     private static HashMap<String, Integer> userIdByEmail = new HashMap<>();
 
     public static void initModelManager() throws SQLException{
-        /*
-        allSchools = new HashMap<>();
-        schoolByName = new HashMap<>();
-
-        allMajors = new HashMap<>();
-        majorByName = new HashMap<>();
-
-        allFields = new HashMap<>();
-        fieldByName = new HashMap<>();
-
-        allSkills = new HashMap<>();
-        skillByName = new HashMap<>();
-
-        allInterests = new HashMap<>();
-        interestByName = new HashMap<>();
-
-        userTypeById = new HashMap<>();
-        userIdByEmail = new HashMap<>();
-        */
         populateLists();
-
-
     }
 
     // Populate all mappings (Schools, Fields, Skills, Interests, Majors, User IDs and emails) on server start
@@ -245,6 +225,15 @@ public class ModelManager {
     // Functions to get school obj by id, get school id by name, get school obj by name
     public static School getSchool(int id){return allSchools.get(id);}
     public static int getSchoolIdByName(String name){return schoolByName.get(name);}
+    public static String[] getAllSchoolList(){
+        String[] schoolList = new String[schoolByName.size()];
+        int i = 0;
+
+        for(String name : schoolByName.keySet()){
+            schoolList[i++] = name;
+        }
+        return schoolList;
+    }
     public static School getSchoolByName(String name){
         if(schoolByName.containsKey(name)) return allSchools.get(schoolByName.get(name));
         return null;

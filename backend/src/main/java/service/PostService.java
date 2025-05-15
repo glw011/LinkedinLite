@@ -21,7 +21,7 @@ public class PostService {
         if (content == null || content.trim().isEmpty()) {
             throw new IllegalArgumentException("Post content cannot be empty");
         }
-        return PostDAO.pushPost(userId, content, tags);
+        return PostDAO.pushPost(userId, content, tags) > 0;
     }
 
     /**
