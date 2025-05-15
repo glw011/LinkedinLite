@@ -23,19 +23,4 @@ public class SchoolDAO {
         return ModelManager.getAllSchoolList();
     }
 
-    public boolean deleteSchool(int id) {
-        return false;
-    }
-
-    public boolean updateSchool(School school) {
-        return false;
-    }
-
-    public boolean insertSchool(School school) {
-        return false;
-    }
-
-    public List<School> getAllSchools() {
-        return Collections.emptyList();
-    }
 }

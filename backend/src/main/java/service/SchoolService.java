@@ -3,7 +3,8 @@ package service;
 import dao.SchoolDAO;
 import model.School;
 
-import java.util.List;
+import java.sql.SQLException;
+import java.util.*;
 
 public class SchoolService {
     private final SchoolDAO schoolDAO = new SchoolDAO();
@@ -12,30 +13,56 @@ public class SchoolService {
      * Retrieves a School by its ID after validating the input.
      * @param id the unique identifier of the school
      * @return the School object if found
-     * @throws Exception if the id is invalid or the school cannot be found
+     * @throws IllegalArgumentException if id <= 0
+     * @throws NotFoundException if no school with that ID exists
+     * @throws SchoolServiceException on database errors
      */
     public School getSchoolById(int id) throws Exception {
         if (id <= 0) {
             throw new IllegalArgumentException("Invalid school ID: " + id);
         }
-        School school = schoolDAO.getSchoolById(id);
-        if (school == null) {
-            throw new Exception("School with ID " + id + " not found.");
+       try {
+            School school = schoolDAO.getSchoolById(id);
+            if (school == null) {
+                throw new NotFoundException("School with ID " + id + " not found.");
+            }
+            return school;
+        } catch (SQLException e) {
+            throw new SchoolServiceException("Error fetching school with ID " + id, e);
         }
-        return school;
     }
+    
 
     /**
      * Retrieves all schools from the database.
      * @return a List of School objects.
-     * @throws Exception if no schools are available or a database error occurs.
+     * @throws NotFoundException if no schools exist
+     * @throws SchoolServiceException on database errors
      */
-    public List<School> getAllSchools() throws Exception {
-        List<School> schools = schoolDAO.getAllSchools();
-        if (schools == null || schools.isEmpty()) {
-            throw new Exception("No schools available.");
+    public List<String> getAllSchools() throws Exception {
+        
+        try {
+            String[] schools = schoolDAO.getAllSchoolList();
+            if (schools == null || schools.length == 0) {
+                throw new NotFoundException("No schools available.");
+            }        
+            return Arrays.asList(schools);
+        } catch (SQLException e) {
+            throw new SchoolServiceException("Error fetching all schools", e);
         }
-        return schools;
+     
+    }
+
+    
+    public static class NotFoundException extends RuntimeException {
+        public NotFoundException(String message) { super(message); }
+    }
+    
+    
+    public static class SchoolServiceException extends RuntimeException {
+        public SchoolServiceException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 
 }
