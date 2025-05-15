@@ -27,7 +27,7 @@ public class SchoolService {
                 throw new NotFoundException("School with ID " + id + " not found.");
             }
             return school;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new SchoolServiceException("Error fetching school with ID " + id, e);
         }
     }
@@ -42,12 +42,12 @@ public class SchoolService {
     public List<String> getAllSchools() throws Exception {
         
         try {
-            String[] schools = schoolDAO.getAllSchoolList();
-            if (schools == null || schools.length == 0) {
+            List<String> schools = schoolDAO.getAllSchoolsList();
+            if (schools == null || schools.isEmpty()) {
                 throw new NotFoundException("No schools available.");
             }        
-            return Arrays.asList(schools);
-        } catch (SQLException e) {
+            return schools;
+        } catch (Exception e) {
             throw new SchoolServiceException("Error fetching all schools", e);
         }
      

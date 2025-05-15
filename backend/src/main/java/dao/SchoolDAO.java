@@ -4,6 +4,7 @@ import model.ModelManager;
 import model.School;
 import util.DBConnection;
 
+import java.util.Arrays;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,12 +16,17 @@ import java.util.List;
  */
 public class SchoolDAO {
 
-    public School getSchoolById(int id) throws SQLException {
+    public static School getSchoolById(int id){
         return ModelManager.getSchool(id);
     }
 
-    public String[] getAllSchoolList() throws SQLException{
-        return ModelManager.getAllSchoolList();
+    public static int getSchoolIdByName(String name){return ModelManager.getSchoolIdByName(name);}
+
+    public School getSchoolByName(String name){
+        return ModelManager.getSchoolByName(name);
     }
 
+    public List<String> getAllSchoolsList(){return Arrays.asList(ModelManager.getAllSchoolsList());}
+
+    public List<School> getAllSchoolsObjList(){return ModelManager.getAllSchoolsObjects();}
 }
