@@ -36,13 +36,19 @@ import ui.views.home.SEARCH_BAR_TEXT
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun searchBar(onSearchTextChanged: (String) -> Unit, hasFilter: Boolean = false, dropdownItems: List<String> = listOf("")) {
+fun searchBar(
+    onSearchTextChanged: (String) -> Unit,
+    hasFilter: Boolean = false,
+    dropdownItems: List<String> = listOf(""),
+    onFilterSelectionChanged: (List<String>) -> Unit = {} // ← new
+) {
     var searchText by remember { mutableStateOf("") }
     val density = LocalDensity.current
     val windowInfo = LocalWindowInfo.current
     val screenHeight = remember(windowInfo) {
         with(density) { windowInfo.containerSize.height }
     }
+    val selectedFilters = remember { mutableStateListOf<String>() }
 
     if (searchActive)
         SEARCH_BAR_TEXT = searchText
@@ -88,7 +94,8 @@ fun searchBar(onSearchTextChanged: (String) -> Unit, hasFilter: Boolean = false,
                         xAlignment = Alignment.End,
                         multiSelect = true,
                         width = 256,
-                        noSelectionText = "Filters"
+                        noSelectionText = "Filters",
+                        onSelectionChange = { onFilterSelectionChanged(it) }
                     )
                 }
             }

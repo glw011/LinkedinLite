@@ -6,10 +6,9 @@ Styled Dropdown List for LinkedInLite
 package ui.components.styles
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -21,7 +20,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ui.views.home.SEARCH_FILTERS
 
 /**
@@ -57,6 +58,7 @@ fun styledDropDownList(
     value: String = "",
     itemsSelected: List<String> = listOf(),
     onSelect: (String) -> Unit = {},
+    onSelectionChange: (List<String>) -> Unit = {}
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var dropDownIcon by rememberSaveable { mutableStateOf(Icons.Filled.KeyboardArrowDown) }
@@ -83,15 +85,44 @@ fun styledDropDownList(
             onExpandedChange = { isExpanded = !isExpanded },
             modifier = modifier,
         ) {
-            styledTextField(
-                onTextChanged = { selectedText = it },
-                unfocusedText = selectedText,
-                width = width,
-                xAlignment = Alignment.CenterHorizontally,
-                icon = dropDownIcon,
-                iconAlignment = Alignment.CenterEnd,
-                showIcon = true,
-            )
+            val scrollState = rememberScrollState()
+
+            LaunchedEffect(selectedText) {
+                scrollState.animateScrollTo(scrollState.maxValue)
+            }
+
+            Box(
+                modifier = Modifier
+                    .width(width.dp)
+                    .height(32.dp)
+                    .background(Color.LightGray, RoundedCornerShape(16.dp))
+                    .horizontalScroll(scrollState),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(start = 16.dp, end = 36.dp, bottom = 4.dp), // space for text + dropdown icon
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        text = if (selectedText.isEmpty()) "Filters" else selectedText,
+                        color = DarkGray,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                    )
+                }
+
+                Icon(
+                    imageVector = dropDownIcon,
+                    contentDescription = "Dropdown Icon",
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 8.dp),
+                    tint = DarkGray
+                )
+            }
+
 
             if (multiSelect) {
                 ExposedDropdownMenu(
@@ -101,7 +132,7 @@ fun styledDropDownList(
                         .width(width.dp)
                         .background(
                             color = Color.LightGray,
-                        )
+                        ),
                 ) {
                     items.forEachIndexed { _, text ->
                         DropdownMenuItem(
@@ -112,6 +143,7 @@ fun styledDropDownList(
                                 } else {
                                     selectedItems.add(text)
                                 }
+                                onSelectionChange(selectedItems.toList()) // ← notify parent
                             },
                             content = {
                                 Row(

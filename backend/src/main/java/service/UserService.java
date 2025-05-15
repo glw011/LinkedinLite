@@ -65,9 +65,9 @@ public class UserService {
         }
     }
 
-    public LinkedList<Object> searchProfiles(String searchText) {
+    public List<Object> searchProfiles(String searchText) {
         try {
-            LinkedList<Object> results = new LinkedList<>();
+            List<Object> results = new LinkedList<>();
             results.addAll(StudentDAO.searchStudentsByName(searchText));
             results.addAll(OrgDAO.searchOrgsByName(searchText));
             return results;

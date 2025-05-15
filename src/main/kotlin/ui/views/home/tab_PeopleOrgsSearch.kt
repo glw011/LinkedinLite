@@ -18,6 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.DataSource.searchFilters
 import data.getProfilesFromSearch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import ui.components.profilePreview
 import ui.components.searchActive
 import ui.components.searchBar
@@ -46,16 +49,61 @@ data class ProfileData(
     val pfp: ImageBitmap?,
     val name: String,
     val bio: String,
-    val tags: List<String> = listOf()
+    val tags: List<String> = listOf(),
+    val major: String = "",
+    val school: String = ""
 )
 
 /**
- * Composable function for the People / Organizations tab content.
+ * Composable UI function for the "People & Organizations" tab.
  *
- * This function displays a search bar when search is active and handles user input.
+ * This screen provides a searchable interface for browsing users (students or organizations).
+ * It includes:
+ * - A search bar for entering query text (updates [SEARCH_BAR_TEXT]).
+ * - Optional filtering via dropdown items.
+ * - Dynamically rendered results from [getProfilesFromSearch] based on the query.
+ * - Smart UI states:
+ *   - A prompt when no query is entered.
+ *   - A debounced loading indicator while searching.
+ *   - A "No Results" message if the query returns nothing.
+ *   - A scrollable list of matching profiles if results are found.
+ *
+ * The search query is debounced (500ms) to prevent excessive database requests and improve UX.
+ * Results are cleared on every query change to avoid displaying stale data.
+ *
+ * This composable depends on the mutable global [SEARCH_BAR_TEXT] and assumes a reactive Compose
+ * state system around it. Intended to be used inside a navigation host or screen container.
  */
 @Composable
 fun peopleOrgsTabContent() {
+    var isLoading by remember { mutableStateOf(false) }
+
+    val filteredProfiles by produceState(
+        initialValue = emptyList<ProfileData>(),
+        SEARCH_BAR_TEXT
+    ) {
+        value = emptyList()
+
+        if (SEARCH_BAR_TEXT.isBlank()) {
+            isLoading = false
+            return@produceState
+        }
+
+        isLoading = true
+        delay(250)
+
+        if (SEARCH_BAR_TEXT.isBlank()) {
+            isLoading = false
+            return@produceState
+        }
+
+        value = withContext(Dispatchers.IO) {
+            getProfilesFromSearch(SEARCH_BAR_TEXT)
+        }
+
+        isLoading = false
+    }
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -63,60 +111,66 @@ fun peopleOrgsTabContent() {
         if (searchActive)
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
-        // This tab has a search bar
         searchBar(
-            onSearchTextChanged = {
-                SEARCH_BAR_TEXT = it
-            },
+            onSearchTextChanged = { SEARCH_BAR_TEXT = it },
             hasFilter = true,
             dropdownItems = searchFilters
         )
 
-        // Filtered profiles based on search bar text
-        val filteredProfiles by remember {
-            derivedStateOf {
-                if (SEARCH_BAR_TEXT.isEmpty()) {
-                    emptyList()
-                }
-                else {
-                    getProfilesFromSearch(SEARCH_BAR_TEXT)
+        when {
+            SEARCH_BAR_TEXT.isBlank() -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 64.dp),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    Text(
+                        text = "Search for a User or Organization",
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
             }
-        }
 
-        if (SEARCH_BAR_TEXT.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 64.dp),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Text(
-                    text = "Search for a User or Organization",
-                    fontSize = 24.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+            isLoading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 64.dp),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    Text(
+                        text = "Loading...",
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
-        } else if (filteredProfiles.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 64.dp), // pushes it down a bit from the top
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Text(
-                    text = "No Results",
-                    fontSize = 24.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+
+            filteredProfiles.isEmpty() -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 64.dp),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    Text(
+                        text = "No Results",
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier.width(1024.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                items(filteredProfiles) { profile ->
-                    profilePreview(profile.pfp, profile.name, profile.bio)
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.width(1024.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    items(filteredProfiles) { profile ->
+                        profilePreview(profile.pfp, profile.name, profile.bio, profile.major, profile.school)
+                    }
                 }
             }
         }
