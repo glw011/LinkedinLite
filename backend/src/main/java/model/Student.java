@@ -11,6 +11,8 @@ public class Student {
     private String bio;
     private int major;
     private int profilePic;
+
+    private int profileBanner;
     private LinkedList<Integer> skillList     = new LinkedList<>();
     private LinkedList<Integer> interestList  = new LinkedList<>();
     private LinkedList<Integer> orgList       = new LinkedList<>();
@@ -62,6 +64,9 @@ public class Student {
 
     public int    getProfilePic()           { return profilePic; }
     public void   setProfilePic(int picId)  { this.profilePic = picId; }
+
+    public int    getProfileBanner()        { return profileBanner; }
+    public void   setProfileBanner(int picId) { this.profileBanner = picId; }
 
     public LinkedList<Integer> getSkillList()     { return skillList; }
     public void               setSkillList(LinkedList<Integer> list)     { this.skillList = list; }

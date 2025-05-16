@@ -3,11 +3,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import data.AccountType
-import data.User
-import data.current_user
+import dao.MajorDAO
+import model.Major
+import model.Student
+import model.ModelManager
+import service.OrgService
+import service.SchoolService
+import service.StudentService
 import ui.components.profilecard.getRecommendedUsers
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
@@ -23,115 +28,6 @@ import util.updateScreenDimensions
 import java.awt.Dimension
 import ui.views.register.registerPfpScreen
 import ui.views.register.registerSelectScreen
-
-val testUsers = listOf(
-    User(
-        name = "John",
-        surname = "Doe",
-        accountType = AccountType.INDIVIDUAL,
-        schoolName = "Harvard University",
-        tags = mutableListOf("Philosophy", "Reading"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Jane",
-        surname = "Smith",
-        accountType = AccountType.INDIVIDUAL,
-        schoolName = "Stanford University",
-        tags = mutableListOf("Computer Science", "Artificial Intelligence"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Boltdog Robotics",
-        accountType = AccountType.ORGANIZATION,
-        schoolName = "Louisiana Tech University",
-        tags = mutableListOf("Physics", "Robotics"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Tech Innovators",
-        accountType = AccountType.ORGANIZATION,
-        schoolName = "Stanford University",
-        tags = mutableListOf("Biology", "Genetics"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Alice",
-        surname = "Johnson",
-        accountType = AccountType.INDIVIDUAL,
-        schoolName = "MIT",
-        tags = mutableListOf("Physics", "Robotics"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Bob",
-        surname = "Brown",
-        accountType = AccountType.INDIVIDUAL,
-        schoolName = "Stanford University",
-        tags = mutableListOf("Biology", "Genetics"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Charlie",
-        surname = "Davis",
-        accountType = AccountType.INDIVIDUAL,
-        schoolName = "Harvard University",
-        tags = mutableListOf("Philosophy", "Mathematics"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Delta",
-        surname = "Smith",
-        accountType = AccountType.INDIVIDUAL,
-        schoolName = "Louisiana Tech University",
-        tags = mutableListOf("Computer Science", "Artificial Intelligence"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Eve",
-        surname = "Williams",
-        accountType = AccountType.INDIVIDUAL,
-        schoolName = "MIT",
-        tags = mutableListOf("Physics", "Robotics"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Frank",
-        surname = "Jones",
-        accountType = AccountType.INDIVIDUAL,
-        schoolName = "Stanford University",
-        tags = mutableListOf("Biology", "Genetics"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Association of Computing Machinery",
-        accountType = AccountType.ORGANIZATION,
-        schoolName = "Louisiana Tech University",
-        tags = mutableListOf("Computer Science", "Artificial Intelligence"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Society of Physics Students",
-        accountType = AccountType.ORGANIZATION,
-        schoolName = "Louisiana Tech University",
-        tags = mutableListOf("Physics", "Robotics"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Biology Club",
-        accountType = AccountType.ORGANIZATION,
-        schoolName = "Louisiana Tech University",
-        tags = mutableListOf("Biology", "Genetics"),
-        profilePicture = null,
-    ),
-    User(
-        name = "Philosophy Society",
-        accountType = AccountType.ORGANIZATION,
-        schoolName = "Louisiana Tech University",
-        tags = mutableListOf("Philosophy", "Mathematics"),
-        profilePicture = null,
-    ),
-)
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "LinkedInLite") {
@@ -166,6 +62,10 @@ fun App() {
     var registerInfoUiState by rememberSaveable { mutableStateOf(RegisterInfoUiState()) }
     var registerOrgInfoUiState by rememberSaveable { mutableStateOf(RegisterOrgInfoUiState()) }
 
+    var accountType: String by rememberSaveable { mutableStateOf("") }
+
+    var currentUser: Student? by rememberSaveable{ mutableStateOf(null) }
+
     updateScreenDimensions()
 
     if (currentView == View.Login) {
@@ -187,14 +87,16 @@ fun App() {
     } else if (currentView == View.RegisterSelect) {
         val onPerson: () -> Unit = {
             // Handle person registration logic here
-            current_user.accountType = AccountType.INDIVIDUAL
-            profileUiState.headerInfo.title = "Student"
+//            current_user.accountType = AccountType.INDIVIDUAL
+//            profileUiState.headerInfo.title = "Student"
+            accountType = "Student"
             currentView = View.RegisterMain
         }
         val onOrganization: () -> Unit = {
             // Handle organization registration logic here
-            current_user.accountType = AccountType.ORGANIZATION
-            profileUiState.headerInfo.title = "Organization"
+//            current_user.accountType = AccountType.ORGANIZATION
+//            profileUiState.headerInfo.title = "Organization"
+            accountType = "Organization"
             currentView = View.RegisterMain
         }
         val onBack: () -> Unit = {
@@ -212,7 +114,7 @@ fun App() {
             onContinue = {
                 // Handle continue logic here
                 // For now, just switch to the registration info view
-                if (current_user.accountType == AccountType.INDIVIDUAL) {
+                if (accountType == "Student") {
                     currentView = View.RegisterInfo
                 } else {
                     currentView = View.RegisterOrgInfo
@@ -258,30 +160,25 @@ fun App() {
         val onContinue: () -> Unit = {
             currentView = View.Home
 
-            current_user.profilePicture = registerPfpUiState.profilePicture.value
-            profileUiState.headerInfo.profilePicture.value = current_user.profilePicture
-
-            if (current_user.accountType == AccountType.INDIVIDUAL) {
-                current_user.name = registerInfoUiState.name
-                current_user.surname = registerInfoUiState.surname
-                current_user.schoolName = registerInfoUiState.schoolName
-                current_user.tags = registerInfoUiState.tags
-
-                profileUiState.headerInfo.name =
-                    current_user.name + " " + current_user.surname
+            if (accountType == "Student") {
+                StudentService().addStudent(
+                    registerInfoUiState.name,
+                    "example@example.com",
+                    "example",
+                    registerInfoUiState.schoolName,
+                    "Computer Science"
+                )
+                currentUser = StudentService().getStudentById(ModelManager.getUserId("example@example.com"))
+                profileUiState.headerInfo.name = currentUser!!.fname + " " + currentUser!!.lname
+                profileUiState.headerInfo.title = "Student"
+                profileUiState.tags = registerInfoUiState.tags
+                profileUiState.headerInfo.school = currentUser!!.school.schoolName
+                profileUiState.headerInfo.profilePicture.value = registerPfpUiState.profilePicture.value
             } else {
-                current_user.name = registerOrgInfoUiState.orgName
-                current_user.schoolName = registerOrgInfoUiState.schoolName
-                current_user.tags = registerOrgInfoUiState.orgTags
-
-                profileUiState.headerInfo.name = registerOrgInfoUiState.orgName
             }
-
-            profileUiState.headerInfo.school = current_user.schoolName
-            profileUiState.tags = current_user.tags
         }
         val onBack: () -> Unit = {
-            if (current_user.accountType == AccountType.INDIVIDUAL) {
+            if (accountType == "Student") {
                 currentView = View.RegisterInfo
             } else {
                 currentView = View.RegisterOrgInfo
@@ -294,7 +191,6 @@ fun App() {
         )
     } else if (currentView == View.Home) {
         // Show home screen
-        getRecommendedUsers(testUsers, AccountType.INDIVIDUAL)
-        UI(profileUiState, current_user)
+        currentUser?.let { UI(profileUiState, it) }
     }
 }

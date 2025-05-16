@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import dao.PostDAO
-import data.current_user
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ui.components.styles.styledButton
@@ -42,7 +41,7 @@ import java.util.*
  * Data class representing a new post with an optional photo and a description.
  */
 data class NewPost(
-    var photo: ImageBitmap? = null,
+    var photo: ImageBitmap = ImageBitmap(0, 0),
     var description: String = ""
 )
 
@@ -177,5 +176,5 @@ fun changePhoto(onPhotoSelected: (ImageBitmap?) -> Unit) {
  */
 fun uploadPost(newPost: NewPost) {
     println("Uploading post: $newPost")
-    PostDAO.pushPost(current_user.getId(), newPost.description, LinkedList())
+//    PostDAO.pushPost(current_user.getId(), newPost.description, LinkedList())
 }

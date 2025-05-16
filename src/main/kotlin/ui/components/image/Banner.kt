@@ -16,7 +16,7 @@ import org.jetbrains.compose.resources.imageResource
  */
 @Composable
 fun Banner(
-    imageBitmap: ImageBitmap?,
+    imageBitmap: ImageBitmap,
     modifier: Modifier = Modifier,
 ) {
     Image(

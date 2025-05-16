@@ -2,6 +2,7 @@ package dao;
 
 import model.School;
 import util.DBConnection;
+import util.DBConnection2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,8 +25,8 @@ public class SchoolDAO {
      * @throws Exception if a database error occurs.
      */
     public School getSchoolById(int id) throws Exception {
-        String sql = "SELECT * FROM SCHOOL WHERE school_id = ?";
-        try (Connection conn = DBConnection.getConnection();
+        String sql = "SELECT * FROM SCHOOLS WHERE school_id = ?";
+        try (Connection conn = DBConnection2.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
@@ -33,7 +34,7 @@ public class SchoolDAO {
                 if (rs.next()) {
                     School school = new School();
                     school.setSchoolId(rs.getInt("school_id"));
-                    school.setSchoolName(rs.getString("school_name"));
+                    school.setSchoolName(rs.getString("name"));
                     school.setCity(rs.getString("city"));
                     school.setState(rs.getString("state"));
                     school.setCountry(rs.getString("country"));
@@ -52,15 +53,15 @@ public class SchoolDAO {
      */
     public List<School> getAllSchools() throws Exception {
         List<School> schools = new ArrayList<>();
-        String sql = "SELECT * FROM SCHOOL";
-        try (Connection conn = DBConnection.getConnection();
+        String sql = "SELECT * FROM SCHOOLS";
+        try (Connection conn = DBConnection2.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 School school = new School();
                 school.setSchoolId(rs.getInt("school_id"));
-                school.setSchoolName(rs.getString("school_name"));
+                school.setSchoolName(rs.getString("name"));
                 school.setCity(rs.getString("city"));
                 school.setState(rs.getString("state"));
                 school.setCountry(rs.getString("country"));
@@ -78,8 +79,8 @@ public class SchoolDAO {
      * @throws Exception if a database error occurs.
      */
     public boolean insertSchool(School school) throws Exception {
-        String sql = "INSERT INTO SCHOOL (school_name, city, state, country) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getConnection();
+        String sql = "INSERT INTO SCHOOLS (name, city, state, country) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DBConnection2.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, school.getSchoolName());
@@ -109,8 +110,8 @@ public class SchoolDAO {
      * @throws Exception if a database error occurs.
      */
     public boolean updateSchool(School school) throws Exception {
-        String sql = "UPDATE SCHOOL SET school_name = ?, city = ?, state = ?, country = ? WHERE school_id = ?";
-        try (Connection conn = DBConnection.getConnection();
+        String sql = "UPDATE SCHOOLS SET name = ?, city = ?, state = ?, country = ? WHERE school_id = ?";
+        try (Connection conn = DBConnection2.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, school.getSchoolName());
@@ -131,8 +132,8 @@ public class SchoolDAO {
      * @throws Exception if a database error occurs.
      */
     public boolean deleteSchool(int id) throws Exception {
-        String sql = "DELETE FROM SCHOOL WHERE school_id = ?";
-        try (Connection conn = DBConnection.getConnection();
+        String sql = "DELETE FROM SCHOOLS WHERE school_id = ?";
+        try (Connection conn = DBConnection2.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);

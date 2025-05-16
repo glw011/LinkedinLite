@@ -10,9 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.AccountType
-import data.User
-import data.current_user
+import model.Student
 import ui.components.Sidebar
 import ui.components.searchActive
 import ui.theme.DARK_MODE
@@ -30,7 +28,7 @@ import ui.theme.DARK_MODE
 @Composable
 fun UI(
     profileUiState: ProfileUiState,
-    currentUser: User,
+    currentUser: Student,
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight) {
         var selectedTab by remember { mutableStateOf("Home") }
@@ -65,11 +63,12 @@ fun UI(
                 when (selectedTab) {
                     "People / Orgs" -> peopleOrgsTabContent()
                     "My Profile" ->
-                        if (current_user.accountType == AccountType.ORGANIZATION) {
-                            OrgProfileTab(profileUiState)
-                        } else {
-                            IndividualProfileTab(profileUiState)
-                        }
+                        IndividualProfileTab(profileUiState)
+//                        if (current_user.accountType == AccountType.ORGANIZATION) {
+//                            OrgProfileTab(profileUiState)
+//                        } else {
+//                            IndividualProfileTab(profileUiState)
+//                        }
                     "Home" -> homeTab()
                     "Post" -> postTab()
                     "Notifications" -> NotificationsTab()

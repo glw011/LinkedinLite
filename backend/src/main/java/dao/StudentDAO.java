@@ -93,13 +93,16 @@ public class StudentDAO extends UserDAO{
             pstmt.setInt(1, stdId);
 
             ResultSet results = pstmt.executeQuery();
-            studentObj = new Student(
-                    results.getInt("id"),
-                    results.getString("email"),
-                    results.getString("fname"),
-                    results.getString("lname"),
-                    ModelManager.getSchool(results.getInt("school_id"))
-            );
+            studentObj = new Student();
+            if (results.next()) {
+                studentObj = new Student(
+                        results.getInt("id"),
+                        results.getString("email"),
+                        results.getString("fname"),
+                        results.getString("lname"),
+                        ModelManager.getSchool(results.getInt("school_id"))
+                );
+            }
 
             studentObj.setBio(results.getString("bio"));
             studentObj.setMajor(results.getInt("major_id"));

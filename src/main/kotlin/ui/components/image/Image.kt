@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.ContentScale
  */
 @Composable
 fun Image(
-    bitmap: ImageBitmap?,
+    bitmap: ImageBitmap,
     defaultImage: ImageBitmap,
     contentDescription: String,
     contentScale: ContentScale = ContentScale.Fit,
@@ -26,7 +26,7 @@ fun Image(
     modifier: Modifier = Modifier
 ) {
     val image: ImageBitmap
-    if (bitmap == null) {
+    if (bitmap.height == 0 || bitmap.width == 0) {
         image = defaultImage
     } else {
         image = bitmap

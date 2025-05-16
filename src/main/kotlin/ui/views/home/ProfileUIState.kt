@@ -37,6 +37,6 @@ data class ProfileHeaderInfo(
     var title: String = "",
     var location: String = "",
     var school: String = "",
-    var banner: MutableState<ImageBitmap?> = mutableStateOf(null),
-    var profilePicture: MutableState<ImageBitmap?> = mutableStateOf(null),
+    var banner: MutableState<ImageBitmap> = mutableStateOf(ImageBitmap(0, 0)),
+    var profilePicture: MutableState<ImageBitmap> = mutableStateOf(ImageBitmap(0, 0)),
 )

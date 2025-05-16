@@ -62,11 +62,7 @@ fun registerPfpScreen(
                     imageBitmap = uiState.profilePicture.value,
                     modifier = Modifier.fillMaxHeight(0.3f),
                     onClick = {
-                        imagePath = openFileChooser()
-                        val bitmap = getBitmapFromFilepath(imagePath)
-                        if (bitmap != null) {
-                            uiState.profilePicture.value = bitmap
-                        }
+                        uiState.profilePicture.value = getBitmapFromFilepath(openFileChooser())
                     }
                 )
 

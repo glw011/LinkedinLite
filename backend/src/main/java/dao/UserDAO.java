@@ -264,7 +264,7 @@ public class UserDAO {
      * @throws SQLException if DB error occurred
      */
     public static LinkedList<Integer> getAllInterests(int userId) throws SQLException{
-        String sql = "SELECT interest_id FROM User_Interests WHERE user_id = ?";
+        String sql = "SELECT interest_id FROM User_Interests WHERE entity_id = ?";
         LinkedList<Integer> intrstLst;
 
         try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
@@ -445,7 +445,7 @@ public class UserDAO {
 
                     ResultSet imgRs = pstmt.executeQuery();
                     if(imgRs.next()){
-                        pfp = new Picture(pfpId, userId);
+//                        pfp = new Picture(pfpId, userId);
                         // TODO: get url and remaining attributes from imgRs and add to pfp
                     }
                     imgRs.close();
