@@ -90,26 +90,30 @@ public class StudentDAO extends UserDAO{
             pstmt.setInt(1, stdId);
 
             ResultSet results = pstmt.executeQuery();
-            studentObj = new Student(
-                    results.getInt("id"),
-                    results.getString("email"),
-                    results.getString("fname"),
-                    results.getString("lname"),
-                    ModelManager.getSchool(results.getInt("school_id"))
-            );
+            if(results.next()){
+                studentObj = new Student(
+                        results.getInt("id"),
+                        results.getString("email"),
+                        results.getString("fname"),
+                        results.getString("lname"),
+                        ModelManager.getSchool(results.getInt("school_id"))
+                );
 
-            studentObj.setBio(results.getString("bio"));
-            studentObj.setMajor(results.getInt("major_id"));
-            studentObj.setProfilePic(results.getInt("pfp_id"));
+                studentObj.setBio(results.getString("bio"));
+                studentObj.setMajor(results.getInt("major_id"));
+                studentObj.setProfilePic(results.getInt("pfp_id"));
 
-            studentObj.setSkillList(getAllSkills(studentObj.getID()));
-            studentObj.setInterestList(getAllInterests(studentObj.getID()));
-            studentObj.setOrgList(getAllOrgs(studentObj.getID()));
-            studentObj.setFollowingList(getAllFollowedUsers(studentObj.getID()));
-            studentObj.setPostsList(getAllUserPosts(studentObj.getID()));
-            studentObj.setOwnedImgsList(getAllOwnedImages(studentObj.getID()));
+                studentObj.setSkillList(getAllSkills(studentObj.getID()));
+                studentObj.setInterestList(getAllInterests(studentObj.getID()));
+                studentObj.setOrgList(getAllOrgs(studentObj.getID()));
+                studentObj.setFollowingList(getAllFollowedUsers(studentObj.getID()));
+                studentObj.setPostsList(getAllUserPosts(studentObj.getID()));
+                studentObj.setOwnedImgsList(getAllOwnedImages(studentObj.getID()));
+
+                return studentObj;
+            }
         }
-        return studentObj;
+        return null;
     }
 
     /**
@@ -479,7 +483,7 @@ public class StudentDAO extends UserDAO{
                                 "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
                                 "JOIN Schools ON Schools.school_id = Users.school_id " +
                         "WHERE " +
-                            "LOWER(Schools.school_name) LIKE ?";
+                            "LOWER(Schools.name) LIKE ?";
 
             try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
                 pstmt.setString(1, String.join("%", String.join(schoolName.toLowerCase(), "%")));

@@ -339,7 +339,7 @@ public class OrgDAO extends UserDAO {
                                 "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
                                 "JOIN Schools ON Schools.school_id = Users.school_id " +
                         "WHERE " +
-                            "LOWER(Schools.school_name) LIKE ?";
+                            "LOWER(Schools.name) LIKE ?";
 
             try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
                 pstmt.setString(1, String.join("%", String.join(schoolName.toLowerCase(), "%")));

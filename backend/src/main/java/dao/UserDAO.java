@@ -507,10 +507,10 @@ public class UserDAO {
                 "type, " +
                 "bio, " +
                 "pfp_id, " +
-                "school_id, " +
+                "Users.school_id AS school_id, " +
                 "major_id " +
             "FROM " +
-                "(SELECT " +
+                    "(SELECT " +
                         "Students.fname AS fname, " +
                         "Students.lname AS lname, " +
                         "NULL AS oname, " +
@@ -518,7 +518,7 @@ public class UserDAO {
                         "Students.student_id AS user_id " +
                     "FROM " +
                         "Students " +
-                    "UNION " +
+                "UNION " +
                     "SELECT " +
                         "NULL AS fname, " +
                         "NULL AS lname, " +
@@ -527,15 +527,214 @@ public class UserDAO {
                         "Orgs.org_id AS user_id " +
                     "FROM " +
                         "Orgs) " +
-                "AS " +
-                    "NameTable " +
-                "JOIN User_Verify ON NameTable.user_id = User_Verify.user_id " +
-                "JOIN Users ON User_Verify.user_id = Users.user_id " +
+                "AS NameTable " +
+                    "JOIN User_Verify ON NameTable.user_id = User_Verify.user_id " +
+                    "JOIN Users ON User_Verify.user_id = Users.user_id " +
             "WHERE " +
                 "LOWER(oname) LIKE ? OR " +
                 "LOWER(fname) LIKE ? OR " +
                 "LOWER(lname) LIKE ? OR " +
                 "LOWER(CONCAT(fname, ' ', lname)) LIKE ?";
+
+        LinkedList<User> usrList = new LinkedList<>();
+
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
+            String qName = "%" + nameStr.toLowerCase() + "%";
+            pstmt.setString(1, qName);
+            pstmt.setString(2, qName);
+            pstmt.setString(3, qName);
+            pstmt.setString(4, qName);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                UserType type = (rs.getString("type").equals(UserType.ORG.getStr())) ? UserType.ORG : UserType.STUDENT;
+
+                if(type == UserType.STUDENT){
+                    Student std = new Student(
+                            id,
+                            rs.getString("email"),
+                            rs.getString("fname"),
+                            rs.getString("lname"),
+                            ModelManager.getSchool(rs.getInt("school_id"))
+                    );
+
+                    std.setBio(rs.getString("bio"));
+                    std.setMajor(rs.getInt("major_id"));
+                    std.setProfilePic(rs.getInt("pfp_id"));
+                    std.setSkillList(StudentDAO.getAllSkills(id));
+                    std.setInterestList(getAllInterests(id));
+                    std.setOrgList(StudentDAO.getAllOrgs(id));
+                    std.setFollowingList(getAllFollowedUsers(id));
+                    std.setPostsList(getAllUserPosts(id));
+                    std.setOwnedImgsList(getAllOwnedImages(id));
+
+                    usrList.add(std);
+                }
+                else{
+                    Org org = new Org(
+                            id,
+                            rs.getString("email"),
+                            rs.getString("name"),
+                            ModelManager.getSchool(rs.getInt("school_id"))
+                    );
+
+                    org.setBio(rs.getString("bio"));
+                    org.setProfilePic(rs.getInt("pfp_id"));
+                    org.setInterestList(getAllInterests(id));
+                    org.setMembersList(OrgDAO.getAllMembers(id));
+                    org.setFollowingList(getAllFollowedUsers(id));
+                    org.setPostsList(getAllUserPosts(id));
+                    org.setOwnedImgsList(getAllOwnedImages(id));
+
+                    usrList.add(org);
+                }
+            }
+
+            rs.close();
+        }
+
+        return usrList;
+    }
+
+    public static LinkedList<User> searchUsersBySchool(String schoolName) throws SQLException{
+        String sql =
+            "SELECT DISTINCT " +
+                "fname, " +
+                "lname, " +
+                "oname, " +
+                "User_Verify.user_id AS id, " +
+                "email, " +
+                "type, " +
+                "bio, " +
+                "pfp_id, " +
+                "Users.school_id AS school_id, " +
+                "major_id " +
+            "FROM " +
+                    "(SELECT " +
+                        "Students.fname AS fname, " +
+                        "Students.lname AS lname, " +
+                        "NULL AS oname, " +
+                        "Students.major_id AS major_id, " +
+                        "Students.student_id AS user_id " +
+                    "FROM " +
+                        "Students " +
+                "UNION " +
+                    "SELECT " +
+                        "NULL AS fname, " +
+                        "NULL AS lname, " +
+                        "Orgs.org_name AS oname, " +
+                        "NULL AS major_id, " +
+                        "Orgs.org_id AS user_id " +
+                    "FROM " +
+                        "Orgs) " +
+                "AS NameTable " +
+                    "JOIN User_Verify ON NameTable.user_id = User_Verify.user_id " +
+                    "JOIN Users ON User_Verify.user_id = Users.user_id " +
+                    "JOIN Schools ON Users.school_id = Schools.school_id " +
+            "WHERE " +
+                "LOWER(Schools.name) LIKE ?";
+
+        LinkedList<User> usrList = new LinkedList<>();
+
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
+            String qName = "%" + schoolName.toLowerCase() + "%";
+            pstmt.setString(1, qName);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                UserType type = (rs.getString("type").equals(UserType.ORG.getStr())) ? UserType.ORG : UserType.STUDENT;
+
+                if(type == UserType.STUDENT){
+                    Student std = new Student(
+                            id,
+                            rs.getString("email"),
+                            rs.getString("fname"),
+                            rs.getString("lname"),
+                            ModelManager.getSchool(rs.getInt("school_id"))
+                    );
+
+                    std.setBio(rs.getString("bio"));
+                    std.setMajor(rs.getInt("major_id"));
+                    std.setProfilePic(rs.getInt("pfp_id"));
+                    std.setSkillList(StudentDAO.getAllSkills(id));
+                    std.setInterestList(getAllInterests(id));
+                    std.setOrgList(StudentDAO.getAllOrgs(id));
+                    std.setFollowingList(getAllFollowedUsers(id));
+                    std.setPostsList(getAllUserPosts(id));
+                    std.setOwnedImgsList(getAllOwnedImages(id));
+
+                    usrList.add(std);
+                }
+                else{
+                    Org org = new Org(
+                            id,
+                            rs.getString("email"),
+                            rs.getString("name"),
+                            ModelManager.getSchool(rs.getInt("school_id"))
+                    );
+
+                    org.setBio(rs.getString("bio"));
+                    org.setProfilePic(rs.getInt("pfp_id"));
+                    org.setInterestList(getAllInterests(id));
+                    org.setMembersList(OrgDAO.getAllMembers(id));
+                    org.setFollowingList(getAllFollowedUsers(id));
+                    org.setPostsList(getAllUserPosts(id));
+                    org.setOwnedImgsList(getAllOwnedImages(id));
+
+                    usrList.add(org);
+                }
+            }
+
+            rs.close();
+        }
+
+        return usrList;
+    }
+
+    public static LinkedList<User> searchUsersByInterest(String nameStr) throws SQLException{
+        String sql =
+                "SELECT DISTINCT " +
+                        "fname, " +
+                        "lname, " +
+                        "oname, " +
+                        "User_Verify.user_id AS id, " +
+                        "email, " +
+                        "type, " +
+                        "bio, " +
+                        "pfp_id, " +
+                        "school_id, " +
+                        "major_id " +
+                        "FROM " +
+                        "(SELECT " +
+                        "Students.fname AS fname, " +
+                        "Students.lname AS lname, " +
+                        "NULL AS oname, " +
+                        "Students.major_id AS major_id, " +
+                        "Students.student_id AS user_id " +
+                        "FROM " +
+                        "Students " +
+                        "UNION " +
+                        "SELECT " +
+                        "NULL AS fname, " +
+                        "NULL AS lname, " +
+                        "Orgs.org_name AS oname, " +
+                        "NULL AS major_id, " +
+                        "Orgs.org_id AS user_id " +
+                        "FROM " +
+                        "Orgs) " +
+                        "AS " +
+                        "NameTable " +
+                        "JOIN User_Verify ON NameTable.user_id = User_Verify.user_id " +
+                        "JOIN Users ON User_Verify.user_id = Users.user_id " +
+                        "WHERE " +
+                        "LOWER(oname) LIKE ? OR " +
+                        "LOWER(fname) LIKE ? OR " +
+                        "LOWER(lname) LIKE ? OR " +
+                        "LOWER(CONCAT(fname, ' ', lname)) LIKE ?";
 
         LinkedList<User> usrList = new LinkedList<>();
 
