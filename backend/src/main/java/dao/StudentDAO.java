@@ -68,47 +68,52 @@ public class StudentDAO extends UserDAO{
      * @throws SQLException if DB error occurred
      */
     public static Student getStudentById(int stdId) throws SQLException {
-        Student studentObj;
+        Student studentObj = null;
 
         String sqlStr =
-            "SELECT DISTINCT " +
-                "Students.student_id as id, " +
-                "Students.fname as fname, " +
-                "Students.lname as lname, " +
-                "User_Verify.email as email, " +
-                "Users.bio as bio, " +
-                "Users.pfp_id as pfp_id, " +
-                "Students.major_id as major_id, " +
-                "Users.school_id as school_id " +
-            "FROM " +
-                "User_Verify JOIN Users ON User_Verify.user_id = Users.user_id " +
-                "JOIN Students ON Students.student_id = Users.user_id " +
-            "WHERE " +
-                "Users.user_id = ?";
+                "SELECT DISTINCT " +
+                        "Students.student_id as id, " +
+                        "Students.fname as fname, " +
+                        "Students.lname as lname, " +
+                        "User_Verify.email as email, " +
+                        "Users.bio as bio, " +
+                        "Users.pfp_id as pfp_id, " +
+                        "Students.major_id as major_id, " +
+                        "Users.school_id as school_id " +
+                        "FROM " +
+                        "User_Verify JOIN Users ON User_Verify.user_id = Users.user_id " +
+                        "JOIN Students ON Students.student_id = Users.user_id " +
+                        "WHERE " +
+                        "Users.user_id = ?";
 
-        try(PreparedStatement pstmt = DBConnection2.getPstmt(sqlStr)){
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sqlStr)) {
             pstmt.setInt(1, stdId);
-
             ResultSet results = pstmt.executeQuery();
-            studentObj = new Student(
-                    results.getInt("id"),
-                    results.getString("email"),
-                    results.getString("fname"),
-                    results.getString("lname"),
-                    ModelManager.getSchool(results.getInt("school_id"))
-            );
 
-            studentObj.setBio(results.getString("bio"));
-            studentObj.setMajor(results.getInt("major_id"));
-            studentObj.setProfilePic(results.getInt("pfp_id"));
+            if (results.next()) {
+                studentObj = new Student(
+                        results.getInt("id"),
+                        results.getString("email"),
+                        results.getString("fname"),
+                        results.getString("lname"),
+                        ModelManager.getSchool(results.getInt("school_id"))
+                );
 
-            studentObj.setSkillList(getAllSkills(studentObj.getID()));
-            studentObj.setInterestList(getAllInterests(studentObj.getID()));
-            studentObj.setOrgList(getAllOrgs(studentObj.getID()));
-            studentObj.setFollowingList(getAllFollowedUsers(studentObj.getID()));
-            studentObj.setPostsList(getAllUserPosts(studentObj.getID()));
-            studentObj.setOwnedImgsList(getAllOwnedImages(studentObj.getID()));
+                studentObj.setBio(results.getString("bio"));
+                studentObj.setMajor(results.getInt("major_id"));
+                studentObj.setProfilePic(results.getInt("pfp_id"));
+
+                studentObj.setSkillList(getAllSkills(studentObj.getID()));
+                studentObj.setInterestList(getAllInterests(studentObj.getID()));
+                studentObj.setOrgList(getAllOrgs(studentObj.getID()));
+                studentObj.setFollowingList(getAllFollowedUsers(studentObj.getID()));
+                studentObj.setPostsList(getAllUserPosts(studentObj.getID()));
+                studentObj.setOwnedImgsList(getAllOwnedImages(studentObj.getID()));
+            }
+
+            results.close();
         }
+
         return studentObj;
     }
 

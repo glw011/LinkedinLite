@@ -30,6 +30,7 @@ import org.example.linkedinlite.generated.resources.default_pfp
 import org.jetbrains.compose.resources.painterResource
 import ui.components.styles.styledTextField
 import ui.theme.LIGHT_PURPLE
+import java.util.*
 
 /**
  * Represents a comment on a post in the application.
@@ -56,7 +57,7 @@ data class Post(
     val postImage: ImageBitmap?,
     val userName: String = "",
     val description: String = "",
-    val comments: List<Comment> = listOf(),
+    val comments: LinkedList<Comment> = LinkedList()
 )
 
 /**

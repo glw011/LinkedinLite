@@ -1,10 +1,14 @@
 package debug
 
 import androidx.compose.runtime.mutableStateListOf
+import bufferedImageToImageBitmap
+import dao.PostDAO
+import service.StudentService
 import ui.components.Post
 import ui.views.home.ProfileData
 import util.getBitmapFromFilepath
 import java.nio.file.Paths
+import java.util.*
 
 /**
  * Loads the default post image from the local file path.
@@ -53,24 +57,16 @@ fun getDummyProfileList(): List<ProfileData> {
  * @return A shuffled list of [Post] objects.
  */
 val dummyPostList = mutableStateListOf<Post>().apply {
-    // Generate 5 posts without images
-//    PostService().allPosts.forEach() { post ->
-//        add(Post(
-//            "",
-//            null,
-//            StudentService().getStudentById(post.ownerId).fname,
-//            description = post.postText,
-//            comments = List<Comment>(
-//                size = TODO(),
-//                init = TODO()
-//            ).apply {  },
-//        ))
-//    }
+    for (post in PostDAO.getAllPosts()) {
+        add(Post(
+            postImage = post.postImage?.image?.let { bufferedImageToImageBitmap(it) } ?: null,
+            userName = StudentService().getStudentById(post.ownerId).fname + " "
+                    + StudentService().getStudentById(post.ownerId).lname,
+            description = post.content.toString(),
+            comments = LinkedList()
 
-    add(Post(
-        postImage = null,
-        userName = "Harison Day",
-        description = "Test post, fill out the description section... Tons of arbitrary text to make a post",
-        comments = listOf(),
-    ))
+        ))
+
+        println(post.postImage?.image?.let { bufferedImageToImageBitmap(it) }.toString())
+    }
 }.shuffled() // Shuffle the list to randomize the order

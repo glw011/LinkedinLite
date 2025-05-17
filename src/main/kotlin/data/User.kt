@@ -66,4 +66,10 @@ data class User(
     }
 }
 
-var current_user: User = User()
+var current_user: User = User(
+    name = "John",
+    surname = "Doe",
+    schoolName = "Louisiana Tech",
+    description = "Default bio, nothing to see here",
+
+)
