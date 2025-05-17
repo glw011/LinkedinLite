@@ -2,80 +2,44 @@ package model;
 
 import java.util.LinkedList;
 
-public class Student {
-    private int stdntId;
-    private String email;
+public class Student extends User{
     private String fname;
     private String lname;
-    private School school;
-    private String bio;
     private int major;
-    private int profilePic;
-    private LinkedList<Integer> skillList     = new LinkedList<>();
-    private LinkedList<Integer> interestList  = new LinkedList<>();
-    private LinkedList<Integer> orgList       = new LinkedList<>();
-    private LinkedList<Integer> followingList = new LinkedList<>();
-    private LinkedList<Integer> postsList     = new LinkedList<>();
-    private LinkedList<Integer> ownedImgsList = new LinkedList<>();
+    private LinkedList<Integer> skillList;
+    private LinkedList<Integer> orgList;
 
-    // no-arg for JSON deserialization / update
-    public Student() {}
-
-    // used by DAO:
-    // new Student(id, email, fname, lname, ModelManager.getSchool(...))
     public Student(int stdntId, String email, String fname, String lname, School school) {
-        this.stdntId = stdntId;
-        this.email   = email;
+        super(stdntId, email, school, UserType.STUDENT.getStr());
+
         this.fname   = fname;
         this.lname   = lname;
-        this.school  = school;
+        this.skillList = new LinkedList<>();
+        this.orgList = new LinkedList<>();
+
     }
 
     // --- getters / setters ---
-    public int    getStdntId()              { return stdntId; }
-    // in model/Student.java
+    public int    getStdntId()              { return getID(); }
 
     /** Alias for getStdntId(), so DAOs can call student.getID(). */
     public int getID() {
         return getStdntId();
     }
 
-    public String getEmail()                { return email; }
-    public void   setEmail(String email)    { this.email = email; }
+    public String getFname()                { return this.fname; }
 
-    public String getFname()                { return fname; }
     public void   setFname(String fname)    { this.fname = fname; }
 
-    public String getLname()                { return lname; }
+    public String getLname()                { return this.lname; }
     public void   setLname(String lname)    { this.lname = lname; }
 
-    public School getSchool()               { return school; }
-    public void   setSchool(School school)  { this.school = school; }
-
-    public String getBio()                  { return bio; }
-    public void   setBio(String bio)        { this.bio = bio; }
-
-    public int    getMajor()                { return major; }
-    public void   setMajor(int major)       { this.major = major; }
-
-    public int    getProfilePic()           { return profilePic; }
-    public void   setProfilePic(int picId)  { this.profilePic = picId; }
-
-    public LinkedList<Integer> getSkillList()     { return skillList; }
-    public void               setSkillList(LinkedList<Integer> list)     { this.skillList = list; }
-
-    public LinkedList<Integer> getInterestList()  { return interestList; }
-    public void               setInterestList(LinkedList<Integer> list)  { this.interestList = list; }
-
-    public LinkedList<Integer> getOrgList()       { return orgList; }
+    public LinkedList<Integer> getOrgList()       { return this.orgList; }
     public void               setOrgList(LinkedList<Integer> list)       { this.orgList = list; }
 
-    public LinkedList<Integer> getFollowingList() { return followingList; }
-    public void               setFollowingList(LinkedList<Integer> list) { this.followingList = list; }
+    public int    getMajor()                { return this.major; }
+    public void   setMajor(int major)       { this.major = major; }
 
-    public LinkedList<Integer> getPostsList()     { return postsList; }
-    public void               setPostsList(LinkedList<Integer> list)     { this.postsList = list; }
-
-    public LinkedList<Integer> getOwnedImgsList() { return ownedImgsList; }
-    public void               setOwnedImgsList(LinkedList<Integer> list) { this.ownedImgsList = list; }
+    public LinkedList<Integer> getSkillList()     { return this.skillList; }
+    public void               setSkillList(LinkedList<Integer> list)     { this.skillList = list; }
 }

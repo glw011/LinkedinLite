@@ -310,7 +310,7 @@ INSERT INTO `Majors` (`major_id`, `major_name`, `fos_id`) VALUES
 
 CREATE TABLE `Orgs` (
   `org_id` int(11) NOT NULL,
-  `org_name` varchar(255) NOT NULL DEFAULT '"NEW ORG"'
+  `org_name` varchar(255) NOT NULL DEFAULT 'NEW ORG'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -319,7 +319,7 @@ CREATE TABLE `Orgs` (
 
 INSERT INTO `Orgs` (`org_id`, `org_name`) VALUES
 (5, 'Organization'),
-(11, '\"NEW ORG\"');
+(11, 'NEW ORG');
 
 -- --------------------------------------------------------
 
@@ -512,7 +512,7 @@ CREATE TABLE `Skill_FoS` (
 CREATE TABLE `Students` (
   `student_id` int(11) NOT NULL,
   `major_id` int(11) DEFAULT NULL,
-  `fname` varchar(100) NOT NULL DEFAULT '"NEW STUDENT"',
+  `fname` varchar(100) NOT NULL DEFAULT 'NEW STUDENT',
   `lname` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -521,12 +521,12 @@ CREATE TABLE `Students` (
 --
 
 INSERT INTO `Students` (`student_id`, `major_id`, `fname`, `lname`) VALUES
-(10, NULL, '\"NEW STUDENT\"', NULL),
-(12, 47, 'garrett', NULL),
-(13, NULL, '\"NEW STUDENT\"', NULL),
-(14, NULL, '\"NEW STUDENT\"', NULL),
-(15, NULL, '\"NEW STUDENT\"', NULL),
-(16, NULL, '\"NEW STUDENT\"', NULL);
+(10, NULL, 'NEW STUDENT', NULL),
+(12, 47, 'Garrett', NULL),
+(13, NULL, 'NEW STUDENT', NULL),
+(14, NULL, 'NEW STUDENT', NULL),
+(15, NULL, 'NEW STUDENT', NULL),
+(16, NULL, 'NEW STUDENT', NULL);
 
 -- --------------------------------------------------------
 

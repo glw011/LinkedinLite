@@ -7,17 +7,10 @@ public class Org extends User {
     private LinkedList<Integer> members;
 
     public Org(int id, String email, String name, School school){
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.type = "org";
-        this.school = school;
-        this.members = new LinkedList<>();
+        super(id, email, school, UserType.ORG.getStr());
 
-        this.ownedImgs = new LinkedList<>();
-        this.interests = new LinkedList<>();
-        this.posts = new LinkedList<>();
-        this.followingList = new LinkedList<>();
+        this.name = name;
+        this.members = new LinkedList<>();
     }
 
     public String getName(){return this.name;}

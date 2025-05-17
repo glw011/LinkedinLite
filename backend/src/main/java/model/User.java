@@ -15,17 +15,27 @@ public class User {
     public LinkedList<Integer> posts;
     public LinkedList<Integer> followingList;
 
+    public User(int id, String email, School school, String type){
+        this.id = id;
+        this.email = email;
+        this.school = school;
+        this.type = type;
+
+        this.ownedImgs = new LinkedList<>();
+        this.interests = new LinkedList<>();
+        this.posts = new LinkedList<>();
+        this.followingList = new LinkedList<>();
+    }
+
     public int getID(){return this.id;}
 
     public void setEmail(String email){
-        // TODO: Regex expression to identify valid email address?
         this.email = email;
     }
     public String getEmail(){return this.email;}
 
     public void setProfilePic(int imgId){
         if(this.ownedImgs.contains(imgId)) this.profilePic = imgId;
-        //else raise Exception;//TODO: implement what happens if set pfp to an img that is not owned by user
     }
     public int getProfilePic(){return this.profilePic;}
 

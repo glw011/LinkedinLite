@@ -78,7 +78,6 @@ public class OrgDAO extends UserDAO {
         return orgObj;
     }
 
-    // TODO: Same as getAllStudents; Need to implement system to allow for more complex queries without needing 100x functions
     public static HashMap<Integer, Org> getAllOrgs() throws SQLException {
         HashMap<Integer, Org> orgMap;
 
