@@ -341,8 +341,8 @@ CREATE TABLE `Org_Membership` (
 --
 
 CREATE TABLE `Pending_Invites` (
-  `student_id` int(11) NOT NULL,
-  `org_id` int(11) NOT NULL,
+  `student_id` int(11) DEFAULT NULL,
+  `org_id` int(11) DEFAULT NULL,
   `invite_date` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -353,8 +353,8 @@ CREATE TABLE `Pending_Invites` (
 --
 
 CREATE TABLE `Pending_Requests` (
-  `org_id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
+  `org_id` int(11) DEFAULT NULL,
+  `student_id` int(11) DEFAULT NULL,
   `request_date` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -678,7 +678,6 @@ ALTER TABLE `Org_Membership`
 -- Indexes for table `Pending_Invites`
 --
 ALTER TABLE `Pending_Invites`
-  ADD PRIMARY KEY (`student_id`,`org_id`)
   ADD KEY `inv_fk` (`student_id`),
   ADD KEY `inv_fk2` (`org_id`);
 
@@ -686,7 +685,6 @@ ALTER TABLE `Pending_Invites`
 -- Indexes for table `Pending_Requests`
 --
 ALTER TABLE `Pending_Requests`
-  ADD PRIMARY KEY (`org_id`,`student_id`)
   ADD KEY `req_fk` (`student_id`),
   ADD KEY `req_fk2` (`org_id`);
 
