@@ -16,8 +16,6 @@ import java.util.Objects;
  */
 public class OrgService {
 
-    private final OrgDAO dao;
-
     /** default cnstrctr */
     public OrgService() {
         this(new OrgDAO());
@@ -25,7 +23,7 @@ public class OrgService {
 
     /** ctnstrctr for tests */
     public OrgService(OrgDAO dao) {
-        this.dao = Objects.requireNonNull(dao, "dao must not be null");
+        Objects.requireNonNull(dao, "dao must not be null");
     }
 
     /**
@@ -55,7 +53,7 @@ public class OrgService {
     }
 
     /**
-     * Fetch an Org by its ID.
+     * Fetch an Org by its ID
      * @throws OrgServiceException if not found or on SQL error
      */
     public Org getOrgById(int orgId) {
@@ -71,7 +69,7 @@ public class OrgService {
     }
 
     /**
-     * Retrieve all Orgs in the system.
+     * Retrieve all Orgs in the system
      * @throws OrgServiceException on SQL error
      */
     public static Map<Integer, Org> getAllOrgs() {
@@ -83,7 +81,7 @@ public class OrgService {
     }
 
     /**
-     * Add a student to an Org’s membership.
+     * Add a student to an Org’s membership
      * @throws OrgServiceException on SQL error
      */
     public boolean addMember(int orgId, int studentId) {
@@ -138,9 +136,10 @@ public class OrgService {
      * Fetch all pending membership requests for an Org.
      * @throws OrgServiceException on SQL error
      */
+    @SuppressWarnings("unchecked")
     public Map<Integer, Student> getPendingRequests(int orgId) {
         try {
-            return OrgDAO.getAllPendingRequests(orgId);
+            return (Map<Integer, Student>) OrgDAO.getAllPendingRequests(orgId);
         } catch (SQLException e) {
             throw new OrgServiceException(
                     "Error fetching pending requests for org " + orgId, e);

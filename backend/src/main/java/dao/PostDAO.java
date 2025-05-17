@@ -459,6 +459,7 @@ public class PostDAO {
                 );
                 comtLst.add(comt);
             }
+            if(!comtLst.isEmpty()) return comtLst;
         }
         return null;
     }

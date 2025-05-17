@@ -33,14 +33,12 @@ public class Student {
 
     // --- getters / setters ---
     public int    getStdntId()              { return stdntId; }
-    public void   setStdntId(int stdntId)   { this.stdntId = stdntId; }
     // in model/Student.java
 
     /** Alias for getStdntId(), so DAOs can call student.getID(). */
     public int getID() {
         return getStdntId();
     }
-
 
     public String getEmail()                { return email; }
     public void   setEmail(String email)    { this.email = email; }
