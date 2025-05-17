@@ -20,7 +20,7 @@ public class Student extends User{
     }
 
     // --- getters / setters ---
-    public int    getStdntId()              { return getID(); }
+    public int    getStdntId()              { return super.getID(); }
 
     /** Alias for getStdntId(), so DAOs can call student.getID(). */
     public int getID() {

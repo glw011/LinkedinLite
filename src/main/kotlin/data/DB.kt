@@ -37,9 +37,9 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
                 val fname = user.fname?.lowercase() ?: ""
                 val lname = user.lname?.lowercase() ?: ""
                 val fullname = (fname + " " + lname)
-                val interests = user.interestList.mapNotNull { id ->
-                    ModelManager.getInterest(id)?.name
-                }
+//                val interests = user.interestList.mapNotNull { id ->
+//                    ModelManager.getInterest(id)?.name
+//                }
                 val major = ModelManager.getMajor(user.major)?.name ?: ""
                 val school = ModelManager.getSchool(user.school.schoolId)?.name ?: ""
 
@@ -54,7 +54,7 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
                     pfp = null,
                     name = "${user.fname} ${user.lname}",
                     bio = user.bio ?: "",
-                    tags = interests,
+//                    tags = interests,
                     major = major,
                     school = school
                 )
