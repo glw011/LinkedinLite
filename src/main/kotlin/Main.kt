@@ -6,9 +6,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import data.AccountType
+import data.User
 import model.ModelManager
-import model.Student
-import service.StudentService
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
@@ -58,9 +58,9 @@ fun App() {
     var registerInfoUiState by rememberSaveable { mutableStateOf(RegisterInfoUiState()) }
     var registerOrgInfoUiState by rememberSaveable { mutableStateOf(RegisterOrgInfoUiState()) }
 
-    var accountType: String by rememberSaveable { mutableStateOf("") }
+    var accountType: AccountType by rememberSaveable { mutableStateOf(AccountType.STUDENT) }
 
-    var currentUser: Student? by rememberSaveable{ mutableStateOf(null) }
+    var currentUser: User? by rememberSaveable{ mutableStateOf(null) }
 
     updateScreenDimensions()
 
@@ -85,14 +85,13 @@ fun App() {
             // Handle person registration logic here
 //            current_user.accountType = AccountType.INDIVIDUAL
 //            profileUiState.headerInfo.title = "Student"
-            accountType = "Student"
             currentView = View.RegisterMain
         }
         val onOrganization: () -> Unit = {
             // Handle organization registration logic here
 //            current_user.accountType = AccountType.ORGANIZATION
 //            profileUiState.headerInfo.title = "Organization"
-            accountType = "Organization"
+            accountType = AccountType.ORGANIZATION
             currentView = View.RegisterMain
         }
         val onBack: () -> Unit = {
@@ -110,17 +109,13 @@ fun App() {
             onContinue = {
                 // Handle continue logic here
                 // For now, just switch to the registration info view
-                if (accountType == "Student") {
+                if (accountType == AccountType.STUDENT) {
                     currentView = View.RegisterInfo
                 } else {
                     currentView = View.RegisterOrgInfo
                 }
             },
-            onBack = {
-                // Handle back logic here
-                // For now, just switch to the registration select view
-                currentView = View.RegisterSelect
-            },
+            onBack = { currentView = View.RegisterSelect },
         )
     } else if (currentView == View.RegisterInfo) {
         registerInfoScreen(
@@ -156,25 +151,34 @@ fun App() {
         val onContinue: () -> Unit = {
             currentView = View.Home
 
-            if (accountType == "Student") {
-                StudentService().addStudent(
-                    registerInfoUiState.name,
-                    "example@example.com",
-                    "example",
+            if (accountType == AccountType.STUDENT) {
+                currentUser = User.register(
+                    registerInfoUiState.name + " " + registerInfoUiState.surname,
+                    "example@thing.com",
                     registerInfoUiState.schoolName,
-                    "Computer Science"
+                    accountType
                 )
-                currentUser = StudentService().getStudentById(ModelManager.getUserId("example@example.com"))
-                profileUiState.headerInfo.name = currentUser!!.fname + " " + currentUser!!.lname
+
                 profileUiState.headerInfo.title = "Student"
                 profileUiState.tags = registerInfoUiState.tags
-                profileUiState.headerInfo.school = currentUser!!.school.schoolName
                 profileUiState.headerInfo.profilePicture.value = registerPfpUiState.profilePicture.value
             } else {
+                currentUser = User.register(
+                    registerOrgInfoUiState.orgName,
+                    "example@org.com",
+                    registerOrgInfoUiState.schoolName,
+                    accountType
+                )
+
+                profileUiState.headerInfo.title = "Organization"
+                profileUiState.tags = registerOrgInfoUiState.orgTags
+                profileUiState.headerInfo.profilePicture.value = registerPfpUiState.profilePicture.value
             }
+            profileUiState.headerInfo.name = currentUser!!.getName()
+            profileUiState.headerInfo.school = currentUser!!.getSchool()
         }
         val onBack: () -> Unit = {
-            if (accountType == "Student") {
+            if (accountType == AccountType.STUDENT) {
                 currentView = View.RegisterInfo
             } else {
                 currentView = View.RegisterOrgInfo

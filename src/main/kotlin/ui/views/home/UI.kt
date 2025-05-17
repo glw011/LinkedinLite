@@ -5,12 +5,22 @@ Main UI file for LinkedInLite
 
 package ui.views.home
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import model.Student
+import data.AccountType
+import data.User
 import ui.components.Sidebar
 import ui.components.searchActive
 import ui.theme.DARK_MODE
@@ -28,7 +38,7 @@ import ui.theme.DARK_MODE
 @Composable
 fun UI(
     profileUiState: ProfileUiState,
-    currentUser: Student,
+    currentUser: User,
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight) {
         var selectedTab by remember { mutableStateOf("Home") }
@@ -63,12 +73,11 @@ fun UI(
                 when (selectedTab) {
                     "People / Orgs" -> peopleOrgsTabContent()
                     "My Profile" ->
-                        IndividualProfileTab(profileUiState)
-//                        if (current_user.accountType == AccountType.ORGANIZATION) {
-//                            OrgProfileTab(profileUiState)
-//                        } else {
-//                            IndividualProfileTab(profileUiState)
-//                        }
+                        if (currentUser.getAccountType() == AccountType.ORGANIZATION) {
+                            OrgProfileTab(profileUiState)
+                        } else {
+                            IndividualProfileTab(profileUiState)
+                        }
                     "Home" -> homeTab()
                     "Post" -> postTab()
                     "Notifications" -> NotificationsTab()

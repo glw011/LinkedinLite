@@ -21,7 +21,7 @@ public class OrgDAO extends UserDAO{
 
             String usrSql = "UPDATE Users SET school_id = ? WHERE user_id = ?";
 
-            String orgSql = "UPDATE Orgs SET name = ? WHERE org_id = ?";
+            String orgSql = "UPDATE Orgs SET org_name = ? WHERE org_id = ?";
 
             try (PreparedStatement usrPstmt = DBConnection2.getPstmt(usrSql);
                  PreparedStatement orgPstmt = DBConnection2.getPstmt(orgSql))
@@ -45,7 +45,7 @@ public class OrgDAO extends UserDAO{
         String sqlStr =
             "SELECT DISTINCT " +
                 "Orgs.org_id as id, " +
-                "Orgs.name as name, " +
+                "Orgs.org_name as name, " +
                 "User_Verify.email as email, " +
                 "Users.bio as bio, " +
                 "Users.pfp_id as pfp_id, " +
@@ -60,12 +60,16 @@ public class OrgDAO extends UserDAO{
             pstmt.setInt(1, orgId);
 
             ResultSet results = pstmt.executeQuery();
-            orgObj = new Org(
-                    results.getInt("id"),
-                    results.getString("email"),
-                    results.getString("name"),
-                    ModelManager.getSchool(results.getInt("school_id"))
-            );
+            if (results.next()) {
+                orgObj = new Org(
+                        results.getInt("id"),
+                        results.getString("email"),
+                        results.getString("name"),
+                        ModelManager.getSchool(results.getInt("school_id"))
+                );
+            } else {
+                throw new SQLException("Org not found: ID=" + orgId);
+            }
 
             orgObj.setBio(results.getString("bio"));
             orgObj.setProfilePic(results.getInt("pfp_id"));

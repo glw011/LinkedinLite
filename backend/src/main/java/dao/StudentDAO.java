@@ -102,11 +102,10 @@ public class StudentDAO extends UserDAO{
                         results.getString("lname"),
                         ModelManager.getSchool(results.getInt("school_id"))
                 );
+                studentObj.setBio(results.getString("bio"));
+                studentObj.setMajor(results.getInt("major_id"));
+                studentObj.setProfilePic(results.getInt("pfp_id"));
             }
-
-            studentObj.setBio(results.getString("bio"));
-            studentObj.setMajor(results.getInt("major_id"));
-            studentObj.setProfilePic(results.getInt("pfp_id"));
 
             studentObj.setSkillList(getAllSkills(studentObj.getID()));
             studentObj.setInterestList(getAllInterests(studentObj.getID()));
