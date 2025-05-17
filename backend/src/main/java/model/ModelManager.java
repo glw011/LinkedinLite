@@ -5,6 +5,9 @@ import util.DBConnection2;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -39,28 +42,7 @@ public class ModelManager {
     private static HashMap<String, Integer> userIdByEmail = new HashMap<>();
 
     public static void initModelManager() throws SQLException{
-        /*
-        allSchools = new HashMap<>();
-        schoolByName = new HashMap<>();
-
-        allMajors = new HashMap<>();
-        majorByName = new HashMap<>();
-
-        allFields = new HashMap<>();
-        fieldByName = new HashMap<>();
-
-        allSkills = new HashMap<>();
-        skillByName = new HashMap<>();
-
-        allInterests = new HashMap<>();
-        interestByName = new HashMap<>();
-
-        userTypeById = new HashMap<>();
-        userIdByEmail = new HashMap<>();
-        */
         populateLists();
-
-
     }
 
     // Populate all mappings (Schools, Fields, Skills, Interests, Majors, User IDs and emails) on server start
@@ -244,7 +226,28 @@ public class ModelManager {
 
     // Functions to get school obj by id, get school id by name, get school obj by name
     public static School getSchool(int id){return allSchools.get(id);}
-    public static int getSchoolIdByName(String name){return schoolByName.get(name);}
+    public static int getSchoolIdByName(String name){
+        if(schoolByName.containsKey(name))return schoolByName.get(name);
+        return -1;
+    }
+    public static String[] getAllSchoolsList(){
+        String[] schoolList = new String[schoolByName.size()];
+        int i = 0;
+
+        for(String name : schoolByName.keySet()){
+            schoolList[i++] = name;
+        }
+        return schoolList;
+    }
+    public static List<School> getAllSchoolsObjects(){
+        School[] schoolList = new School[allSchools.size()];
+        int i = 0;
+
+        for(School curr : allSchools.values()){
+            schoolList[i++] = curr;
+        }
+        return Arrays.asList(schoolList);
+    }
     public static School getSchoolByName(String name){
         if(schoolByName.containsKey(name)) return allSchools.get(schoolByName.get(name));
         return null;
@@ -253,6 +256,24 @@ public class ModelManager {
     // Functions to get FoS obj by id, get FoS id by name, get FoS obj by name
     public static FoS getFoS(int id){return allFields.get(id);}
     public static int getFoSIdByName(String name){return fieldByName.get(name);}
+    public static String[] getAllFoSList(){
+        String[] fosList = new String[fieldByName.size()];
+        int i = 0;
+
+        for(String name : fieldByName.keySet()){
+            fosList[i++] = name;
+        }
+        return fosList;
+    }
+    public static List<FoS> getAllFoSObjects(){
+        FoS[] fosList = new FoS[allFields.size()];
+        int i = 0;
+
+        for(FoS curr : allFields.values()){
+            fosList[i++] = curr;
+        }
+        return Arrays.asList(fosList);
+    }
     public static FoS getFoSByName(String name){
         if(fieldByName.containsKey(name)) return allFields.get(fieldByName.get(name));
         return null;
@@ -260,7 +281,28 @@ public class ModelManager {
 
     // Functions to get Skill obj by id, get skill id by name, get Skill obj by name
     public static Skill getSkill(int id){return allSkills.get(id);}
-    public static int getSkillIdByName(String name){return skillByName.get(name);}
+    public static int getSkillIdByName(String name){
+        if(skillByName.containsKey(name)) return skillByName.get(name);
+        return -1;
+    }
+    public static String[] getAllSkillsList(){
+        String[] skillList = new String[skillByName.size()];
+        int i = 0;
+
+        for(String name : skillByName.keySet()){
+            skillList[i++] = name;
+        }
+        return skillList;
+    }
+    public static List<Skill> getAllSkillsObjects(){
+        Skill[] skillList = new Skill[allSkills.size()];
+        int i = 0;
+
+        for(Skill curr : allSkills.values()){
+            skillList[i++] = curr;
+        }
+        return Arrays.asList(skillList);
+    }
     public static Skill getSkillByName(String name){
         if(skillByName.containsKey(name)) return allSkills.get(skillByName.get(name));
         return null;
@@ -268,7 +310,28 @@ public class ModelManager {
 
     // Functions to get Interest obj by id, interest id by name, Interest obj by name
     public static Interest getInterest(int id){return allInterests.get(id);}
-    public static int getInterestIdByName(String name){return interestByName.get(name);}
+    public static int getInterestIdByName(String name){
+        if(interestByName.containsKey(name)) return interestByName.get(name);
+        return -1;
+    }
+    public static String[] getAllInterestsList(){
+        String[] interestList = new String[interestByName.size()];
+        int i = 0;
+
+        for(String name : interestByName.keySet()){
+            interestList[i++] = name;
+        }
+        return interestList;
+    }
+    public static List<Interest> getAllInterestsObjects(){
+        Interest[] interestList = new Interest[allInterests.size()];
+        int i = 0;
+
+        for(Interest curr : allInterests.values()){
+            interestList[i++] = curr;
+        }
+        return Arrays.asList(interestList);
+    }
     public static Interest getInterestByName(String name){
         if(interestByName.containsKey(name)) return allInterests.get(interestByName.get(name));
         return null;
@@ -276,7 +339,28 @@ public class ModelManager {
 
     // Functions to get Major obj by id, major id by name, Major obj by name
     public static Major getMajor(int id){return allMajors.get(id);}
-    public static int getMajorIdByName(String name){return majorByName.get(name);}
+    public static int getMajorIdByName(String name){
+        if(majorByName.containsKey(name)) return majorByName.get(name);
+        return -1;
+    }
+    public static String[] getAllMajorsList(){
+        String[] majorList = new String[majorByName.size()];
+        int i = 0;
+
+        for(String name : majorByName.keySet()){
+            majorList[i++] = name;
+        }
+        return majorList;
+    }
+    public static List<Major> getAllMajorsObjects(){
+        Major[] majorList = new Major[allMajors.size()];
+        int i = 0;
+
+        for(Major curr : allMajors.values()){
+            majorList[i++] = curr;
+        }
+        return Arrays.asList(majorList);
+    }
     public static Major getMajorByName(String name){
         if(majorByName.containsKey(name)) return allMajors.get(majorByName.get(name));
         return null;

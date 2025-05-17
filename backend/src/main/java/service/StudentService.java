@@ -11,15 +11,21 @@ import java.util.HashMap;
 import java.util.List;
 
 public class StudentService {
-    private final StudentDAO studentDAO = new StudentDAO();
+    private static final StudentDAO studentDAO = new StudentDAO();
 
     /**
      * Returns all students, sorted by last name.
      */
-    public List<Student> getAllStudents() throws SQLException {
+    public static List<Student> getAllStudents() throws SQLException {
         HashMap<Integer, Student> map = studentDAO.getAllStudents();
         List<Student> list = new ArrayList<>(map.values());
-        list.sort(Comparator.comparing(Student::getLname, String.CASE_INSENSITIVE_ORDER));
+
+        // Null-safe sort on last name
+        list.sort(Comparator.comparing(
+                Student::getLname,
+                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)
+        ));
+
         return list;
     }
 

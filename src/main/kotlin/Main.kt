@@ -1,19 +1,14 @@
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import dao.MajorDAO
-import model.Major
-import model.Student
 import model.ModelManager
-import service.OrgService
-import service.SchoolService
+import model.Student
 import service.StudentService
-import ui.components.profilecard.getRecommendedUsers
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
@@ -24,13 +19,14 @@ import ui.views.register.RegisterPfpUIState
 import ui.views.register.registerCredentialsScreen
 import ui.views.register.registerInfoScreen
 import ui.views.register.registerOrgInfoScreen
-import util.updateScreenDimensions
-import java.awt.Dimension
 import ui.views.register.registerPfpScreen
 import ui.views.register.registerSelectScreen
+import util.updateScreenDimensions
+import java.awt.Dimension
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "LinkedInLite") {
+        ModelManager.initModelManager()
         window.minimumSize = Dimension(800, 600)
         MainTheme {
             App() // or pass sdao into App if needed

@@ -3,13 +3,13 @@ package dao;
 import model.Picture;
 import util.DBConnection2;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
 import java.time.Instant;
 
 public class PictureDAO {
@@ -66,6 +66,54 @@ public class PictureDAO {
         return imgObj;
     }
 
+    public static String getImgUrl(int imgId) throws SQLException{
+        String sql = "SELECT img_url FROM Pictures WHERE img_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, imgId);
+
+            ResultSet img = pstmt.executeQuery();
+
+            if(img.next()){
+                String imgUrl = img.getString("img_url");
+
+                File imgChk = new File(imgUrl);
+
+                if(imgChk.exists()) return imgUrl;
+            }
+        }
+        return null;
+    }
+
+    public static int getImgId(int userId) throws SQLException{
+        String sql = "SELECT pfp_id FROM Users WHERE user_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                int imgId = rs.getInt("pfp_id");
+
+                if(imgId > 0) return imgId;
+            }
+        }
+        return -1;
+    }
+
+    public static BufferedImage getBufferedImg(int imgId) throws SQLException, IOException{
+        String imgUrl = getImgUrl(imgId);
+
+        if(imgUrl != null){
+            return readImgFromDisk(imgUrl);
+        }
+        return null;
+    }
+
+    public static BufferedImage getBufferedImg(String imgPath) throws SQLException, IOException{
+        return readImgFromDisk(imgPath);
+    }
+
     private static boolean writeImgToDisk(BufferedImage image, String path) throws IOException{
         File imgFile = new File(path);
         return ImageIO.write(image, "BMP", imgFile);
@@ -88,8 +136,4 @@ public class PictureDAO {
     private static String getNewUrl(int ownerId){
         return String.format("%d_%d", ownerId, Instant.now().toEpochMilli());
     }
-
-
-
-
 }

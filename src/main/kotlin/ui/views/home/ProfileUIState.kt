@@ -4,7 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.ImageBitmap
 import ui.components.profilecard.Member
-import util.getBitmapFromDrawableID
 
 /**
  * Data class holding the UI state for a profile screen

@@ -1,14 +1,14 @@
 package dao;
 
+import model.ModelManager;
 import model.School;
 import util.DBConnection;
 import util.DBConnection2;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.Arrays;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,127 +17,17 @@ import java.util.List;
  */
 public class SchoolDAO {
 
-    /**
-     * Retrieves a School by its ID.
-     *
-     * @param id the school's unique identifier.
-     * @return the School object if found, or null otherwise.
-     * @throws Exception if a database error occurs.
-     */
-    public School getSchoolById(int id) throws Exception {
-        String sql = "SELECT * FROM SCHOOLS WHERE school_id = ?";
-        try (Connection conn = DBConnection2.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    School school = new School();
-                    school.setSchoolId(rs.getInt("school_id"));
-                    school.setSchoolName(rs.getString("name"));
-                    school.setCity(rs.getString("city"));
-                    school.setState(rs.getString("state"));
-                    school.setCountry(rs.getString("country"));
-                    return school;
-                }
-            }
-        }
-        return null;
+    public static School getSchoolById(int id){
+        return ModelManager.getSchool(id);
     }
 
-    /**
-     * Retrieves all School records from the database.
-     *
-     * @return a List of School objects.
-     * @throws Exception if a database error occurs.
-     */
-    public List<School> getAllSchools() throws Exception {
-        List<School> schools = new ArrayList<>();
-        String sql = "SELECT * FROM SCHOOLS";
-        try (Connection conn = DBConnection2.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+    public static int getSchoolIdByName(String name){return ModelManager.getSchoolIdByName(name);}
 
-            while (rs.next()) {
-                School school = new School();
-                school.setSchoolId(rs.getInt("school_id"));
-                school.setSchoolName(rs.getString("name"));
-                school.setCity(rs.getString("city"));
-                school.setState(rs.getString("state"));
-                school.setCountry(rs.getString("country"));
-                schools.add(school);
-            }
-        }
-        return schools;
+    public School getSchoolByName(String name){
+        return ModelManager.getSchoolByName(name);
     }
 
-    /**
-     * Inserts a new School record into the database.
-     *
-     * @param school the School object to insert.
-     * @return true if the insert was successful; false otherwise.
-     * @throws Exception if a database error occurs.
-     */
-    public boolean insertSchool(School school) throws Exception {
-        String sql = "INSERT INTO SCHOOLS (name, city, state, country) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DBConnection2.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+    public List<String> getAllSchoolsList(){return Arrays.asList(ModelManager.getAllSchoolsList());}
 
-            stmt.setString(1, school.getSchoolName());
-            stmt.setString(2, school.getCity());
-            stmt.setString(3, school.getState());
-            stmt.setString(4, school.getCountry());
-
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows > 0) {
-                // get generated key (school_id) and set in the School object.
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        school.setSchoolId(generatedKeys.getInt(1));
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Updates an existing School record.
-     *
-     * @param school the School object with updated data. The schoolId must be valid.
-     * @return true if the update was successful; false otherwise.
-     * @throws Exception if a database error occurs.
-     */
-    public boolean updateSchool(School school) throws Exception {
-        String sql = "UPDATE SCHOOLS SET name = ?, city = ?, state = ?, country = ? WHERE school_id = ?";
-        try (Connection conn = DBConnection2.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, school.getSchoolName());
-            stmt.setString(2, school.getCity());
-            stmt.setString(3, school.getState());
-            stmt.setString(4, school.getCountry());
-            stmt.setInt(5, school.getSchoolId());
-
-            return stmt.executeUpdate() > 0;
-        }
-    }
-
-    /**
-     * Deletes a School record from the database by its ID.
-     *
-     * @param id the unique identifier of the School to delete.
-     * @return true if the deletion was successful; false otherwise.
-     * @throws Exception if a database error occurs.
-     */
-    public boolean deleteSchool(int id) throws Exception {
-        String sql = "DELETE FROM SCHOOLS WHERE school_id = ?";
-        try (Connection conn = DBConnection2.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
-        }
-    }
+    public List<School> getAllSchoolsObjList(){return ModelManager.getAllSchoolsObjects();}
 }

@@ -6,71 +6,119 @@ import model.School;
 import model.UserType;
 import util.DBConnection2;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.imageio.ImageIO;
+
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.LinkedList;
 
 public class UserDAO {
 
+    // PBKDF2 stuff
+    private static final String  PBKDF2_ALGO    = "PBKDF2WithHmacSHA256";
+    private static final int     SALT_BYTES     = 16;         // 128-bit salt
+    private static final int     ITERATIONS     = 100_000;
+    private static final int     DERIVED_KEY_BITS = 256;
+
     /**
-     * Authenticates a user based on email and hashed password.
-     * Returns a token string ("hkey") if successful, or null if not.
-     * temp token using id and timestamp
+     * Authenticates a user based on email and **raw** password.
+     * Returns a token string if successful, or null if not.
      */
-    public String authUser(String email, String hashedPass) throws SQLException {
-        // TODO: Should we just simplify this to return user_id to frontend after authorize and they keep track of and pass
-        //  it back to us anytime user wants to take any type of user action?? Lets us pretend to ensure no one is changing someone
-        //  else's data (assuming they can manage it throughout each user session) and makes it easy to update any necessary rows?
-        String sql = "SELECT user_id FROM User_Verify WHERE email = ? AND pass_hash = ?";
+    public String authUser(String email, String rawPass) throws SQLException {
+        String sql = "SELECT user_id, pass_hash FROM User_Verify WHERE email = ?";
 
         try (Connection conn = DBConnection2.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);
-            stmt.setString(2, hashedPass);
-
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    int userId = rs.getInt("user_id");
-                    // PLACEHOLDER
-                    return "token_" + userId + "_" + System.currentTimeMillis();
-                } else {
-                    return null;
+                if (!rs.next()) {
+                    return null;  // user nonexistent
                 }
+                int userId = rs.getInt("user_id");
+                String stored = rs.getString("pass_hash");      // format: salt:hash
+
+                // split and decode
+                String[] parts = stored.split(":", 2);
+                byte[] salt = Base64.getDecoder().decode(parts[0]);
+                byte[] hash = Base64.getDecoder().decode(parts[1]);
+
+                // recompute PBKDF2 on rawPass using same salt/params
+                byte[] testHash = pbkdf2(rawPass.toCharArray(), salt);
+
+                if (!MessageDigest.isEqual(hash, testHash)) {
+                    return null;  // password incorrecty
+                }
+
+                // success
+                return "token_" + userId + "_" + System.currentTimeMillis();
             }
         }
     }
 
     /**
-     * Adds a new user to the DB by inserting their email, hashed password, and user type into the User_Verify table
-     *
-     * @param email the email address of the new user being added
-     * @param hashedPass the hashed string resulting from the hash operation performed on the user's defined password
-     * @param userType the type of user being added. The UserType enum is used to define those types
-     * @return true if the user was successfully added to the DB, else false
-     * @throws SQLException if DB error occurred
+     * Adds a new user by hashing the raw password with PBKDF2 and storing salt:hash.
      */
-    public static boolean addUser(String email, String hashedPass, UserType userType) throws SQLException {
+    public static boolean addUser(String email, String rawPass, UserType userType) throws SQLException {
+        // generate salt
+        byte[] salt = new byte[SALT_BYTES];
+        try {
+            SecureRandom.getInstanceStrong().nextBytes(salt);
+        } catch (Exception e) {
+            throw new RuntimeException("SecureRandom not available", e);
+        }
+
+        // derive PBKDF2 hash
+        byte[] hash = pbkdf2(rawPass.toCharArray(), salt);
+
+        // encode salt and hash as Base64
+        String stored = Base64.getEncoder().encodeToString(salt)
+                + ":" +
+                Base64.getEncoder().encodeToString(hash);
 
         String sql = "INSERT INTO User_Verify (email, pass_hash, type) VALUES (?, ?, ?)";
 
-        try(PreparedStatement stmt = DBConnection2.getPstmt(sql, new String[] {"user_id"})){
+        try (PreparedStatement stmt = DBConnection2.getPstmt(sql, new String[]{"user_id"})) {
             stmt.setString(1, email);
-            stmt.setString(2, hashedPass);
+            stmt.setString(2, stored);
             stmt.setString(3, userType.getStr());
 
             int newId = stmt.executeUpdate();
             boolean success = newId > 0;
-            if(success) ModelManager.mapNewUser(email, newId, userType);
+            if (success) {
+                ModelManager.mapNewUser(email, newId, userType);
+            }
             return success;
-        } catch(SQLException e) {
+
+        } catch (SQLException e) {
             System.err.println(e.getErrorCode());
-            System.err.println(Arrays.toString(e.getStackTrace()));
+            e.printStackTrace();
+            return false;
         }
-        return false;
+    }
+
+    // PBKDF2 Helper
+    private static byte[] pbkdf2(char[] pass, byte[] salt) {
+        try {
+            KeySpec spec = new PBEKeySpec(pass, salt, ITERATIONS, DERIVED_KEY_BITS);
+            SecretKeyFactory skf = SecretKeyFactory.getInstance(PBKDF2_ALGO);
+            return skf.generateSecret(spec).getEncoded();
+        } catch (Exception e) {
+            throw new RuntimeException("PBKDF2 error", e);
+        }
     }
 
     /**
@@ -117,64 +165,29 @@ public class UserDAO {
     /**
      * Adds a post containing only text and no image which was created by a user(identified by userId) to the Posts table
      *
-     * @param userId unique user_id for the user who created the post being added
+     * @param userId Unique user_id for the user creating the new post
      * @param postText String consisting of the text portion of the post being added
      * @param tagList LinkedList of integer vals where each val is the interest_id of the tag assigned to the post
-     * @return true if the post was successfully added to the DB
-     * @throws SQLException id DB error occurred
+     * @return Positive non-zero int of the unique post_id assigned to the newly created post or -1 if insertion failed
+     * @throws SQLException if DB error occurred
      */
-    public static boolean addPost(int userId, String postText, LinkedList<Integer> tagList) throws SQLException {
-        String sql = "INSERT INTO Posts (owner_id, content) VALUES (?, ?)";
-
-        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql, new String[] {"post_id"})) {
-            pstmt.setInt(1, userId);
-            pstmt.setString(2, postText);
-            int newPostId = pstmt.executeUpdate();
-            boolean postSuccess = newPostId > 0;
-            if(postSuccess){
-                String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
-                PreparedStatement tagPstmt = DBConnection2.getPstmt(tagSql);
-                for (Integer tag : tagList) {
-                    tagPstmt.setInt(1, newPostId);
-                    tagPstmt.setInt(2, tag);
-                    tagPstmt.executeUpdate();
-                }
-            }
-            return postSuccess;
-        }
+    public static int addPost(int userId, String postText, LinkedList<Integer> tagList) throws SQLException {
+        return PostDAO.pushPost(userId, postText, tagList);
     }
 
 
     /**
      * Adds a post containing both text and an image which was created by a user(identified by userId) to the Posts table
      *
-     * @param userId unique user_id for the user who created the post being added
+     * @param userId Unique user_id for the user creating the new post
      * @param postText String consisting of the text portion of the post being added
      * @param tagList LinkedList of integer vals where each val is the interest_id of the tag assigned to the post
-     * @return true if the post was successfully added to the DB
-     * @throws SQLException id DB error occurred
+     * @param postImg BufferedImage file object being uploaded with the post
+     * @return Positive non-zero int of the unique post_id assigned to the newly created post or -1 if insertion failed
+     * @throws SQLException if DB error occurred
      */
-    public static boolean addPost(int userId, String postText, Picture postImg, LinkedList<Integer> tagList) throws SQLException {
-        String sql = "INSERT INTO Posts (owner_id, content) VALUES (?, ?)";
-
-        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql, new String[] {"post_id"})) {
-            pstmt.setInt(1, userId);
-            pstmt.setString(2, postText);
-            int newPostId = pstmt.executeUpdate();
-            boolean postSuccess = newPostId > 0;
-            if(postSuccess){
-                // TODO: Handle insertion of the image into the DB
-
-                String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
-                PreparedStatement tagPstmt = DBConnection2.getPstmt(tagSql);
-                for (Integer tag : tagList) {
-                    tagPstmt.setInt(1, newPostId);
-                    tagPstmt.setInt(2, tag);
-                    tagPstmt.executeUpdate();
-                }
-            }
-            return postSuccess;
-        }
+    public static int addPost(int userId, String postText, LinkedList<Integer> tagList, BufferedImage postImg) throws SQLException {
+        return PostDAO.pushPostWithImg(userId, postText, tagList, postImg);
     }
 
     /**
@@ -213,9 +226,8 @@ public class UserDAO {
         return PostDAO.getAllUserPosts(userId);
     }
 
-    // TODO: Not currently implemented
     public static LinkedList<Integer> getAllRecentPosts(int userId) throws SQLException{
-        return PostDAO.getAllUserPosts(userId);
+        return PostDAO.getAllRecentUserPosts(userId);
     }
 
     /**
@@ -411,14 +423,19 @@ public class UserDAO {
         return school;
     }
 
-    public static LinkedList<Integer> getAllOwnedImages(int userId){
-        // TODO: Needs to be implemented
-        return null;
-    }
+    public static LinkedList<Integer> getAllOwnedImages(int userId) throws SQLException{
+        String sql = "SELECT img_id FROM Pictures WHERE owner_id = ?";
+        LinkedList<Integer> imgLst = new LinkedList<>();
 
-    public static boolean setProfileImg(int userId, int imgId){
-        // TODO: Needs to be implemented
-        return false;
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, userId);
+            ResultSet imgIds = pstmt.executeQuery();
+            while(imgIds.next()){
+                imgLst.add(imgIds.getInt("img_id"));
+            }
+            if(!imgLst.isEmpty()) return imgLst;
+        }
+        return null;
     }
 
     /**
@@ -428,32 +445,58 @@ public class UserDAO {
      * @return Picture object containing the image data (including location of the image)
      * @throws SQLException if DB error occurred
      */
-    public static Picture getProfileImg(int userId) throws SQLException{
-        String sql = "SELECT pfp_id FROM Users WHERE user_id = ?";
-        Picture pfp = null;
+    public static BufferedImage getProfileImg(int userId) throws SQLException, IOException{
+        String sql = "SELECT DISTINCT Pictures.img_url as img_url FROM Users JOIN Pictures ON Users.pfp_id = Pictures.img_id WHERE Users.user_id = ?";
 
         try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
-
             if(rs.next()){
-                int pfpId = rs.getInt("pfp_id");
-
-                String imgSql = "SELECT * FROM Pictures WHERE img_id = ?";
-                try(PreparedStatement imgPstmt = DBConnection2.getPstmt(imgSql)){
-                    imgPstmt.setInt(1, pfpId);
-
-                    ResultSet imgRs = pstmt.executeQuery();
-                    if(imgRs.next()){
-//                        pfp = new Picture(pfpId, userId);
-                        // TODO: get url and remaining attributes from imgRs and add to pfp
-                    }
-                    imgRs.close();
+                String imgUrl = rs.getString("img_url");
+                File imgFile = new File(imgUrl);
+                if((imgFile.exists())&&(imgFile.canRead())){
+                    return ImageIO.read(imgFile);
                 }
             }
-            rs.close();
         }
-        return pfp;
+        return null;
+    }
+
+    public static boolean setProfileImg(int userId, int imgId) throws SQLException{
+        String sql = "UPDATE Users SET pfp_id = ? WHERE user_id = ?";
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, imgId);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public static int getProfileImgId(int userId) throws SQLException{
+        String sql = "SELECT pfp_id FROM Users WHERE user_id = ?";
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                int imgId = rs.getInt("pfp_id");
+                if(imgId > 0) return imgId;
+            }
+        }
+        return -1;
+    }
+
+    public static Picture getProfileImgObj(int userId) throws SQLException{
+        int pfpId = getProfileImgId(userId);
+        if(pfpId > 0){
+            try{
+                return PictureDAO.getImgObj(pfpId);
+            }
+
+            catch(IOException e){
+                System.err.println(e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        }
+        return null;
     }
 }
 

@@ -115,7 +115,6 @@ fun styledTextField(
             },
             textStyle = TextStyle(fontSize = 12.sp, color = DarkGray),
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(start = startPadding, end = endPadding, top = if (height > 32) 8.dp else 0.dp)
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused

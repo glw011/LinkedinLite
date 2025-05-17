@@ -36,11 +36,6 @@ public class DBConnection2 {
 
     static {
         try {
-            ModelManager.initModelManager();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             if (DEBUG) {
                 System.out.println("MySQL driver loaded");

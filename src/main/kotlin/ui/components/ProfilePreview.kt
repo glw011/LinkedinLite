@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.example.linkedinlite.generated.resources.Res
@@ -29,10 +30,17 @@ import org.jetbrains.compose.resources.painterResource
  * @param modifier Modifier for the profile preview.
  */
 @Composable
-fun profilePreview(pfp: ImageBitmap?, name: String, bio: String, modifier: Modifier = Modifier) {
+fun profilePreview(
+    pfp: ImageBitmap?,
+    name: String,
+    bio: String,
+    major: String?,
+    school: String?,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier.padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         // Profile Picture
         Box(
@@ -51,9 +59,7 @@ fun profilePreview(pfp: ImageBitmap?, name: String, bio: String, modifier: Modif
                         .size(96.dp)
                         .clip(CircleShape)
                 )
-            }
-
-            else {
+            } else {
                 Image(
                     painter = painterResource(Res.drawable.default_pfp),
                     contentDescription = "Default Profile Picture",
@@ -65,17 +71,49 @@ fun profilePreview(pfp: ImageBitmap?, name: String, bio: String, modifier: Modif
             }
         }
 
-        // Spacer
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Name and Bio (in a column)
         Column {
             Text(
                 text = name,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
-            Text(text = bio, color = MaterialTheme.colorScheme.onBackground)
+
+            Text(
+                text = bio,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            if (!major.isNullOrBlank() || !school.isNullOrBlank()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (!major.isNullOrBlank()) {
+                        Text(
+                            text = major,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    if (!major.isNullOrBlank() && !school.isNullOrBlank()) {
+                        Text(
+                            text = " • ",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    if (!school.isNullOrBlank()) {
+                        Text(
+                            text = school,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
         }
     }
 }
