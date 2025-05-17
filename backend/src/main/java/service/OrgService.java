@@ -5,6 +5,7 @@ import model.Org;
 import model.Student;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -138,7 +139,7 @@ public class OrgService {
      * Fetch all pending membership requests for an Org.
      * @throws OrgServiceException on SQL error
      */
-    public Map<Integer, Student> getPendingRequests(int orgId) {
+    public LinkedList<Student> getPendingRequests(int orgId) {
         try {
             return OrgDAO.getAllPendingRequests(orgId);
         } catch (SQLException e) {
