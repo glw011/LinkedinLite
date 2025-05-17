@@ -695,51 +695,49 @@ public class UserDAO {
         return usrList;
     }
 
-    public static LinkedList<User> searchUsersByInterest(String nameStr) throws SQLException{
+    public static LinkedList<User> searchUsersByInterest(String interestName) throws SQLException{
         String sql =
                 "SELECT DISTINCT " +
-                        "fname, " +
-                        "lname, " +
-                        "oname, " +
-                        "User_Verify.user_id AS id, " +
-                        "email, " +
-                        "type, " +
-                        "bio, " +
-                        "pfp_id, " +
-                        "school_id, " +
-                        "major_id " +
-                        "FROM " +
+                    "fname, " +
+                    "lname, " +
+                    "oname, " +
+                    "User_Verify.user_id AS id, " +
+                    "email, " +
+                    "type, " +
+                    "bio, " +
+                    "pfp_id, " +
+                    "Users.school_id AS school_id, " +
+                    "major_id " +
+                "FROM " +
                         "(SELECT " +
-                        "Students.fname AS fname, " +
-                        "Students.lname AS lname, " +
-                        "NULL AS oname, " +
-                        "Students.major_id AS major_id, " +
-                        "Students.student_id AS user_id " +
+                            "Students.fname AS fname, " +
+                            "Students.lname AS lname, " +
+                            "NULL AS oname, " +
+                            "Students.major_id AS major_id, " +
+                            "Students.student_id AS user_id " +
                         "FROM " +
-                        "Students " +
-                        "UNION " +
+                            "Students " +
+                    "UNION " +
                         "SELECT " +
-                        "NULL AS fname, " +
-                        "NULL AS lname, " +
-                        "Orgs.org_name AS oname, " +
-                        "NULL AS major_id, " +
-                        "Orgs.org_id AS user_id " +
+                            "NULL AS fname, " +
+                            "NULL AS lname, " +
+                            "Orgs.org_name AS oname, " +
+                            "NULL AS major_id, " +
+                            "Orgs.org_id AS user_id " +
                         "FROM " +
-                        "Orgs) " +
-                        "AS " +
-                        "NameTable " +
+                            "Orgs) " +
+                    "AS NameTable " +
                         "JOIN User_Verify ON NameTable.user_id = User_Verify.user_id " +
                         "JOIN Users ON User_Verify.user_id = Users.user_id " +
-                        "WHERE " +
-                        "LOWER(oname) LIKE ? OR " +
-                        "LOWER(fname) LIKE ? OR " +
-                        "LOWER(lname) LIKE ? OR " +
-                        "LOWER(CONCAT(fname, ' ', lname)) LIKE ?";
+                        "JOIN User_Interests ON User_Interests.user_id = User_Verify.user_id " +
+                        "JOIN Interests ON User_Interests.interest_id = Interests.interest_id " +
+                "WHERE " +
+                    "LOWER(Interests.interest_name) LIKE ?";
 
         LinkedList<User> usrList = new LinkedList<>();
 
         try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
-            String qName = "%" + nameStr.toLowerCase() + "%";
+            String qName = "%" + interestName.toLowerCase() + "%";
             pstmt.setString(1, qName);
             pstmt.setString(2, qName);
             pstmt.setString(3, qName);
