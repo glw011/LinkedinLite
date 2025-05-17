@@ -4,6 +4,7 @@ import model.ModelManager;
 import model.Picture;
 import model.School;
 import model.UserType;
+import service.UserService;
 import util.DBConnection2;
 
 import java.awt.image.BufferedImage;
@@ -21,6 +22,10 @@ import javax.imageio.ImageIO;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedList;
