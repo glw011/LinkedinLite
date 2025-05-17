@@ -110,6 +110,7 @@ public class StudentDAO extends UserDAO{
                 studentObj.setPostsList(getAllUserPosts(studentObj.getID()));
                 studentObj.setOwnedImgsList(getAllOwnedImages(studentObj.getID()));
 
+                results.close();
                 return studentObj;
             }
         }
@@ -483,7 +484,7 @@ public class StudentDAO extends UserDAO{
                                 "JOIN User_Verify ON Users.user_id = User_Verify.user_id " +
                                 "JOIN Schools ON Schools.school_id = Users.school_id " +
                         "WHERE " +
-                            "LOWER(Schools.name) LIKE ?";
+                            "LOWER(Schools.school_name) LIKE ?";
 
             try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
                 pstmt.setString(1, String.join("%", String.join(schoolName.toLowerCase(), "%")));
