@@ -8,10 +8,9 @@ public class Interest{
     private FoS field;
     private HashMap<Integer, Interest> relatedInterests;
 
-    public Interest(int id, String name, FoS field){
+    public Interest(int id, String name){
         this.interestId = id;
         this.name = name;
-        this.field = field;
 
         this.relatedInterests = new HashMap<>();
     }

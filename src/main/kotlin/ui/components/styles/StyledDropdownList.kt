@@ -7,16 +7,32 @@ package ui.components.styles
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -70,10 +86,11 @@ fun styledDropDownList(
     dropDownIcon = Icons.Filled.KeyboardArrowDown
     if (isExpanded) dropDownIcon = Icons.Filled.KeyboardArrowUp
 
-    if (selectedItems.isEmpty()) {
+    if (multiSelect && selectedItems.isEmpty()) {
         selectedText = noSelectionText
-    }
-    else if (multiSelect && selectedItems.isNotEmpty()) {
+    } else if (!multiSelect && selectedText.isEmpty()) {
+        selectedText = noSelectionText
+    } else if (multiSelect && selectedItems.isNotEmpty()) {
         selectedText = selectedItems.joinToString(", ")
     } else if (!multiSelect && selectedItems.isNotEmpty()) {
         selectedText = selectedItems[0]
@@ -137,7 +154,7 @@ fun styledDropDownList(
                     items.forEachIndexed { _, text ->
                         DropdownMenuItem(
                             onClick = {
-                                onSelect(text)
+                                onSelectionChange(selectedItems)
                                 if (text in selectedItems) {
                                     selectedItems.remove(text)
                                 } else {
@@ -183,6 +200,8 @@ fun styledDropDownList(
                     items.forEachIndexed { index, text ->
                         DropdownMenuItem(
                             onClick = {
+                                onSelect(text)
+                                isExpanded = false
                                 selectedText = items[index]
                             },
                             content = {

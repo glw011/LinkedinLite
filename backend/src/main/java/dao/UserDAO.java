@@ -281,7 +281,7 @@ public class UserDAO {
      * @throws SQLException if DB error occurred
      */
     public static LinkedList<Integer> getAllInterests(int userId) throws SQLException{
-        String sql = "SELECT interest_id FROM User_Interests WHERE entity_id = ?";
+        String sql = "SELECT interest_id FROM User_Interests WHERE user_id = ?";
         LinkedList<Integer> intrstLst;
 
         try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){

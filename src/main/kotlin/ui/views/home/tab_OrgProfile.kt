@@ -96,19 +96,19 @@ fun OrgProfileTab(
                     title = uiState.headerInfo.title,
                     location = uiState.headerInfo.location,
                     school = uiState.headerInfo.school,
-                    banner = uiState.headerInfo.banner.value,
-                    profilePicture = uiState.headerInfo.profilePicture.value,
+                    banner = uiState.headerInfo.banner,
+                    profilePicture = uiState.headerInfo.profilePicture,
                     onEditHeader = { isEditingHeader = true },
                     onEditBanner = {
                         imagePath = openFileChooser()
                         if (imagePath.isNotEmpty()) {
-                            uiState.headerInfo.banner.value = getBitmapFromFilepath(imagePath)
+                            uiState.headerInfo.banner = getBitmapFromFilepath(imagePath)
                         }
                     },
                     onEditProfilePicture = {
                         imagePath = openFileChooser()
                         if (imagePath.isNotEmpty()) {
-                            uiState.headerInfo.profilePicture.value = getBitmapFromFilepath(imagePath)
+                            uiState.headerInfo.profilePicture = getBitmapFromFilepath(imagePath)
                         }
                     },
                     modifier = Modifier

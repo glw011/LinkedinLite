@@ -26,14 +26,14 @@ public class StudentDAO extends UserDAO{
      * @return true if data successfully inserted into both the User_Verify and Students tables, else false
      * @throws SQLException if DB error occurred
      */
-    public static boolean addStdnt(String fname, String email, String hashedPass, String schoolName, String majorName) throws SQLException {
+    public static boolean addStdnt(String fname, String lname, String email, String hashedPass, String schoolName, String majorName) throws SQLException {
         if(addUser(email, hashedPass, UserType.STUDENT)){
             int userId = ModelManager.getUserId(email);
             int schoolId = ModelManager.getSchoolIdByName(schoolName);
             int majorId = ModelManager.getMajorIdByName(majorName);
 
             String usrSql = "UPDATE Users SET school_id = ? WHERE user_id = ?";
-            String stdSql = "UPDATE Students SET major_id = ?, fname = ? WHERE student_id = ?";
+            String stdSql = "UPDATE Students SET major_id = ?, fname = ?, lname = ? WHERE student_id = ?";
 
             try (PreparedStatement usrPstmt = DBConnection2.getPstmt(usrSql);
                  PreparedStatement stdPstmt = DBConnection2.getPstmt(stdSql))
@@ -43,7 +43,8 @@ public class StudentDAO extends UserDAO{
 
                 stdPstmt.setInt(1, majorId);
                 stdPstmt.setString(2, fname);
-                stdPstmt.setInt(3, userId);
+                stdPstmt.setString(3, lname);
+                stdPstmt.setInt(4, userId);
 
                 return (usrPstmt.executeUpdate() > 0)&&(stdPstmt.executeUpdate() > 0);
             }

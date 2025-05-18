@@ -1,7 +1,8 @@
 package ui.views.home
 
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import ui.components.profilecard.Member
 
@@ -36,6 +37,7 @@ data class ProfileHeaderInfo(
     var title: String = "",
     var location: String = "",
     var school: String = "",
-    var banner: MutableState<ImageBitmap> = mutableStateOf(ImageBitmap(0, 0)),
-    var profilePicture: MutableState<ImageBitmap> = mutableStateOf(ImageBitmap(0, 0)),
-)
+) {
+    var banner by mutableStateOf(ImageBitmap(0, 0))
+    var profilePicture by mutableStateOf(ImageBitmap(0, 0))
+}

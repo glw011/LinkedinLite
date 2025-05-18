@@ -48,6 +48,7 @@ public class StudentService {
      */
     public boolean addStudent(
             String fname,
+            String lname,
             String email,
             String hashedPass,
             String schoolName,
@@ -58,7 +59,7 @@ public class StudentService {
                 || hashedPass == null || hashedPass.isBlank()) {
             throw new IllegalArgumentException("Missing required fields");
         }
-        return studentDAO.addStdnt(fname, email, hashedPass, schoolName, majorName);
+        return studentDAO.addStdnt(fname, lname, email, hashedPass, schoolName, majorName);
     }
 
     /**

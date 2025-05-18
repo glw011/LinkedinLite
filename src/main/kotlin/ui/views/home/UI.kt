@@ -47,7 +47,7 @@ fun UI(
 
             // Always Show Sidebar
             Sidebar(
-                userProfilePicture = profileUiState.headerInfo.profilePicture.value,
+                userProfilePicture = profileUiState.headerInfo.profilePicture,
                 selectedTab = selectedTab,
                 onTabSelected = { tabName -> selectedTab = tabName }
             )
