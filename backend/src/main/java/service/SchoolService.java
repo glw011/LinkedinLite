@@ -3,7 +3,7 @@ package service;
 import dao.SchoolDAO;
 import model.School;
 
-import java.util.*;
+import java.util.List;
 
 public class SchoolService {
     private final SchoolDAO schoolDAO = new SchoolDAO();

@@ -1,7 +1,7 @@
 package dao;
 
-import util.DBConnection2;
 import model.Comment;
+import util.DBConnection2;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -14,33 +14,41 @@ import java.time.Instant;
 
 public class PictureDAO {
 
-    public static int addNewImg(BufferedImage image, int ownerId) throws SQLException, IOException{
-        String filename = String.format("%s.bmp", getNewUrl(ownerId));
-        String path = String.format("%s/Disk/%s",System.getProperty("user.dir"), filename);
+    public static int addNewImg(BufferedImage image, int ownerId) throws SQLException, IOException {
+        String filename = String.format("%s.png", getNewUrl(ownerId));
+        String path = String.format("%s/Disk/%s", System.getProperty("user.dir"), filename);
+
+        System.out.println("🖼️ Adding Image at path: " + path);
 
         String sql = "INSERT INTO Pictures (owner_id, img_url) VALUES (?, ?)";
 
-        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql, new String[] {"img_id"})){
+        try (PreparedStatement pstmt = DBConnection2.getPstmt(sql, new String[]{"img_id"})) {
             pstmt.setInt(1, ownerId);
             pstmt.setString(2, path);
 
-            int imgId = pstmt.executeUpdate();
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                ResultSet keys = pstmt.getGeneratedKeys();
+                if (keys.next()) {
+                    int imgId = keys.getInt(1);
+                    System.out.println("Inserted into DB with img_id = " + imgId);
 
-            if(imgId > 0){
-                try{
                     boolean writeSuccess = writeImgToDisk(image, path);
-
-                    if(!writeSuccess){
+                    if (!writeSuccess) {
+                        System.err.println("Failed to write image to disk.");
                         return -1;
                     }
 
+                    System.out.println("Image written successfully to: " + path);
                     return imgId;
+                } else {
+                    System.err.println("No keys generated.");
                 }
-                catch(Exception e){
-                    e.printStackTrace(System.err);
-                }
+            } else {
+                System.err.println("No rows inserted into Pictures.");
             }
         }
+
         return -1;
     }
 
@@ -116,7 +124,7 @@ public class PictureDAO {
 
     private static boolean writeImgToDisk(BufferedImage image, String path) throws IOException{
         File imgFile = new File(path);
-        return ImageIO.write(image, "BMP", imgFile);
+        return ImageIO.write(image, "png", imgFile);
     }
 
     private static BufferedImage readImgFromDisk(String imgPath) throws IOException{

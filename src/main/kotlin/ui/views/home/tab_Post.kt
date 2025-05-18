@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import dao.PostDAO
 import data.current_user
 import imageBitmapToBufferedImage
 import kotlinx.coroutines.delay
@@ -179,8 +178,8 @@ fun changePhoto(onPhotoSelected: (ImageBitmap?) -> Unit) {
  */
 fun uploadPost(newPost: NewPost) {
     println("Uploading post: $newPost")
-    if (newPost.photo != null)
-        PostService().createPost(current_user.getId(), newPost.description, LinkedList())
-    else
-        PostService().createPostWithImage(current_user.getId(), newPost.description, LinkedList(), imageBitmapToBufferedImage(newPost.photo))
+        if (newPost.photo != null)
+            PostService().createPostWithImage(current_user.getId(), newPost.description, LinkedList(), imageBitmapToBufferedImage(newPost.photo))
+        else
+            PostService().createPost(current_user.getId(), newPost.description, LinkedList())
 }

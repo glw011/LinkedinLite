@@ -5,15 +5,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import dao.StudentDAO
-import dao.UserDAO
 import data.AccountType
 import data.User
 import data.current_user
 import model.ModelManager
-import model.UserType
-import service.StudentService
-import service.UserService
 import ui.components.profilecard.getRecommendedUsers
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState

@@ -111,6 +111,16 @@ public class PostDAO {
                         rs.getTimestamp("post_date")
                 );
 
+                int imgId = rs.getInt("img_id");
+                if (!rs.wasNull()) {
+                    try {
+                        post.setPostImage(PictureDAO.getImgObj(imgId));
+                    } catch (IOException e) {
+                        System.err.println("Failed to load image for post " + post.getID() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+
                 post.setTagList(getPostTagsById(post.getID()));
                 post.setCommentsList(getPostCommentsById(post.getID()));
 
