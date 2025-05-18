@@ -18,8 +18,6 @@ public class PictureDAO {
         String filename = String.format("%s.png", getNewUrl(ownerId));
         String path = String.format("%s/Disk/%s", System.getProperty("user.dir"), filename);
 
-        System.out.println("🖼️ Adding Image at path: " + path);
-
         String sql = "INSERT INTO Pictures (owner_id, img_url) VALUES (?, ?)";
 
         try (PreparedStatement pstmt = DBConnection2.getPstmt(sql, new String[]{"img_id"})) {
@@ -31,7 +29,6 @@ public class PictureDAO {
                 ResultSet keys = pstmt.getGeneratedKeys();
                 if (keys.next()) {
                     int imgId = keys.getInt(1);
-                    System.out.println("Inserted into DB with img_id = " + imgId);
 
                     boolean writeSuccess = writeImgToDisk(image, path);
                     if (!writeSuccess) {

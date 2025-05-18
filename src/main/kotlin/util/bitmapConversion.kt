@@ -26,15 +26,6 @@ fun imageBitmapToBufferedImage(imageBitmap: ImageBitmap?): BufferedImage? {
         }
     }
 
-    try {
-        val outFile = File("buffImg.png")
-        ImageIO.write(bufferedImage, "png", outFile)
-        println("BufferedImage saved to ${outFile.absolutePath}")
-    } catch (e: Exception) {
-        println("Failed to save BufferedImage: ${e.message}")
-        e.printStackTrace()
-    }
-
     return bufferedImage
 }
 
@@ -57,21 +48,6 @@ fun bufferedImageToImageBitmap(bufferedImage: BufferedImage): ImageBitmap {
         val info = ImageInfo.makeN32(width, height, ColorAlphaType.PREMUL)
         allocPixels(info)
         installPixels(byteBuffer.array())
-    }
-
-    try {
-        val skiaImage = Image.makeFromBitmap(bitmap)
-        val data = skiaImage.encodeToData(EncodedImageFormat.PNG)
-        if (data != null) {
-            val outFile = File("converted_back.png")
-            FileOutputStream(outFile).use { it.write(data.bytes) }
-            println("Skia Image saved to ${outFile.absolutePath}")
-        } else {
-            println("Skia image encoding returned null")
-        }
-    } catch (e: Exception) {
-        println("Failed to save Skia image: ${e.message}")
-        e.printStackTrace()
     }
 
     return Image.makeFromBitmap(bitmap).toComposeImageBitmap()
