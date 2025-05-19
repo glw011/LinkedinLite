@@ -58,12 +58,10 @@ data class RegistrationInfo(
  */
 @Composable
 fun App() {
+    var currentUser: User? by rememberSaveable{ mutableStateOf(null) }
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
     val registrationInfo by rememberSaveable { mutableStateOf(RegistrationInfo()) }
-    val profileUiState by rememberSaveable { mutableStateOf(ProfileUiState()) }
     var loginUiState by rememberSaveable { mutableStateOf(LoginUiState()) }
-
-    var currentUser: User? by rememberSaveable{ mutableStateOf(null) }
 
     updateScreenDimensions()
 
@@ -127,6 +125,7 @@ fun App() {
         }
         View.Home -> {
             if (currentUser != null) {
+                val profileUiState = ProfileUiState(currentUser!!)
                 profileUiState.headerInfo.name = currentUser!!.getName()
                 profileUiState.headerInfo.location = currentUser!!.getLocation()
                 profileUiState.headerInfo.school = currentUser!!.getSchool()

@@ -14,7 +14,10 @@ abstract class User(
     private var tags: List<String>,
 ) {
     abstract val title: String
+    protected var description: String = ""
+
     protected var profileBanner: ImageBitmap = ImageBitmap(0, 0)
+
 
     abstract fun getModel(): Any
 
@@ -29,7 +32,8 @@ abstract class User(
     }
     abstract fun getProfilePicture(): ImageBitmap
     abstract fun getTags(): List<String>
-
+    abstract fun getRecommendedStudents(): List<Student>
+    abstract fun getRelatedOrganizations(): List<Organization>
     fun getAccountType(): UserType {
         return accountType
     }

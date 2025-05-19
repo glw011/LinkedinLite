@@ -1,29 +1,35 @@
 package ui.components.profilecard
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-import model.Student
+import data.User
+import model.UserType
 import ui.components.image.PfpImage
 
 // TODO: Replace with actual user list
-fun getRecommendedUsers(users: List<Student>): List<Student> {
+fun getRecommendedUsers(users: List<User>, userType: UserType): List<User> {
 //    val possibleUsers = users.toMutableList()
 //
 //    // Remove the current user from the list
 //    possibleUsers.removeIf { it.getId() == current_user.getId() }
 //
 //    // Filter users based on the account type
-//    if (accountType == AccountType.ORGANIZATION) {
+//    if (userType == UserType.ORG) {
 //        // Remove users that are not organizations
-//        possibleUsers.removeIf { it.accountType != AccountType.ORGANIZATION }
-//    } else if (accountType == AccountType.INDIVIDUAL) {
+//        possibleUsers.removeIf { it.accountType == UserType.STUDENT }
+//    } else if (userType == UserType.STUDENT) {
 //        // Remove users that are not individuals
-//        possibleUsers.removeIf { it.accountType != AccountType.INDIVIDUAL }
+//        possibleUsers.removeIf { it.accountType == UserType.ORG }
 //    }
 //
 //    // Remove users that are already followed

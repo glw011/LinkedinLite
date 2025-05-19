@@ -1,5 +1,6 @@
 package data
 
+import ProfileRecommender
 import androidx.compose.ui.graphics.ImageBitmap
 import model.ModelManager
 import model.Org
@@ -49,6 +50,14 @@ class Organization private constructor(
         }
         return tags
     }
+    override fun getRecommendedStudents(): List<Student> {
+        return ProfileRecommender.recommendStudents(this, 4)
+            .map { Student.fromModel(it) }
+    }
+    override fun getRelatedOrganizations(): List<Organization> {
+        return ProfileRecommender.recommendOrganizations(this, 4)
+            .map { fromModel(it) }
+    }
 
     override fun setName(name: String) {
         getModel().name = name
@@ -83,7 +92,7 @@ class Organization private constructor(
     }
 
     companion object {
-        private fun fromModel(organization: Org): Organization {
+        fun fromModel(organization: Org): Organization {
             val tags = mutableListOf<String>()
             for (tagID in organization.interests) {
                 tags.add(ModelManager.getInterest(tagID).name)

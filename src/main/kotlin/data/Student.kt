@@ -1,10 +1,12 @@
 package data
 
+import ProfileRecommender
 import androidx.compose.ui.graphics.ImageBitmap
 import model.ModelManager
 import model.School
 import model.Student
 import model.UserType
+import service.OrgService
 import service.StudentService
 import java.util.LinkedList
 
@@ -28,9 +30,7 @@ class Student private constructor(
 ) {
     override val title = "Student"
 
-    fun getMajor(): String {
-        return major
-    }
+    private var organizations: List<Organization> = listOf()
 
     override fun getModel(): Student {
         return StudentService().getStudentById(id)
@@ -50,6 +50,9 @@ class Student private constructor(
     override fun getSchool(): String {
         return getModel().school.schoolName
     }
+    fun getMajor(): String {
+        return major
+    }
     override fun getProfilePicture(): ImageBitmap {
         return profilePicture
     }
@@ -60,6 +63,23 @@ class Student private constructor(
             tags.add(ModelManager.getInterest(tagID).name)
         }
         return tags
+    }
+    fun getOrganizations(): List<Organization> {
+        val orgIDs = getModel().orgList.toList()
+        val orgs = mutableListOf<Organization>()
+        for (orgID in orgIDs) {
+            orgs.add(Organization.fromModel(OrgService().getOrgById(orgID)))
+        }
+        return orgs.toList()
+    }
+
+    override fun getRecommendedStudents(): List<data.Student> {
+        return ProfileRecommender.recommendStudents(this, 4)
+            .map { fromModel(it) }
+    }
+    override fun getRelatedOrganizations(): List<Organization> {
+        return ProfileRecommender.recommendOrganizations(this, 4)
+            .map { Organization.fromModel(it) }
     }
 
     override fun setName(name: String) {
@@ -105,7 +125,7 @@ class Student private constructor(
     }
 
     companion object {
-        private fun fromModel(student: Student): data.Student {
+        fun fromModel(student: Student): data.Student {
             val tags = mutableListOf<String>()
             for (tagID in student.interests) {
                 tags.add(ModelManager.getInterest(tagID).name)

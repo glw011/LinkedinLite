@@ -4,6 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
+import data.Organization
+import data.Student
+import data.User
 import ui.components.profilecard.Member
 
 /**
@@ -15,12 +18,20 @@ import ui.components.profilecard.Member
  * @property tags A list of tags associated with the profile.
  */
 data class ProfileUiState(
-    var headerInfo: ProfileHeaderInfo = ProfileHeaderInfo(),
-    var interestedPeople: List<String> = listOf(),
-    var relatedOrganizations: List<String> = listOf(),
+    var user: User,
+    var recommendedPeople: List<Student> = listOf(),
+    var relatedOrganizations: List<Organization> = listOf(),
     var members: List<Member> = listOf(),
-    var tags: List<String> = listOf(),
-)
+) {
+    var headerInfo: ProfileHeaderInfo = ProfileHeaderInfo(
+        name = user.getName(),
+        description = "",
+        title = user.title,
+        location = user.getLocation(),
+        school = user.getSchool(),
+    )
+    var tags = user.getTags()
+}
 
 /**
  * @property name The name of the profile owner.
