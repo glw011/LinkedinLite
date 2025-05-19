@@ -152,7 +152,7 @@ class Student private constructor(
             profilePicture: ImageBitmap,
             tags: List<String>,
         ): data.Student {
-            StudentService().addStudent(
+            val id = StudentService().addStudent(
                 name,
                 surname,
                 email,
@@ -161,7 +161,7 @@ class Student private constructor(
                 major
             )
             return Student(
-                ModelManager.getUserId(email),
+                id,
                 name,
                 surname,
                 email,

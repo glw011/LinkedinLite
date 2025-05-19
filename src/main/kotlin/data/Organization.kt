@@ -115,14 +115,14 @@ class Organization private constructor(
             profilePicture: ImageBitmap,
             tags: List<String>,
         ): Organization {
-            OrgService().createOrg(
+            val id = OrgService().createOrg(
                 name,
                 email,
                 password,
                 ModelManager.getSchoolIdByName(school),
             )
             return Organization(
-                ModelManager.getUserId(email),
+                id,
                 name,
                 email,
                 ModelManager.getSchoolByName(school),
