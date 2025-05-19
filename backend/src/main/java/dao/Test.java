@@ -1,7 +1,6 @@
 package dao;
 
 import model.ModelManager;
-import model.Picture;
 
 import java.sql.SQLException;
 
@@ -9,15 +8,14 @@ public class Test {
     public static void main(String[] args) throws SQLException {
         ModelManager.initModelManager();
 
+        if(StudentDAO.addStdnt("Garrett", "glw011@latech.edu", "CSC403", "Louisiana Tech University", "Computer Science")){
+            int stdId = ModelManager.getUserId("glw011@latech.edu");
 
+            int pfpId = PictureDAO.getProfileImgId(stdId);
+            int bannerId = PictureDAO.getBannerImgId(stdId);
 
-        System.out.println(PictureDAO.getImgPath(6));
-        System.out.println(PictureDAO.getImgPath(7));
-
-        Picture pfpObj = PictureDAO.getImgObj(6);
-        Picture bannerObj = PictureDAO.getImgObj(7);
-
-        System.out.println("pfp type: " + pfpObj.getPath());
-        System.out.println("banner type: " + bannerObj.getPath());
+            System.out.println("pfp img_id = "+pfpId);
+            System.out.println("banner img_id = "+bannerId);
+        }
     }
 }

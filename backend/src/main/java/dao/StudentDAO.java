@@ -26,7 +26,7 @@ public class StudentDAO extends UserDAO{
      * @return true if data successfully inserted into both the User_Verify and Students tables, else false
      * @throws SQLException if DB error occurred
      */
-    public static boolean addStdnt(String fname, String email, String pass, String schoolName, String majorName) throws SQLException {
+    public static int addStdnt(String fname, String email, String pass, String schoolName, String majorName) throws SQLException {
         if(addUser(email, pass, UserType.STUDENT)){
             int userId = ModelManager.getUserId(email);
             int schoolId = ModelManager.getSchoolIdByName(schoolName);
@@ -45,11 +45,11 @@ public class StudentDAO extends UserDAO{
                 stdPstmt.setString(2, fname);
                 stdPstmt.setInt(3, userId);
 
-                return (usrPstmt.executeUpdate() > 0)&&(stdPstmt.executeUpdate() > 0);
+                return ((usrPstmt.executeUpdate() > 0)&&(stdPstmt.executeUpdate() > 0)) ? userId:-1;
             }
 
         }
-        return false;
+        return -1;
     }
 
     public boolean updateStudent(Student s) throws SQLException {

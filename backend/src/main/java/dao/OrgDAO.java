@@ -14,7 +14,7 @@ import java.util.LinkedList;
 
 public class OrgDAO extends UserDAO {
 
-    public static boolean addOrg(String name, String email, String pass, String schoolName) throws SQLException {
+    public static int addOrg(String name, String email, String pass, String schoolName) throws SQLException {
         if (addUser(email, pass, UserType.ORG)) {
             int userId = ModelManager.getUserId(email);
             int schoolId = ModelManager.getSchoolIdByName(schoolName);
@@ -31,11 +31,11 @@ public class OrgDAO extends UserDAO {
                 orgPstmt.setString(1, name);
                 orgPstmt.setInt(2, userId);
 
-                return (usrPstmt.executeUpdate() > 0) && (orgPstmt.executeUpdate() > 0);
+                return ((usrPstmt.executeUpdate() > 0) && (orgPstmt.executeUpdate() > 0)) ? userId:-1;
             }
 
         }
-        return false;
+        return -1;
     }
 
     public static Org getOrgById(int orgId) throws SQLException {
