@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedList;
+import java.util.List;
 
 public class UserDAO {
 
@@ -91,8 +92,19 @@ public class UserDAO {
             stmt.setString(2, stored);
             stmt.setString(3, userType.getStr());
 
-            int newId = stmt.executeUpdate();
-            boolean success = newId > 0;
+            // Get the next user_id
+            List<Integer> userIdList = new java.util.ArrayList<>(StudentDAO.getAllStudents().keySet().stream().toList());
+            userIdList.addAll(OrgDAO.getAllOrgs().keySet().stream().toList());
+            userIdList.sort(Integer::compareTo);
+            int newId = 1;
+            for (; newId <= userIdList.size(); newId++) {
+                if (userIdList.get(newId-1) != newId) {
+                    // found a gap
+                    break;
+                }
+            }
+
+            boolean success = stmt.executeUpdate() > 0;
             if (success) {
                 ModelManager.mapNewUser(email, newId, userType);
             }

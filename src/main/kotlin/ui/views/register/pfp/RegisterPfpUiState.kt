@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.ImageBitmap
  * @property errorMessage An optional error message to display.
  */
 data class RegisterPfpUIState(
-    val errorMessage: String? = null,
+    var prompt: String = ""
 ) {
     var profilePicture by mutableStateOf(ImageBitmap(0, 0))
 }

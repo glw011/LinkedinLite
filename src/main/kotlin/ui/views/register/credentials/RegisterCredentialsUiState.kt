@@ -16,7 +16,7 @@ val debug = false
  * @property confirmPassword The password confirmation entered by the user.
  * @property errorMessage An optional error message to display.
  */
-class RegisterCredentialsUiState(
+data class RegisterCredentialsUiState(
     var email: String = "",
     var password: String = "",
     var confirmPassword: String = "",

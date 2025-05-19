@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import data.AccountType
+import model.UserType
 import ui.views.register.credentials.RegisterCredentialsEvent
 import ui.views.register.credentials.RegisterCredentialsResult
 import ui.views.register.credentials.RegisterCredentialsUiState
@@ -43,7 +43,7 @@ fun Register(
     var registerInfoUiState by rememberSaveable {
         mutableStateOf(RegisterInfoUiState())
     }
-    var registerPfpUiState by rememberSaveable {
+    val registerPfpUiState by rememberSaveable {
         mutableStateOf(RegisterPfpUIState())
     }
 
@@ -51,11 +51,11 @@ fun Register(
         View.Select -> registerSelectScreen(
             onPerson = {
                 currentView = View.Credentials
-                registrationInfo.accountType = AccountType.STUDENT
+                registrationInfo.accountType = UserType.STUDENT
                        },
             onOrg = {
                 currentView = View.Credentials
-                registrationInfo.accountType = AccountType.ORGANIZATION
+                registrationInfo.accountType = UserType.ORG
                        },
             onBack = { onBack() }
         )
@@ -91,7 +91,7 @@ fun Register(
                 if (event is RegisterInfoEvent.OnContinue) {
                     when (result) {
                         is RegisterInfoResult.Success -> {
-                            if (registrationInfo.accountType == AccountType.STUDENT) {
+                            if (registrationInfo.accountType == UserType.STUDENT) {
                                 currentView = View.Info2
                             } else {
                                 currentView = View.Pfp
@@ -123,13 +123,20 @@ fun Register(
                 currentView = View.Pfp
             }
         )
-        View.Pfp -> registerPfpScreen(
-            uiState = registerPfpUiState,
-            onContinue = {
-                registrationInfo.profilePicture = registerPfpUiState.profilePicture
-                onRegister()
-            },
-            onBack = { currentView = View.Info }
-        )
+        View.Pfp -> {
+            if (registrationInfo.accountType == UserType.STUDENT) {
+                registerPfpUiState.prompt = "Please select a profile picture"
+            } else {
+                registerPfpUiState.prompt = "Please select a logo"
+            }
+            registerPfpScreen(
+                uiState = registerPfpUiState,
+                onContinue = {
+                    registrationInfo.profilePicture = registerPfpUiState.profilePicture
+                    onRegister()
+                },
+                onBack = { currentView = View.Info }
+            )
+        }
     }
 }

@@ -2,21 +2,18 @@ package data
 
 import androidx.compose.ui.graphics.ImageBitmap
 import model.School
-
-enum class AccountType {
-    STUDENT,
-    ORGANIZATION
-}
+import model.UserType
 
 abstract class User(
     private val id: Int,
     private var name: String,
     private var email: String,
     private var school: School,
-    private val accountType: AccountType,
+    private val accountType: UserType,
     private var profilePicture: ImageBitmap,
     private var tags: List<String>,
 ) {
+    abstract val title: String
     protected var profileBanner: ImageBitmap = ImageBitmap(0, 0)
 
     abstract fun getModel(): Any
@@ -33,7 +30,7 @@ abstract class User(
     abstract fun getProfilePicture(): ImageBitmap
     abstract fun getTags(): List<String>
 
-    fun getAccountType(): AccountType {
+    fun getAccountType(): UserType {
         return accountType
     }
 

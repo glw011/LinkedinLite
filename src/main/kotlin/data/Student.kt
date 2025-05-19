@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import model.ModelManager
 import model.School
 import model.Student
+import model.UserType
 import service.StudentService
 import java.util.LinkedList
 
@@ -21,10 +22,12 @@ class Student private constructor(
     "$name $surname",
     email,
     school,
-    AccountType.STUDENT,
+    UserType.STUDENT,
     profilePicture,
     tags
 ) {
+    override val title = "Student"
+
     fun getMajor(): String {
         return major
     }
@@ -51,7 +54,7 @@ class Student private constructor(
         return profilePicture
     }
     override fun getTags(): List<String> {
-        val tagIDs = getModel().interestList.toList()
+        val tagIDs = getModel().interests.toList()
         val tags = mutableListOf<String>()
         for (tagID in tagIDs) {
             tags.add(ModelManager.getInterest(tagID).name)
@@ -88,20 +91,37 @@ class Student private constructor(
         for (tag in tags) {
             tagIDs.add(ModelManager.getInterestByName(tag).id)
         }
-        getModel().interestList = (tagIDs as LinkedList<Int>?)
+        getModel().interests = (tagIDs as LinkedList<Int>?)
     }
     override fun addTag(tag: String) {
-        val tagIDs = getModel().interestList
+        val tagIDs = getModel().interests
         tagIDs.add(ModelManager.getInterestByName(tag).id)
-        getModel().interestList = tagIDs
+        getModel().interests = tagIDs
     }
     override fun removeTag(tag: String) {
-        val tagIDs = getModel().interestList
+        val tagIDs = getModel().interests
         tagIDs.remove(ModelManager.getInterestByName(tag).id)
-        getModel().interestList = tagIDs
+        getModel().interests = tagIDs
     }
 
     companion object {
+        private fun fromModel(student: Student): data.Student {
+            val tags = mutableListOf<String>()
+            for (tagID in student.interests) {
+                tags.add(ModelManager.getInterest(tagID).name)
+            }
+            return Student(
+                student.id,
+                student.fname,
+                student.lname,
+                student.email,
+                student.school,
+                ModelManager.getMajor(student.major).name,
+                ImageBitmap(0, 0),
+                tags
+            )
+        }
+
         fun register(
             name: String,
             surname: String,
@@ -120,7 +140,7 @@ class Student private constructor(
                 school,
                 major
             )
-            return data.Student(
+            return Student(
                 ModelManager.getUserId(email),
                 name,
                 surname,
@@ -130,6 +150,15 @@ class Student private constructor(
                 profilePicture,
                 tags
             )
+        }
+
+        fun login(email: String): data.Student {
+            val student = StudentService().getStudentById(ModelManager.getUserId(email))
+            return if (student != null) {
+                fromModel(student)
+            } else {
+                throw Exception("Invalid user")
+            }
         }
     }
 }

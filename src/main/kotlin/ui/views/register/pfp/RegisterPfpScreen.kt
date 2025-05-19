@@ -61,7 +61,7 @@ fun registerPfpScreen(
                 )
 
                 Text(
-                    text = "Please upload a profile picture for your organization",
+                    text = uiState.prompt,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(16.dp))
 

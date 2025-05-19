@@ -7,16 +7,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import data.AccountType
 import data.Organization
 import data.Student
 import data.User
 import model.ModelManager
-import ui.components.profilecard.getRecommendedUsers
+import model.UserType
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
-import ui.views.loginScreen
+import ui.views.login.LoginEvent
+import ui.views.login.LoginResult
+import ui.views.login.LoginUiState
+import ui.views.login.loginScreen
+import ui.views.login.onLoginEvent
 import ui.views.register.Register
 import util.updateScreenDimensions
 import java.awt.Dimension
@@ -47,7 +50,7 @@ data class RegistrationInfo(
     var tags: List<String> = emptyList(),
     var profilePicture: ImageBitmap = ImageBitmap(0, 0),
     var major: String = "",
-    var accountType: AccountType = AccountType.STUDENT,
+    var accountType: UserType = UserType.STUDENT,
 )
 
 /**
@@ -58,64 +61,82 @@ fun App() {
     var currentView by rememberSaveable { mutableStateOf(View.Login) }
     val registrationInfo by rememberSaveable { mutableStateOf(RegistrationInfo()) }
     val profileUiState by rememberSaveable { mutableStateOf(ProfileUiState()) }
+    var loginUiState by rememberSaveable { mutableStateOf(LoginUiState()) }
 
     var currentUser: User? by rememberSaveable{ mutableStateOf(null) }
 
     updateScreenDimensions()
 
-    if (currentView == View.Login) {
-        // Show login screen
-        val onLogin: () -> Unit = {
-            currentView = View.Home
-        }
-        val onRegister: () -> Unit = {
-            // Handle registration logic here
-            // For now, just switch to the registration view
-            currentView = View.Register
-        }
-        loginScreen(
-            onLogin = onLogin,
-            onRegister = onRegister
-        )
-    } else if (currentView == View.Register) {
-        Register(
-            registrationInfo = registrationInfo,
-            onBack = { currentView = View.Login },
-            onRegister = {
-                currentView = View.Home
-                if (registrationInfo.accountType == AccountType.STUDENT) {
-                    currentUser = Student.register(
-                        registrationInfo.name,
-                        registrationInfo.surname,
-                        registrationInfo.email,
-                        registrationInfo.password,
-                        registrationInfo.schoolName,
-                        registrationInfo.major,
-                        registrationInfo.profilePicture,
-                        registrationInfo.tags,
-                    )
-                } else {
-                    currentUser = Organization.register(
-                        registrationInfo.name,
-                        registrationInfo.email,
-                        registrationInfo.password,
-                        registrationInfo.schoolName,
-                        registrationInfo.profilePicture,
-                        registrationInfo.tags,
-                    )
+    when (currentView) {
+        View.Login -> {
+            loginScreen(
+                uiState = loginUiState,
+                onEvent = { event ->
+                    val result = onLoginEvent(event, loginUiState)
+                    if (event is LoginEvent.OnLogin) {
+                        when (result) {
+                            is LoginResult.Success -> {
+                                currentView = View.Home
+                                val userId = ModelManager.getUserId(loginUiState.email)
+                                val userType = ModelManager.getUserType(userId)
+                                currentUser = when (userType) {
+                                    UserType.STUDENT -> Student.login(loginUiState.email)
+                                    UserType.ORG -> Organization.login(loginUiState.email)
+                                    else -> null
+                                }
+                            }
+                            is LoginResult.Error -> { loginUiState.errorMessage = result.message }
+                            null -> {}
+                        }
+                    } else if (event is LoginEvent.OnRegister) {
+                        currentView = View.Register
+                        loginUiState = LoginUiState()
+                    }
                 }
+            )
+        }
+        View.Register -> {
+            Register(
+                registrationInfo = registrationInfo,
+                onBack = { currentView = View.Login },
+                onRegister = {
+                    currentView = View.Home
+                    if (registrationInfo.accountType == UserType.STUDENT) {
+                        currentUser = Student.register(
+                            registrationInfo.name,
+                            registrationInfo.surname,
+                            registrationInfo.email,
+                            registrationInfo.password,
+                            registrationInfo.schoolName,
+                            registrationInfo.major,
+                            registrationInfo.profilePicture,
+                            registrationInfo.tags,
+                        )
+                    } else {
+                        currentUser = Organization.register(
+                            registrationInfo.name,
+                            registrationInfo.email,
+                            registrationInfo.password,
+                            registrationInfo.schoolName,
+                            registrationInfo.profilePicture,
+                            registrationInfo.tags,
+                        )
+                    }
+                }
+            )
+        }
+        View.Home -> {
+            if (currentUser != null) {
+                profileUiState.headerInfo.name = currentUser!!.getName()
+                profileUiState.headerInfo.location = currentUser!!.getLocation()
+                profileUiState.headerInfo.school = currentUser!!.getSchool()
+                profileUiState.headerInfo.profilePicture = currentUser!!.getProfilePicture()
+                profileUiState.headerInfo.title = currentUser!!.title
+                profileUiState.tags = currentUser!!.getTags()
+                UI(profileUiState, currentUser!!)
+            } else {
+                throw IllegalStateException("Failed to register user")
             }
-        )
-    } else if (currentView == View.Home) {
-        // Show home screen
-        if (currentUser != null) {
-            profileUiState.headerInfo.name = currentUser!!.getName()
-            profileUiState.headerInfo.location = currentUser!!.getLocation()
-            profileUiState.headerInfo.school = currentUser!!.getSchool()
-            profileUiState.headerInfo.profilePicture = currentUser!!.getProfilePicture()
-            UI(profileUiState, currentUser!!)
-        } else {
-            throw IllegalStateException("Failed to register user")
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import model.ModelManager
 import model.Org
 import model.School
+import model.UserType
 import service.OrgService
 import java.util.LinkedList
 
@@ -19,10 +20,12 @@ class Organization private constructor(
     name,
     email,
     school,
-    AccountType.ORGANIZATION,
+    UserType.ORG,
     profilePicture,
     tags,
 ) {
+    override val title = "Organization"
+
     override fun getModel(): Org {
         return OrgService().getOrgById(id)
     }
@@ -69,17 +72,32 @@ class Organization private constructor(
         getModel().interests = (tagIDs as LinkedList<Int>?)
     }
     override fun addTag(tag: String) {
-        val tagIDs = getModel().interestsList
+        val tagIDs = getModel().interests
         tagIDs.add(ModelManager.getInterestByName(tag).id)
         getModel().interests = tagIDs
     }
     override fun removeTag(tag: String) {
-        val tagIDs = getModel().interestsList
+        val tagIDs = getModel().interests
         tagIDs.remove(ModelManager.getInterestByName(tag).id)
         getModel().interests = tagIDs
     }
 
     companion object {
+        private fun fromModel(organization: Org): Organization {
+            val tags = mutableListOf<String>()
+            for (tagID in organization.interests) {
+                tags.add(ModelManager.getInterest(tagID).name)
+            }
+            return Organization(
+                organization.id,
+                organization.name,
+                organization.email,
+                organization.school,
+                ImageBitmap(0, 0),
+                tags
+            )
+        }
+
         fun register(
             name: String,
             email: String,
@@ -102,6 +120,15 @@ class Organization private constructor(
                 profilePicture,
                 tags
             )
+        }
+
+        fun login(email: String): Organization {
+            val organization = OrgService().getOrgById(ModelManager.getUserId(email))
+            return if (organization != null) {
+                fromModel(organization)
+            } else {
+                throw Exception("Invalid user")
+            }
         }
     }
 }

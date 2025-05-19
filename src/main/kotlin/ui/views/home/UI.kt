@@ -19,8 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.AccountType
 import data.User
+import model.UserType
 import ui.components.Sidebar
 import ui.components.searchActive
 import ui.theme.DARK_MODE
@@ -73,7 +73,7 @@ fun UI(
                 when (selectedTab) {
                     "People / Orgs" -> peopleOrgsTabContent()
                     "My Profile" ->
-                        if (currentUser.getAccountType() == AccountType.ORGANIZATION) {
+                        if (currentUser.getAccountType() == UserType.ORG) {
                             OrgProfileTab(profileUiState)
                         } else {
                             IndividualProfileTab(profileUiState)

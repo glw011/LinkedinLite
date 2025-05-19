@@ -1,6 +1,11 @@
-package ui.views
+package ui.views.login
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +28,10 @@ import ui.theme.LIGHT_PURPLE
  * @param onRegister Callback function for when the user clicks the register button.
  */
 @Composable
-fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
+fun loginScreen(
+    uiState: LoginUiState,
+    onEvent: (LoginEvent) -> Unit
+) {
     // Login screen UI
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Main content of the register screen
@@ -46,6 +54,8 @@ fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
             AccountDetailField(
                 label = "Email",
                 prompt = "Enter your email",
+                value = uiState.email,
+                onTextChanged = { onEvent(LoginEvent.EmailChanged(it)) },
                 keyboardType = KeyboardType.Email,
                 modifier = Modifier.padding(0.dp)
             )
@@ -55,6 +65,8 @@ fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
             AccountDetailField(
                 label = "Password",
                 prompt = "Enter your password",
+                value = uiState.password,
+                onTextChanged = { onEvent(LoginEvent.PasswordChanged(it)) },
                 keyboardType = KeyboardType.Password,
                 password = true,
                 modifier = Modifier.padding(0.dp)
@@ -72,7 +84,7 @@ fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
                     text = "Login",
                     width = 80,
                     xAlignment = Alignment.CenterHorizontally,
-                    onClick = { onLogin() },
+                    onClick = { onEvent(LoginEvent.OnLogin) },
                     buttonColor = LIGHT_PURPLE,
                     textColor = Color.White,
                 )
@@ -83,7 +95,7 @@ fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
                     text = "Register",
                     width = 80,
                     xAlignment = Alignment.CenterHorizontally,
-                    onClick = { onRegister() },
+                    onClick = { onEvent(LoginEvent.OnRegister) },
                     buttonColor = LIGHT_PURPLE,
                     textColor = Color.White,
                 )
@@ -91,7 +103,15 @@ fun loginScreen(onLogin: () -> Unit, onRegister: () -> Unit) {
                 Spacer(modifier = Modifier.weight(1f))
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.05f))
+
+            androidx.compose.material3.Text(
+                text = uiState.errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = ui.theme.Typography.bodySmall
+            )
+
+            Spacer(modifier = Modifier.weight(0.3f))
         }
     }
 }

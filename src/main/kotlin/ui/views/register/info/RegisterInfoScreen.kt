@@ -17,8 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import data.AccountType
 import model.ModelManager
+import model.UserType
 import ui.components.AccountDetailField
 import ui.components.styles.styledButton
 import ui.components.styles.styledDropDownList
@@ -35,7 +35,7 @@ import ui.theme.LIGHT_PURPLE
 fun registerInfoScreen(
     uiState: RegisterInfoUiState,
     onEvent: (RegisterInfoEvent) -> Unit,
-    accountType: AccountType,
+    accountType: UserType,
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Main content of the register screen
@@ -66,7 +66,7 @@ fun registerInfoScreen(
 
             Spacer(modifier = Modifier.padding(top = 24.dp))
 
-            if (accountType == AccountType.STUDENT) {
+            if (accountType == UserType.STUDENT) {
                 AccountDetailField(
                     label = "Last Name",
                     prompt = "Enter name",
@@ -87,7 +87,7 @@ fun registerInfoScreen(
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
             styledDropDownList(
-                items = ModelManager.getAllSchoolList().toList(),
+                items = ModelManager.getAllSchoolsList().toList(),
                 modifier = Modifier,
                 width = 256,
                 multiSelect = false,
@@ -98,7 +98,7 @@ fun registerInfoScreen(
 
             Spacer(modifier = Modifier.padding(top = 24.dp))
 
-            if (accountType == AccountType.STUDENT) {
+            if (accountType == UserType.STUDENT) {
             } else {
                 androidx.compose.material.Text(
                     text = "Tags",
