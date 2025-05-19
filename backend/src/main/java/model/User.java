@@ -41,30 +41,26 @@ public class User {
     public String getEmail(){return this.email;}
 
     public void setProfilePicId(int imgId){
-        if(this.ownedImgs.contains(imgId)){
-            this.profilePicId = imgId;
-            try{
-                this.profileImg = PictureDAO.getImgObj(imgId);
-            }
-            catch(SQLException e){
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
+        this.profilePicId = imgId;
+        try{
+            this.profileImg = PictureDAO.getImgObj(imgId);
+        }
+        catch(SQLException e){
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
         }
     }
     public int getProfilePicId(){return this.profilePicId;}
     public Picture getProfileImg(){return this.profileImg;}
 
     public void setBannerImgId(int imgId){
-        if((this.ownedImgs.contains(imgId))||(imgId == 0)){
-            this.profilePicId = imgId;
-            try{
-                this.profileImg = PictureDAO.getImgObj(imgId);
-            }
-            catch(SQLException e){
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
+        this.bannerImgId = imgId;
+        try{
+            this.bannerImg = PictureDAO.getImgObj(imgId);
+        }
+        catch(SQLException e){
+            System.err.println(e.getMessage());
+            e.printStackTrace(System.err);
         }
     }
     public int getBannerImgId(){return this.bannerImgId;}
