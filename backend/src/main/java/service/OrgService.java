@@ -31,7 +31,7 @@ public class OrgService {
      * @throws IllegalArgumentException if any arg is null/blank or schoolId ≤ 0
      * @throws OrgServiceException on any DAO/SQL error or failure
      */
-    public boolean createOrg(String name, String email, String hashedPass, int schoolId) {
+    public int createOrg(String name, String email, String hashedPass, int schoolId) {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("name must not be empty");
         if (email == null || email.isBlank())
@@ -42,11 +42,14 @@ public class OrgService {
             throw new IllegalArgumentException("invalid schoolId");
 
         try {
-            boolean created = OrgDAO.addOrg(name, email, hashedPass, String.valueOf(schoolId));
-            if (!created) {
+            int orgId = OrgDAO.addOrg(name, email, hashedPass, String.valueOf(schoolId));
+            if (orgId > 0) {
+                return orgId;
+            }
+            else{
                 throw new OrgServiceException("DAO failed to create org");
             }
-            return true;
+
         } catch (SQLException e) {
             throw new OrgServiceException("Error creating org", e);
         }

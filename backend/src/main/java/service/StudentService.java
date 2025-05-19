@@ -46,7 +46,7 @@ public class StudentService {
     /**
      * Creates a new student.
      */
-    public boolean addStudent(
+    public int addStudent(
             String fname,
             String email,
             String hashedPass,
@@ -58,7 +58,20 @@ public class StudentService {
                 || hashedPass == null || hashedPass.isBlank()) {
             throw new IllegalArgumentException("Missing required fields");
         }
-        return StudentDAO.addStdnt(fname, email, hashedPass, schoolName, majorName);
+
+        int stdId = StudentDAO.addStdnt(fname, email, hashedPass, schoolName, majorName);
+        try{
+            if(stdId > 0){
+                return stdId;
+            }
+            else{
+                throw new SQLException("Student registration failed for name = "+fname);
+            }
+
+        }
+        catch(SQLException e){
+            throw new SQLException("Student registration failed for name = "+fname);
+        }
     }
 
     /**
