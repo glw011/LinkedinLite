@@ -1,12 +1,17 @@
 package data
 
+import dao.PostDAO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import model.ModelManager
 import model.Org
 import model.Student
+import service.StudentService
 import service.UserService
+import ui.components.Post
 import ui.views.home.ProfileData
+import util.getBitmapFromFilepath
+import java.util.*
 
 /**
  * Asynchronously searches the database for users (students or organizations) whose names
@@ -37,9 +42,9 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
                 val fname = user.fname?.lowercase() ?: ""
                 val lname = user.lname?.lowercase() ?: ""
                 val fullname = (fname + " " + lname)
-                val interests = user.interestList.mapNotNull { id ->
-                    ModelManager.getInterest(id)?.name
-                }
+//                val interests = user.interestList.mapNotNull { id ->
+//                    ModelManager.getInterest(id)?.name
+//                }
                 val major = ModelManager.getMajor(user.major)?.name ?: ""
                 val school = ModelManager.getSchool(user.school.schoolId)?.name ?: ""
 
@@ -54,7 +59,7 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
                     pfp = null,
                     name = "${user.fname} ${user.lname}",
                     bio = user.bio ?: "",
-                    tags = interests,
+//                    tags = interests,
                     major = major,
                     school = school
                 )
@@ -74,5 +79,51 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
 
             else -> null
         }
+    }
+}
+
+// Tracks the offset into the full post list across paging calls.
+private var currentOffset = 0
+
+// The maximum number of posts to return per page.
+private const val PAGE_SIZE = 25
+
+/**
+ * Asynchronously generates a page of post UI models for the home feed.
+ *
+ * This function retrieves all posts from the database, sorts them by newest first,
+ * and returns a single page of up to [PAGE_SIZE] posts. Paging is controlled by the
+ * [currentOffset] value, which is incremented on each `loadMore` call.
+ *
+ * If [loadMore] is `false`, the offset is reset to 0 and the first page is returned.
+ * If [loadMore] is `true`, the next page is returned starting from the current offset.
+ *
+ * This function is designed to run on the [Dispatchers.IO] context to avoid blocking
+ * the main UI thread, and can be used from within a coroutine scope or Compose effect.
+ *
+ * @param loadMore Whether this call should fetch the next page (true) or reset and fetch the first page (false).
+ * @return A list of [Post] composables representing a slice of the full post feed.
+ */
+suspend fun genPostList(loadMore: Boolean = false): List<Post> = withContext(Dispatchers.IO) {
+    if (!loadMore) currentOffset = 0 // reset if not loading more
+
+    val posts = PostDAO.getAllPosts()
+        .sortedByDescending { it.postDate }
+        .drop(currentOffset)
+        .take(PAGE_SIZE)
+
+    currentOffset += posts.size
+
+    posts.map { post ->
+        val imageBitmap = post.postImage?.path?.let { getBitmapFromFilepath(it) }
+        val student = StudentService().getStudentById(post.ownerId)
+        val userName = listOfNotNull(student.fname, student.lname).joinToString(" ")
+
+        Post(
+            postImage = imageBitmap,
+            userName = userName,
+            description = post.content ?: "",
+            comments = LinkedList()
+        )
     }
 }

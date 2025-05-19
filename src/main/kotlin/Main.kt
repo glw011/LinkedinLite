@@ -12,6 +12,7 @@ import data.Organization
 import data.Student
 import data.User
 import model.ModelManager
+import ui.components.profilecard.getRecommendedUsers
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI

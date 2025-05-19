@@ -3,14 +3,13 @@ package service;
 import dao.SchoolDAO;
 import model.School;
 
-import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
 
 public class SchoolService {
     private final SchoolDAO schoolDAO = new SchoolDAO();
 
     /**
-     * Retrieves a School by its ID after validating the input.
+     * Retrieves a School by its ID after validating the input
      * @param id the unique identifier of the school
      * @return the School object if found
      * @throws IllegalArgumentException if id <= 0
@@ -22,19 +21,19 @@ public class SchoolService {
             throw new IllegalArgumentException("Invalid school ID: " + id);
         }
        try {
-            School school = schoolDAO.getSchoolById(id);
+            School school = SchoolDAO.getSchoolById(id);
             if (school == null) {
                 throw new NotFoundException("School with ID " + id + " not found.");
             }
             return school;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new SchoolServiceException("Error fetching school with ID " + id, e);
         }
     }
     
 
     /**
-     * Retrieves all schools from the database.
+     * Retrieves all schools from the database
      * @return a List of School objects.
      * @throws NotFoundException if no schools exist
      * @throws SchoolServiceException on database errors
@@ -42,12 +41,12 @@ public class SchoolService {
     public List<String> getAllSchools() {
         
         try {
-            String[] schools = schoolDAO.getAllSchoolList();
-            if (schools == null || schools.length == 0) {
+            List<String> schools = schoolDAO.getAllSchoolsList();
+            if (schools == null || schools.size() == 0) {
                 throw new NotFoundException("No schools available.");
             }        
-            return Arrays.asList(schools);
-        } catch (SQLException e) {
+            return schools;
+        } catch (Exception e) {
             throw new SchoolServiceException("Error fetching all schools", e);
         }
      

@@ -1,7 +1,6 @@
 package debug
 
 import androidx.compose.runtime.mutableStateListOf
-import ui.components.Post
 import ui.views.home.ProfileData
 import util.getBitmapFromFilepath
 import java.nio.file.Paths
@@ -42,35 +41,3 @@ fun getDummyProfileList(): List<ProfileData> {
 
     return dummyProfileList
 }
-
-/**
- * Generates a list of dummy post data for demonstration purposes.
- *
- * This list includes a mix of posts with and without images.
- * Each post has a title, an optional image, a user, a description, and a list of comments.
- * The generated list is shuffled to provide a randomized order of posts.
- *
- * @return A shuffled list of [Post] objects.
- */
-val dummyPostList = mutableStateListOf<Post>().apply {
-    // Generate 5 posts without images
-//    PostService().allPosts.forEach() { post ->
-//        add(Post(
-//            "",
-//            null,
-//            StudentService().getStudentById(post.ownerId).fname,
-//            description = post.postText,
-//            comments = List<Comment>(
-//                size = TODO(),
-//                init = TODO()
-//            ).apply {  },
-//        ))
-//    }
-
-    add(Post(
-        postImage = null,
-        userName = "Harison Day",
-        description = "Test post, fill out the description section... Tons of arbitrary text to make a post",
-        comments = listOf(),
-    ))
-}.shuffled() // Shuffle the list to randomize the order

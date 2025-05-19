@@ -1,7 +1,6 @@
 package dao;
 
 import model.Comment;
-import model.Picture;
 import model.Post;
 import util.DBConnection2;
 
@@ -21,7 +20,7 @@ public class PostDAO {
      * @param userId unique id of the user making the post
      * @param content the content of the post
      * @param tags LinkedList of the tags associated with the post
-     * @return true if the post was successfully inserted; false otherwise.
+     * @return assigned unique post_id identifier (id > 0) if the post was successfully inserted; -1 otherwise.
      * @throws SQLException if a database error occurs.
      */
     public static int pushPost(int userId, String content, LinkedList<Integer> tags) throws SQLException {
@@ -61,7 +60,7 @@ public class PostDAO {
      *             the post being created has been tagged with
      * @param img BufferedImage file object associated with the new post being created
      * @return Unique post_id assigned to the newly created post
-     * @throws SQLException
+     * @throws SQLException if db error occurred
      */
     public static int pushPostWithImg(int userId, String content, LinkedList<Integer> tags, BufferedImage img) throws SQLException{
 
@@ -111,6 +110,16 @@ public class PostDAO {
                         rs.getString("content"),
                         rs.getTimestamp("post_date")
                 );
+
+                int imgId = rs.getInt("img_id");
+                if (!rs.wasNull()) {
+                    try {
+                        post.setPostImage(PictureDAO.getImgObj(imgId));
+                    } catch (IOException e) {
+                        System.err.println("Failed to load image for post " + post.getID() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
 
                 post.setTagList(getPostTagsById(post.getID()));
                 post.setCommentsList(getPostCommentsById(post.getID()));
@@ -459,6 +468,7 @@ public class PostDAO {
                 );
                 comtLst.add(comt);
             }
+            if(!comtLst.isEmpty()) return comtLst;
         }
         return null;
     }

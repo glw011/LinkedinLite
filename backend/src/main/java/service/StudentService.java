@@ -17,7 +17,7 @@ public class StudentService {
      * Returns all students, sorted by last name.
      */
     public static List<Student> getAllStudents() throws SQLException {
-        HashMap<Integer, Student> map = studentDAO.getAllStudents();
+        HashMap<Integer, Student> map = StudentDAO.getAllStudents();
         List<Student> list = new ArrayList<>(map.values());
 
         // Null-safe sort on last name
@@ -36,7 +36,7 @@ public class StudentService {
         if (id <= 0) {
             throw new IllegalArgumentException("Invalid ID");
         }
-        Student s = studentDAO.getStudentById(id);
+        Student s = StudentDAO.getStudentById(id);
         if (s == null) {
             throw new SQLException("Student not found");
         }
@@ -59,7 +59,7 @@ public class StudentService {
                 || hashedPass == null || hashedPass.isBlank()) {
             throw new IllegalArgumentException("Missing required fields");
         }
-        return studentDAO.addStdnt(fname, lname, email, hashedPass, schoolName, majorName);
+        return StudentDAO.addStdnt(fname, lname, email, hashedPass, schoolName, majorName);
     }
 
     /**
@@ -79,6 +79,6 @@ public class StudentService {
         if (id <= 0) {
             throw new IllegalArgumentException("Invalid ID");
         }
-        return studentDAO.deleteStudent(id);
+        return StudentDAO.deleteStudent(id);
     }
 }
