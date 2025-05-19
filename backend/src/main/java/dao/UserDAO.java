@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedList;
-import java.util.List;
 
 public class UserDAO {
 
@@ -92,29 +91,23 @@ public class UserDAO {
             stmt.setString(2, stored);
             stmt.setString(3, userType.getStr());
 
-            // Get the next user_id
-            List<Integer> userIdList = new java.util.ArrayList<>(StudentDAO.getAllStudents().keySet().stream().toList());
-            userIdList.addAll(OrgDAO.getAllOrgs().keySet().stream().toList());
-            userIdList.sort(Integer::compareTo);
-            int newId = 1;
-            for (; newId <= userIdList.size(); newId++) {
-                if (userIdList.get(newId-1) != newId) {
-                    // found a gap
-                    break;
+            if(stmt.executeUpdate() > 0){
+                ResultSet user = stmt.getGeneratedKeys();
+
+                if(user.next()){
+                    int newId = user.getInt(1);
+                    ModelManager.mapNewUser(email, newId, userType);
+
+                    return true;
                 }
             }
-
-            boolean success = stmt.executeUpdate() > 0;
-            if (success) {
-                ModelManager.mapNewUser(email, newId, userType);
-            }
-            return success;
 
         } catch (SQLException e) {
             System.err.println(e.getErrorCode());
             e.printStackTrace(System.err);
-            return false;
         }
+
+        return false;
     }
 
     // PBKDF2 Helper
@@ -246,7 +239,7 @@ public class UserDAO {
      * @return true if the entry successfully inserted into User_Interests, else false
      * @throws SQLException if DB error occurred
      */
-    public static boolean addInterest(int userId, int interestId) throws SQLException {
+    public static boolean addUserInterest(int userId, int interestId) throws SQLException {
         String sql = "INSERT INTO User_Interests (user_id, interest_id) VALUES (?, ?)";
 
         try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
@@ -265,7 +258,7 @@ public class UserDAO {
      * @return true if the entry is successfully deleted from User_Interests table, else false
      * @throws SQLException if DB error occurred
      */
-    public static boolean delInterest(int userId, int interestId) throws SQLException {
+    public static boolean delUserInterest(int userId, int interestId) throws SQLException {
         String sql = "DELETE FROM User_Interests WHERE user_id = ? AND interest_id = ?";
 
         try (PreparedStatement pstmt = DBConnection2.getPstmt(sql)) {
@@ -282,7 +275,7 @@ public class UserDAO {
      * @return LinkedList of integer vals where each val is the unique interest_id that user has indicated
      * @throws SQLException if DB error occurred
      */
-    public static LinkedList<Integer> getAllInterests(int userId) throws SQLException{
+    public static LinkedList<Integer> getAllUserInterests(int userId) throws SQLException{
         String sql = "SELECT interest_id FROM User_Interests WHERE user_id = ?";
         LinkedList<Integer> intrstLst;
 
@@ -493,16 +486,48 @@ public class UserDAO {
 
     public static Picture getProfileImgObj(int userId) throws SQLException{
         int pfpId = getProfileImgId(userId);
-        if(pfpId > 0){
-            try{
-                return PictureDAO.getImgObj(pfpId);
-            }
+        if(pfpId > 0){return PictureDAO.getImgObj(pfpId);}
+        return null;
+    }
 
-            catch(IOException e){
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
+    public static BufferedImage getBannerImg(int userId) throws SQLException, IOException{
+        int imgId = getBannerImgId(userId);
+
+        if(imgId > 0){
+            String sql = "SELECT img_url FROM Pictures WHERE img_id = ?";
+
+            try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+                pstmt.setInt(1, imgId);
+                ResultSet rs = pstmt.executeQuery();
+                if(rs.next()){
+                    String imgUrl = rs.getString("img_url");
+                    File imgFile = new File(imgUrl);
+                    if((imgFile.exists())&&(imgFile.canRead())){
+                        return ImageIO.read(imgFile);
+                    }
+                }
             }
         }
+
+        return null;
+    }
+
+    public static boolean setBannerImg(int userId, int imgId) throws SQLException{
+        String sql = "UPDATE User_Banners SET img_id = ? WHERE user_id = ?";
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, imgId);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public static int getBannerImgId(int userId) throws SQLException{
+        return PictureDAO.getBannerImgId(userId);
+    }
+
+    public static Picture getBannerImgObj(int userId) throws SQLException{
+        int imgId = getBannerImgId(userId);
+        if(imgId > 0){return PictureDAO.getImgObj(imgId);}
         return null;
     }
 
@@ -572,13 +597,14 @@ public class UserDAO {
 
                     std.setBio(rs.getString("bio"));
                     std.setMajor(rs.getInt("major_id"));
-                    std.setProfilePic(rs.getInt("pfp_id"));
+                    std.setProfilePicId(rs.getInt("pfp_id"));
                     std.setSkillList(StudentDAO.getAllSkills(id));
-                    std.setInterestList(getAllInterests(id));
+                    std.setInterestList(getAllUserInterests(id));
                     std.setOrgList(StudentDAO.getAllOrgs(id));
                     std.setFollowingList(getAllFollowedUsers(id));
                     std.setPostsList(getAllUserPosts(id));
                     std.setOwnedImgsList(getAllOwnedImages(id));
+                    std.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(std);
                 }
@@ -591,12 +617,13 @@ public class UserDAO {
                     );
 
                     org.setBio(rs.getString("bio"));
-                    org.setProfilePic(rs.getInt("pfp_id"));
-                    org.setInterestList(getAllInterests(id));
+                    org.setProfilePicId(rs.getInt("pfp_id"));
+                    org.setInterestList(getAllUserInterests(id));
                     org.setMembersList(OrgDAO.getAllMembers(id));
                     org.setFollowingList(getAllFollowedUsers(id));
                     org.setPostsList(getAllUserPosts(id));
                     org.setOwnedImgsList(getAllOwnedImages(id));
+                    org.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(org);
                 }
@@ -669,13 +696,14 @@ public class UserDAO {
 
                     std.setBio(rs.getString("bio"));
                     std.setMajor(rs.getInt("major_id"));
-                    std.setProfilePic(rs.getInt("pfp_id"));
+                    std.setProfilePicId(rs.getInt("pfp_id"));
                     std.setSkillList(StudentDAO.getAllSkills(id));
-                    std.setInterestList(getAllInterests(id));
+                    std.setInterestList(getAllUserInterests(id));
                     std.setOrgList(StudentDAO.getAllOrgs(id));
                     std.setFollowingList(getAllFollowedUsers(id));
                     std.setPostsList(getAllUserPosts(id));
                     std.setOwnedImgsList(getAllOwnedImages(id));
+                    std.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(std);
                 }
@@ -688,12 +716,13 @@ public class UserDAO {
                     );
 
                     org.setBio(rs.getString("bio"));
-                    org.setProfilePic(rs.getInt("pfp_id"));
-                    org.setInterestList(getAllInterests(id));
+                    org.setProfilePicId(rs.getInt("pfp_id"));
+                    org.setInterestList(getAllUserInterests(id));
                     org.setMembersList(OrgDAO.getAllMembers(id));
                     org.setFollowingList(getAllFollowedUsers(id));
                     org.setPostsList(getAllUserPosts(id));
                     org.setOwnedImgsList(getAllOwnedImages(id));
+                    org.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(org);
                 }
@@ -770,13 +799,14 @@ public class UserDAO {
 
                     std.setBio(rs.getString("bio"));
                     std.setMajor(rs.getInt("major_id"));
-                    std.setProfilePic(rs.getInt("pfp_id"));
+                    std.setProfilePicId(rs.getInt("pfp_id"));
                     std.setSkillList(StudentDAO.getAllSkills(id));
-                    std.setInterestList(getAllInterests(id));
+                    std.setInterestList(getAllUserInterests(id));
                     std.setOrgList(StudentDAO.getAllOrgs(id));
                     std.setFollowingList(getAllFollowedUsers(id));
                     std.setPostsList(getAllUserPosts(id));
                     std.setOwnedImgsList(getAllOwnedImages(id));
+                    std.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(std);
                 }
@@ -789,12 +819,13 @@ public class UserDAO {
                     );
 
                     org.setBio(rs.getString("bio"));
-                    org.setProfilePic(rs.getInt("pfp_id"));
-                    org.setInterestList(getAllInterests(id));
+                    org.setProfilePicId(rs.getInt("pfp_id"));
+                    org.setInterestList(getAllUserInterests(id));
                     org.setMembersList(OrgDAO.getAllMembers(id));
                     org.setFollowingList(getAllFollowedUsers(id));
                     org.setPostsList(getAllUserPosts(id));
                     org.setOwnedImgsList(getAllOwnedImages(id));
+                    org.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(org);
                 }

@@ -15,11 +15,11 @@ public class Picture{
         this.image = image;
     }
 
-    public int getID(){return this.imgId;}
+    public int getID(){return (this.imgId > 0) ? this.imgId:-1;}
 
-    public int getOwnerId(){return this.ownerId;}
+    public int getOwnerId(){return (this.ownerId >= 0) ? this.ownerId:-1;}
 
-    public String getPath(){return this.path;}
+    public String getPath(){return (this.path != null) ? this.path:"null";}
 
     public BufferedImage getImage(){return this.image;}
 

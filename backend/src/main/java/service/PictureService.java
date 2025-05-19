@@ -41,7 +41,7 @@ public class PictureService {
                 throw new PictureServiceException("No image found with id " + imgId);
             }
             return pic;
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new PictureServiceException("Error fetching image with id " + imgId, e);
         }
     }

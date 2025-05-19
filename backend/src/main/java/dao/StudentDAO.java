@@ -20,14 +20,14 @@ public class StudentDAO extends UserDAO{
      *
      * @param fname first name of the new student user
      * @param email email of the new student user
-     * @param hashedPass hashed string resulting from hashing the new student user's password
+     * @param pass hashed string resulting from hashing the new student user's password
      * @param schoolName name of school new student user attends
      * @param majorName name of the major of the new student user
      * @return true if data successfully inserted into both the User_Verify and Students tables, else false
      * @throws SQLException if DB error occurred
      */
-    public static boolean addStdnt(String fname, String lname, String email, String hashedPass, String schoolName, String majorName) throws SQLException {
-        if(addUser(email, hashedPass, UserType.STUDENT)){
+    public static int addStdnt(String fname, String lname, String email, String pass, String schoolName, String majorName) throws SQLException {
+        if(addUser(email, pass, UserType.STUDENT)){
             int userId = ModelManager.getUserId(email);
             int schoolId = ModelManager.getSchoolIdByName(schoolName);
             int majorId = ModelManager.getMajorIdByName(majorName);
@@ -46,11 +46,11 @@ public class StudentDAO extends UserDAO{
                 stdPstmt.setString(3, lname);
                 stdPstmt.setInt(4, userId);
 
-                return (usrPstmt.executeUpdate() > 0)&&(stdPstmt.executeUpdate() > 0);
+                return ((usrPstmt.executeUpdate() > 0)&&(stdPstmt.executeUpdate() > 0)) ? userId:-1;
             }
 
         }
-        return false;
+        return -1;
     }
 
     public boolean updateStudent(Student s) throws SQLException {
@@ -105,14 +105,15 @@ public class StudentDAO extends UserDAO{
 
                 studentObj.setBio(results.getString("bio"));
                 studentObj.setMajor(results.getInt("major_id"));
-                studentObj.setProfilePic(results.getInt("pfp_id"));
+                studentObj.setProfilePicId(results.getInt("pfp_id"));
 
                 studentObj.setSkillList(getAllSkills(studentObj.getID()));
-                studentObj.setInterestList(getAllInterests(studentObj.getID()));
+                studentObj.setInterestList(getAllUserInterests(studentObj.getID()));
                 studentObj.setOrgList(getAllOrgs(studentObj.getID()));
                 studentObj.setFollowingList(getAllFollowedUsers(studentObj.getID()));
                 studentObj.setPostsList(getAllUserPosts(studentObj.getID()));
                 studentObj.setOwnedImgsList(getAllOwnedImages(studentObj.getID()));
+                studentObj.setBannerImgId(getBannerImgId(studentObj.getID()));
 
                 results.close();
                 return studentObj;
@@ -160,14 +161,15 @@ public class StudentDAO extends UserDAO{
 
                 currStudent.setBio(results.getString("bio"));
                 currStudent.setMajor(results.getInt("major_id"));
-                currStudent.setProfilePic(results.getInt("pfp_id"));
+                currStudent.setProfilePicId(results.getInt("pfp_id"));
 
                 currStudent.setSkillList(getAllSkills(currId));
-                currStudent.setInterestList(getAllInterests(currId));
+                currStudent.setInterestList(getAllUserInterests(currId));
                 currStudent.setOrgList(getAllOrgs(currId));
                 currStudent.setFollowingList(getAllFollowedUsers(currId));
                 currStudent.setPostsList(getAllUserPosts(currId));
                 currStudent.setOwnedImgsList(getAllOwnedImages(currId));
+                currStudent.setBannerImgId(getBannerImgId(currId));
 
                 studentMap.putIfAbsent(currId, currStudent);
             }
@@ -425,13 +427,14 @@ public class StudentDAO extends UserDAO{
 
                 s.setBio(rs.getString("bio"));
                 s.setMajor(rs.getInt("major_id"));
-                s.setProfilePic(rs.getInt("pfp_id"));
+                s.setProfilePicId(rs.getInt("pfp_id"));
                 s.setSkillList(getAllSkills(id));
-                s.setInterestList(getAllInterests(id));
+                s.setInterestList(getAllUserInterests(id));
                 s.setOrgList(getAllOrgs(id));
                 s.setFollowingList(getAllFollowedUsers(id));
                 s.setPostsList(getAllUserPosts(id));
                 s.setOwnedImgsList(getAllOwnedImages(id));
+                s.setBannerImgId(getBannerImgId(id));
 
                 list.add(s);
             }
@@ -509,13 +512,14 @@ public class StudentDAO extends UserDAO{
 
             std.setBio(rs.getString("bio"));
             std.setMajor(rs.getInt("major_id"));
-            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setProfilePicId(rs.getInt("pfp_id"));
             std.setSkillList(getAllSkills(id));
-            std.setInterestList(getAllInterests(id));
+            std.setInterestList(getAllUserInterests(id));
             std.setOrgList(getAllOrgs(id));
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
             std.setOwnedImgsList(getAllOwnedImages(id));
+            std.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(std);
         }
@@ -591,13 +595,14 @@ public class StudentDAO extends UserDAO{
 
             std.setBio(rs.getString("bio"));
             std.setMajor(rs.getInt("major_id"));
-            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setProfilePicId(rs.getInt("pfp_id"));
             std.setSkillList(getAllSkills(id));
-            std.setInterestList(getAllInterests(id));
+            std.setInterestList(getAllUserInterests(id));
             std.setOrgList(getAllOrgs(id));
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
             std.setOwnedImgsList(getAllOwnedImages(id));
+            std.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(std);
         }
@@ -676,13 +681,14 @@ public class StudentDAO extends UserDAO{
 
             std.setBio(rs.getString("bio"));
             std.setMajor(rs.getInt("major_id"));
-            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setProfilePicId(rs.getInt("pfp_id"));
             std.setSkillList(getAllSkills(id));
-            std.setInterestList(getAllInterests(id));
+            std.setInterestList(getAllUserInterests(id));
             std.setOrgList(getAllOrgs(id));
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
             std.setOwnedImgsList(getAllOwnedImages(id));
+            std.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(std);
         }
@@ -761,13 +767,14 @@ public class StudentDAO extends UserDAO{
 
             std.setBio(rs.getString("bio"));
             std.setMajor(rs.getInt("major_id"));
-            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setProfilePicId(rs.getInt("pfp_id"));
             std.setSkillList(getAllSkills(id));
-            std.setInterestList(getAllInterests(id));
+            std.setInterestList(getAllUserInterests(id));
             std.setOrgList(getAllOrgs(id));
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
             std.setOwnedImgsList(getAllOwnedImages(id));
+            std.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(std);
         }

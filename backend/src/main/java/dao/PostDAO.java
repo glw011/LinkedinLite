@@ -33,7 +33,10 @@ public class PostDAO {
             stmt.setInt(1, userId);
             stmt.setString(2, content);
 
-            postId = stmt.executeUpdate();
+            if(stmt.executeUpdate() > 0){
+                ResultSet post = stmt.getGeneratedKeys();
+                if(post.next()) postId = post.getInt(1);
+            }
 
             if ((postId > 0)&&(!tags.isEmpty())) {
                 String tagSql = "INSERT INTO Post_Tags (post_id, interest_id) VALUES (?, ?)";
@@ -59,7 +62,7 @@ public class PostDAO {
      * @param tags LinkedList of ints where each int value in the list corresponds with a unique interest_id for which
      *             the post being created has been tagged with
      * @param img BufferedImage file object associated with the new post being created
-     * @return Unique post_id assigned to the newly created post
+     * @return Unique post_id assigned to the newly created post if successful, else -1
      * @throws SQLException if db error occurred
      */
     public static int pushPostWithImg(int userId, String content, LinkedList<Integer> tags, BufferedImage img) throws SQLException{
@@ -75,7 +78,10 @@ public class PostDAO {
                     pstmt.setString(2, content);
                     pstmt.setInt(3, imgId);
 
-                    return pstmt.executeUpdate();
+                    if(pstmt.executeUpdate() > 0){
+                        ResultSet post = pstmt.getGeneratedKeys();
+                        if(post.next()){return post.getInt(1);}
+                    }
                 }
             }
         }
@@ -113,12 +119,7 @@ public class PostDAO {
 
                 int imgId = rs.getInt("img_id");
                 if (!rs.wasNull()) {
-                    try {
-                        post.setPostImage(PictureDAO.getImgObj(imgId));
-                    } catch (IOException e) {
-                        System.err.println("Failed to load image for post " + post.getID() + ": " + e.getMessage());
-                        e.printStackTrace();
-                    }
+                    post.setPostImage(PictureDAO.getImgObj(imgId));
                 }
 
                 post.setTagList(getPostTagsById(post.getID()));
@@ -304,13 +305,7 @@ public class PostDAO {
 
                 int imgId = posts.getInt("img_id");
                 if(imgId > 0){
-                    try{
-                        currPost.setPostImage(PictureDAO.getImgObj(imgId));
-                    }
-                    catch(IOException e){
-                        System.err.println(e.getMessage());
-                        e.printStackTrace(System.err);
-                    }
+                    currPost.setPostImage(PictureDAO.getImgObj(imgId));
                 }
 
                 currPost.setCommentsList(getPostCommentsById(postId));
@@ -366,13 +361,7 @@ public class PostDAO {
 
                 int imgId = posts.getInt("img_id");
                 if(imgId > 0){
-                    try{
-                        currPost.setPostImage(PictureDAO.getImgObj(imgId));
-                    }
-                    catch(IOException e){
-                        System.err.println(e.getMessage());
-                        e.printStackTrace(System.err);
-                    }
+                    currPost.setPostImage(PictureDAO.getImgObj(imgId));
                 }
 
                 currPost.setCommentsList(getPostCommentsById(postId));
@@ -428,13 +417,7 @@ public class PostDAO {
 
                 int imgId = posts.getInt("img_id");
                 if(imgId > 0){
-                    try{
-                        currPost.setPostImage(PictureDAO.getImgObj(imgId));
-                    }
-                    catch(IOException e){
-                        System.err.println(e.getMessage());
-                        e.printStackTrace(System.err);
-                    }
+                    currPost.setPostImage(PictureDAO.getImgObj(imgId));
                 }
 
                 currPost.setCommentsList(getPostCommentsById(postId));

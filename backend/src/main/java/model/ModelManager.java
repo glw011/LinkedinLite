@@ -85,7 +85,6 @@ public class ModelManager {
                     schools.getString("state"),
                     schools.getString("country")
             );
-            if(DEBUG) System.out.println("Adding "+currSchool.getName()+" to allSchools HashMap");
             allSchools.putIfAbsent(currSchool.getId(), currSchool);
             schoolByName.putIfAbsent(currSchool.getName(), currSchool.getId());
         }
