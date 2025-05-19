@@ -604,6 +604,7 @@ public class UserDAO {
                     std.setFollowingList(getAllFollowedUsers(id));
                     std.setPostsList(getAllUserPosts(id));
                     std.setOwnedImgsList(getAllOwnedImages(id));
+                    std.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(std);
                 }
@@ -622,6 +623,7 @@ public class UserDAO {
                     org.setFollowingList(getAllFollowedUsers(id));
                     org.setPostsList(getAllUserPosts(id));
                     org.setOwnedImgsList(getAllOwnedImages(id));
+                    org.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(org);
                 }
@@ -701,6 +703,7 @@ public class UserDAO {
                     std.setFollowingList(getAllFollowedUsers(id));
                     std.setPostsList(getAllUserPosts(id));
                     std.setOwnedImgsList(getAllOwnedImages(id));
+                    std.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(std);
                 }
@@ -719,6 +722,7 @@ public class UserDAO {
                     org.setFollowingList(getAllFollowedUsers(id));
                     org.setPostsList(getAllUserPosts(id));
                     org.setOwnedImgsList(getAllOwnedImages(id));
+                    org.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(org);
                 }
@@ -802,6 +806,7 @@ public class UserDAO {
                     std.setFollowingList(getAllFollowedUsers(id));
                     std.setPostsList(getAllUserPosts(id));
                     std.setOwnedImgsList(getAllOwnedImages(id));
+                    std.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(std);
                 }
@@ -820,6 +825,7 @@ public class UserDAO {
                     org.setFollowingList(getAllFollowedUsers(id));
                     org.setPostsList(getAllUserPosts(id));
                     org.setOwnedImgsList(getAllOwnedImages(id));
+                    org.setBannerImgId(getBannerImgId(id));
 
                     usrList.add(org);
                 }

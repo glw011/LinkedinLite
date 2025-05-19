@@ -74,6 +74,7 @@ public class OrgDAO extends UserDAO {
             orgObj.setFollowingList(getAllFollowedUsers(orgObj.getID()));
             orgObj.setPostsList(getAllUserPosts(orgObj.getID()));
             orgObj.setOwnedImgsList(getAllOwnedImages(orgObj.getID()));
+            orgObj.setBannerImgId(getBannerImgId(orgObj.getID()));
         }
         return orgObj;
     }
@@ -114,6 +115,7 @@ public class OrgDAO extends UserDAO {
                 orgObj.setFollowingList(getAllFollowedUsers(orgObj.getID()));
                 orgObj.setPostsList(getAllUserPosts(orgObj.getID()));
                 orgObj.setOwnedImgsList(getAllOwnedImages(orgObj.getID()));
+                orgObj.setBannerImgId(getBannerImgId(orgObj.getID()));
 
                 orgMap.putIfAbsent(currId, orgObj);
             }
@@ -287,6 +289,7 @@ public class OrgDAO extends UserDAO {
                 org.setFollowingList(getAllFollowedUsers(id));
                 org.setPostsList(getAllUserPosts(id));
                 org.setOwnedImgsList(getAllOwnedImages(id));
+                org.setBannerImgId(getBannerImgId(id));
 
                 results.add(org);
             }
@@ -364,6 +367,7 @@ public class OrgDAO extends UserDAO {
             org.setFollowingList(getAllFollowedUsers(id));
             org.setPostsList(getAllUserPosts(id));
             org.setOwnedImgsList(getAllOwnedImages(id));
+            org.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(org);
         }
@@ -441,6 +445,7 @@ public class OrgDAO extends UserDAO {
             org.setFollowingList(getAllFollowedUsers(id));
             org.setPostsList(getAllUserPosts(id));
             org.setOwnedImgsList(getAllOwnedImages(id));
+            org.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(org);
         }

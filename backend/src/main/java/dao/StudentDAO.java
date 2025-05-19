@@ -112,6 +112,7 @@ public class StudentDAO extends UserDAO{
                 studentObj.setFollowingList(getAllFollowedUsers(studentObj.getID()));
                 studentObj.setPostsList(getAllUserPosts(studentObj.getID()));
                 studentObj.setOwnedImgsList(getAllOwnedImages(studentObj.getID()));
+                studentObj.setBannerImgId(getBannerImgId(studentObj.getID()));
 
                 results.close();
                 return studentObj;
@@ -167,6 +168,7 @@ public class StudentDAO extends UserDAO{
                 currStudent.setFollowingList(getAllFollowedUsers(currId));
                 currStudent.setPostsList(getAllUserPosts(currId));
                 currStudent.setOwnedImgsList(getAllOwnedImages(currId));
+                currStudent.setBannerImgId(getBannerImgId(currId));
 
                 studentMap.putIfAbsent(currId, currStudent);
             }
@@ -431,6 +433,7 @@ public class StudentDAO extends UserDAO{
                 s.setFollowingList(getAllFollowedUsers(id));
                 s.setPostsList(getAllUserPosts(id));
                 s.setOwnedImgsList(getAllOwnedImages(id));
+                s.setBannerImgId(getBannerImgId(id));
 
                 list.add(s);
             }
@@ -515,6 +518,7 @@ public class StudentDAO extends UserDAO{
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
             std.setOwnedImgsList(getAllOwnedImages(id));
+            std.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(std);
         }
@@ -597,6 +601,7 @@ public class StudentDAO extends UserDAO{
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
             std.setOwnedImgsList(getAllOwnedImages(id));
+            std.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(std);
         }
@@ -682,6 +687,7 @@ public class StudentDAO extends UserDAO{
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
             std.setOwnedImgsList(getAllOwnedImages(id));
+            std.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(std);
         }
@@ -767,6 +773,7 @@ public class StudentDAO extends UserDAO{
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
             std.setOwnedImgsList(getAllOwnedImages(id));
+            std.setBannerImgId(getBannerImgId(id));
 
             resultLst.add(std);
         }
