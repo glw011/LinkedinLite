@@ -1,5 +1,8 @@
 package model;
 
+import dao.PictureDAO;
+
+import java.sql.SQLException;
 import java.util.LinkedList;
 
 public class User {
@@ -9,7 +12,10 @@ public class User {
 
     public School school;
     public String bio;
-    public int profilePic;
+    public int profilePicId;
+    public Picture profileImg;
+    public int bannerImgId;
+    public Picture bannerImg;
     public LinkedList<Integer> ownedImgs;
     public LinkedList<Integer> interests;
     public LinkedList<Integer> posts;
@@ -34,10 +40,35 @@ public class User {
     }
     public String getEmail(){return this.email;}
 
-    public void setProfilePic(int imgId){
-        if(this.ownedImgs.contains(imgId)) this.profilePic = imgId;
+    public void setProfilePicId(int imgId){
+        if(this.ownedImgs.contains(imgId)){
+            this.profilePicId = imgId;
+            try{
+                this.profileImg = PictureDAO.getImgObj(imgId);
+            }
+            catch(SQLException e){
+                System.err.println(e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        }
     }
-    public int getProfilePic(){return this.profilePic;}
+    public int getProfilePicId(){return this.profilePicId;}
+    public Picture getProfileImg(){return this.profileImg;}
+
+    public void setBannerImgId(int imgId){
+        if(this.ownedImgs.contains(imgId)){
+            this.profilePicId = imgId;
+            try{
+                this.profileImg = PictureDAO.getImgObj(imgId);
+            }
+            catch(SQLException e){
+                System.err.println(e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        }
+    }
+    public int getBannerImgId(){return this.bannerImgId;}
+    public Picture getBannerImg(){return this.bannerImg;}
 
     public String getType(){return this.type;}
 

@@ -7,6 +7,6 @@ public class Test {
         //ModelManager.initModelManager();
 
         //StudentDAO.addStdnt("garrett", "glw011@latech.edu", "hashstring", "Louisiana Tech University", "Computer Science");
-        System.out.println(System.getProperty("user.dir"));
+        System.out.println(UserDAO.foo("test7"));
     }
 }

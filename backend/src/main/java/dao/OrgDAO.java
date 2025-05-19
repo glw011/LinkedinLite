@@ -67,9 +67,9 @@ public class OrgDAO extends UserDAO {
             );
 
             orgObj.setBio(results.getString("bio"));
-            orgObj.setProfilePic(results.getInt("pfp_id"));
+            orgObj.setProfilePicId(results.getInt("pfp_id"));
 
-            orgObj.setInterestList(getAllInterests(orgObj.getID()));
+            orgObj.setInterestList(getAllUserInterests(orgObj.getID()));
             orgObj.setMembersList(getAllMembers(orgObj.getID()));
             orgObj.setFollowingList(getAllFollowedUsers(orgObj.getID()));
             orgObj.setPostsList(getAllUserPosts(orgObj.getID()));
@@ -107,9 +107,9 @@ public class OrgDAO extends UserDAO {
                 );
 
                 orgObj.setBio(results.getString("bio"));
-                orgObj.setProfilePic(results.getInt("pfp_id"));
+                orgObj.setProfilePicId(results.getInt("pfp_id"));
 
-                orgObj.setInterestList(getAllInterests(orgObj.getID()));
+                orgObj.setInterestList(getAllUserInterests(orgObj.getID()));
                 orgObj.setMembersList(getAllMembers(orgObj.getID()));
                 orgObj.setFollowingList(getAllFollowedUsers(orgObj.getID()));
                 orgObj.setPostsList(getAllUserPosts(orgObj.getID()));
@@ -281,8 +281,8 @@ public class OrgDAO extends UserDAO {
                 );
 
                 org.setBio(rs.getString("bio"));
-                org.setProfilePic(rs.getInt("pfp_id"));
-                org.setInterestList(getAllInterests(id));
+                org.setProfilePicId(rs.getInt("pfp_id"));
+                org.setInterestList(getAllUserInterests(id));
                 org.setMembersList(getAllMembers(id));
                 org.setFollowingList(getAllFollowedUsers(id));
                 org.setPostsList(getAllUserPosts(id));
@@ -358,8 +358,8 @@ public class OrgDAO extends UserDAO {
             );
 
             org.setBio(rs.getString("bio"));
-            org.setProfilePic(rs.getInt("pfp_id"));
-            org.setInterestList(getAllInterests(id));
+            org.setProfilePicId(rs.getInt("pfp_id"));
+            org.setInterestList(getAllUserInterests(id));
             org.setMembersList(getAllMembers(id));
             org.setFollowingList(getAllFollowedUsers(id));
             org.setPostsList(getAllUserPosts(id));
@@ -435,8 +435,8 @@ public class OrgDAO extends UserDAO {
             );
 
             org.setBio(rs.getString("bio"));
-            org.setProfilePic(rs.getInt("pfp_id"));
-            org.setInterestList(getAllInterests(id));
+            org.setProfilePicId(rs.getInt("pfp_id"));
+            org.setInterestList(getAllUserInterests(id));
             org.setMembersList(getAllMembers(id));
             org.setFollowingList(getAllFollowedUsers(id));
             org.setPostsList(getAllUserPosts(id));

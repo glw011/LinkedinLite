@@ -104,10 +104,10 @@ public class StudentDAO extends UserDAO{
 
                 studentObj.setBio(results.getString("bio"));
                 studentObj.setMajor(results.getInt("major_id"));
-                studentObj.setProfilePic(results.getInt("pfp_id"));
+                studentObj.setProfilePicId(results.getInt("pfp_id"));
 
                 studentObj.setSkillList(getAllSkills(studentObj.getID()));
-                studentObj.setInterestList(getAllInterests(studentObj.getID()));
+                studentObj.setInterestList(getAllUserInterests(studentObj.getID()));
                 studentObj.setOrgList(getAllOrgs(studentObj.getID()));
                 studentObj.setFollowingList(getAllFollowedUsers(studentObj.getID()));
                 studentObj.setPostsList(getAllUserPosts(studentObj.getID()));
@@ -159,10 +159,10 @@ public class StudentDAO extends UserDAO{
 
                 currStudent.setBio(results.getString("bio"));
                 currStudent.setMajor(results.getInt("major_id"));
-                currStudent.setProfilePic(results.getInt("pfp_id"));
+                currStudent.setProfilePicId(results.getInt("pfp_id"));
 
                 currStudent.setSkillList(getAllSkills(currId));
-                currStudent.setInterestList(getAllInterests(currId));
+                currStudent.setInterestList(getAllUserInterests(currId));
                 currStudent.setOrgList(getAllOrgs(currId));
                 currStudent.setFollowingList(getAllFollowedUsers(currId));
                 currStudent.setPostsList(getAllUserPosts(currId));
@@ -424,9 +424,9 @@ public class StudentDAO extends UserDAO{
 
                 s.setBio(rs.getString("bio"));
                 s.setMajor(rs.getInt("major_id"));
-                s.setProfilePic(rs.getInt("pfp_id"));
+                s.setProfilePicId(rs.getInt("pfp_id"));
                 s.setSkillList(getAllSkills(id));
-                s.setInterestList(getAllInterests(id));
+                s.setInterestList(getAllUserInterests(id));
                 s.setOrgList(getAllOrgs(id));
                 s.setFollowingList(getAllFollowedUsers(id));
                 s.setPostsList(getAllUserPosts(id));
@@ -508,9 +508,9 @@ public class StudentDAO extends UserDAO{
 
             std.setBio(rs.getString("bio"));
             std.setMajor(rs.getInt("major_id"));
-            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setProfilePicId(rs.getInt("pfp_id"));
             std.setSkillList(getAllSkills(id));
-            std.setInterestList(getAllInterests(id));
+            std.setInterestList(getAllUserInterests(id));
             std.setOrgList(getAllOrgs(id));
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
@@ -590,9 +590,9 @@ public class StudentDAO extends UserDAO{
 
             std.setBio(rs.getString("bio"));
             std.setMajor(rs.getInt("major_id"));
-            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setProfilePicId(rs.getInt("pfp_id"));
             std.setSkillList(getAllSkills(id));
-            std.setInterestList(getAllInterests(id));
+            std.setInterestList(getAllUserInterests(id));
             std.setOrgList(getAllOrgs(id));
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
@@ -675,9 +675,9 @@ public class StudentDAO extends UserDAO{
 
             std.setBio(rs.getString("bio"));
             std.setMajor(rs.getInt("major_id"));
-            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setProfilePicId(rs.getInt("pfp_id"));
             std.setSkillList(getAllSkills(id));
-            std.setInterestList(getAllInterests(id));
+            std.setInterestList(getAllUserInterests(id));
             std.setOrgList(getAllOrgs(id));
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));
@@ -760,9 +760,9 @@ public class StudentDAO extends UserDAO{
 
             std.setBio(rs.getString("bio"));
             std.setMajor(rs.getInt("major_id"));
-            std.setProfilePic(rs.getInt("pfp_id"));
+            std.setProfilePicId(rs.getInt("pfp_id"));
             std.setSkillList(getAllSkills(id));
-            std.setInterestList(getAllInterests(id));
+            std.setInterestList(getAllUserInterests(id));
             std.setOrgList(getAllOrgs(id));
             std.setFollowingList(getAllFollowedUsers(id));
             std.setPostsList(getAllUserPosts(id));

@@ -24,34 +24,24 @@ public class PictureDAO {
             pstmt.setInt(1, ownerId);
             pstmt.setString(2, path);
 
-            int rows = pstmt.executeUpdate();
-            if (rows > 0) {
-                ResultSet keys = pstmt.getGeneratedKeys();
-                if (keys.next()) {
-                    int imgId = keys.getInt(1);
-
+            if (pstmt.executeUpdate() > 0){
+                ResultSet img = pstmt.getGeneratedKeys();
+                if (img.next()){
                     boolean writeSuccess = writeImgToDisk(image, path);
-                    if (!writeSuccess) {
-                        System.err.println("Failed to write image to disk.");
-                        return -1;
+                    if (writeSuccess){
+                        return img.getInt(1);
                     }
-
-                    System.out.println("Image written successfully to: " + path);
-                    return imgId;
-                } else {
-                    System.err.println("No keys generated.");
+                    System.err.println("Failed to write image to disk.");
                 }
-            } else {
-                System.err.println("No rows inserted into Pictures.");
             }
         }
-
+        System.err.println("Failed to add image to database");
         return -1;
     }
 
-    public static Picture getImgObj(int imgId) throws SQLException, IOException{
+    public static Picture getImgObj(int imgId) throws SQLException{
         BufferedImage image;
-        Picture imgObj = null;
+        Picture imgObj;
 
         String sql = "SELECT * FROM Pictures WHERE img_id = ?";
         try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
@@ -63,12 +53,19 @@ public class PictureDAO {
                 String path = img.getString("img_url");
                 int ownerId = img.getInt("owner_id");
 
-                image = readImgFromDisk(path);
+                try{
+                    image = readImgFromDisk(path);
+                    imgObj = new Picture(imgId, ownerId, path, image);
 
-                imgObj = new Picture(imgId, ownerId, path, image);
+                    return imgObj;
+                }
+                catch(IOException e){
+                    System.err.println(e.getMessage());
+                    e.printStackTrace(System.err);
+                }
             }
         }
-        return imgObj;
+        return null;
     }
 
     public static String getImgUrl(int imgId) throws SQLException{
@@ -90,7 +87,7 @@ public class PictureDAO {
         return null;
     }
 
-    public static int getImgId(int userId) throws SQLException{
+    public static int getProfileImgId(int userId) throws SQLException{
         String sql = "SELECT pfp_id FROM Users WHERE user_id = ?";
 
         try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
@@ -100,7 +97,24 @@ public class PictureDAO {
             if(rs.next()){
                 int imgId = rs.getInt("pfp_id");
 
-                if(imgId > 0) return imgId;
+                return (imgId > 0) ? imgId:-1;
+            }
+        }
+        return -1;
+    }
+
+    public static int getBannerImgId(int userId) throws SQLException{
+        String sql = "Select img_id FROM User_Banners WHERE user_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, userId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                int imgId = rs.getInt("img_id");
+
+                return (imgId > 0) ? imgId:-1;
             }
         }
         return -1;

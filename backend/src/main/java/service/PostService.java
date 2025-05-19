@@ -128,7 +128,7 @@ public class PostService {
                 throw new PostServiceException("No image found with id " + imgId);
             }
             return pic;
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new PostServiceException("Failed to fetch image", e);
         }
     }

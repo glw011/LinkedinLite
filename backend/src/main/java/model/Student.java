@@ -16,7 +16,6 @@ public class Student extends User{
         this.lname   = lname;
         this.skillList = new LinkedList<>();
         this.orgList = new LinkedList<>();
-
     }
 
     // --- getters / setters ---
