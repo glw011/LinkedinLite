@@ -8,7 +8,7 @@ public class Test {
     public static void main(String[] args) throws SQLException {
         ModelManager.initModelManager();
 
-        if(StudentDAO.addStdnt("Garrett", "glw011@latech.edu", "CSC403", "Louisiana Tech University", "Computer Science")){
+        if(StudentDAO.addStdnt("Garrett", "glw011@latech.edu", "CSC403", "Louisiana Tech University", "Computer Science")>0){
             int stdId = ModelManager.getUserId("glw011@latech.edu");
 
             int pfpId = PictureDAO.getProfileImgId(stdId);

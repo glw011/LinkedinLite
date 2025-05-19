@@ -33,7 +33,6 @@ public class OrgDAO extends UserDAO {
 
                 return ((usrPstmt.executeUpdate() > 0) && (orgPstmt.executeUpdate() > 0)) ? userId:-1;
             }
-
         }
         return -1;
     }
