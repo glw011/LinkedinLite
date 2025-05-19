@@ -20,14 +20,14 @@ public class StudentDAO extends UserDAO{
      *
      * @param fname first name of the new student user
      * @param email email of the new student user
-     * @param hashedPass hashed string resulting from hashing the new student user's password
+     * @param pass hashed string resulting from hashing the new student user's password
      * @param schoolName name of school new student user attends
      * @param majorName name of the major of the new student user
      * @return true if data successfully inserted into both the User_Verify and Students tables, else false
      * @throws SQLException if DB error occurred
      */
-    public static boolean addStdnt(String fname, String email, String hashedPass, String schoolName, String majorName) throws SQLException {
-        if(addUser(email, hashedPass, UserType.STUDENT)){
+    public static boolean addStdnt(String fname, String email, String pass, String schoolName, String majorName) throws SQLException {
+        if(addUser(email, pass, UserType.STUDENT)){
             int userId = ModelManager.getUserId(email);
             int schoolId = ModelManager.getSchoolIdByName(schoolName);
             int majorId = ModelManager.getMajorIdByName(majorName);

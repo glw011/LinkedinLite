@@ -56,7 +56,7 @@ public class User {
     public Picture getProfileImg(){return this.profileImg;}
 
     public void setBannerImgId(int imgId){
-        if(this.ownedImgs.contains(imgId)){
+        if((this.ownedImgs.contains(imgId))||(imgId == 0)){
             this.profilePicId = imgId;
             try{
                 this.profileImg = PictureDAO.getImgObj(imgId);

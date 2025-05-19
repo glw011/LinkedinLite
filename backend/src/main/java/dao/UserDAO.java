@@ -836,21 +836,6 @@ public class UserDAO {
 
         return usrList;
     }
-
-    public static int foo(String str) throws SQLException{
-        String sql = "INSERT INTO Interests (interest_name) VALUES (?)";
-
-        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql, new String[] {"interest_id"})){
-            pstmt.setString(1, str);
-
-            pstmt.executeUpdate();
-            ResultSet rs = pstmt.getGeneratedKeys();
-
-            if(rs.next()){return rs.getInt(1);}
-
-            return -1;
-        }
-    }
 }
 
 

@@ -16,18 +16,18 @@ public class PictureDAO {
 
     public static int addNewImg(BufferedImage image, int ownerId) throws SQLException, IOException {
         String filename = String.format("%s.png", getNewUrl(ownerId));
-        String path = String.format("%s/Disk/%s", System.getProperty("user.dir"), filename);
+        String imgUrl = String.format("/Disk/%s", filename);
 
         String sql = "INSERT INTO Pictures (owner_id, img_url) VALUES (?, ?)";
 
         try (PreparedStatement pstmt = DBConnection2.getPstmt(sql, new String[]{"img_id"})) {
             pstmt.setInt(1, ownerId);
-            pstmt.setString(2, path);
+            pstmt.setString(2, imgUrl);
 
             if (pstmt.executeUpdate() > 0){
                 ResultSet img = pstmt.getGeneratedKeys();
                 if (img.next()){
-                    boolean writeSuccess = writeImgToDisk(image, path);
+                    boolean writeSuccess = writeImgToDisk(image, imgUrl);
                     if (writeSuccess){
                         return img.getInt(1);
                     }
@@ -50,7 +50,7 @@ public class PictureDAO {
             ResultSet img = pstmt.executeQuery();
 
             if(img.next()){
-                String path = img.getString("img_url");
+                String path = String.format("%s%s", System.getProperty("user.dir"), img.getString("img_url"));
                 int ownerId = img.getInt("owner_id");
 
                 try{
@@ -68,7 +68,7 @@ public class PictureDAO {
         return null;
     }
 
-    public static String getImgUrl(int imgId) throws SQLException{
+    public static String getImgPath(int imgId) throws SQLException{
         String sql = "SELECT img_url FROM Pictures WHERE img_id = ?";
 
         try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
@@ -78,10 +78,11 @@ public class PictureDAO {
 
             if(img.next()){
                 String imgUrl = img.getString("img_url");
+                String imgPath = String.format("%s%s", System.getProperty("user.dir"), imgUrl);
 
-                File imgChk = new File(imgUrl);
+                File imgChk = new File(imgPath);
 
-                if(imgChk.exists()) return imgUrl;
+                if(imgChk.exists()) return imgPath;
             }
         }
         return null;
@@ -121,7 +122,7 @@ public class PictureDAO {
     }
 
     public static BufferedImage getBufferedImg(int imgId) throws SQLException, IOException{
-        String imgUrl = getImgUrl(imgId);
+        String imgUrl = getImgPath(imgId);
 
         if(imgUrl != null){
             return readImgFromDisk(imgUrl);
@@ -133,7 +134,8 @@ public class PictureDAO {
         return readImgFromDisk(imgPath);
     }
 
-    private static boolean writeImgToDisk(BufferedImage image, String path) throws IOException{
+    private static boolean writeImgToDisk(BufferedImage image, String imgUrl) throws IOException{
+        String path = String.format("%s%s", System.getProperty("user.dir"), imgUrl);
         File imgFile = new File(path);
         return ImageIO.write(image, "png", imgFile);
     }
