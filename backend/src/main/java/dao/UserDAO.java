@@ -175,7 +175,6 @@ public class UserDAO {
         return PostDAO.pushPost(userId, postText, tagList);
     }
 
-
     /**
      * Adds a post containing both text and an image which was created by a user(identified by userId) to the Posts table
      *
@@ -871,7 +870,6 @@ public class UserDAO {
         }
         return null;
     }
-
 }
 
 

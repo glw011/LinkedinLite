@@ -569,7 +569,7 @@ CREATE TABLE `Orgs` (
 CREATE TABLE `Org_Membership` (
   `org_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
-  `role` enum('leadership','member','interested') DEFAULT NULL,
+  `role` varchar(255) DEFAULT 'Member',
   `join_date` date DEFAULT curdate()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
