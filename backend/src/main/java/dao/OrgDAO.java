@@ -458,6 +458,42 @@ public class OrgDAO extends UserDAO {
         return resultLst;
     }
 
+    public static String getHashedPass(int userId) throws SQLException{
+        String sql = "SELECT pass_hash FROM User_Verify WHERE user_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, userId);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                String hashPass = rs.getString("pass_hash");
+
+                rs.close();
+                return (!hashPass.isEmpty()) ? hashPass:null;
+            }
+        }
+        return null;
+    }
+
+    public static String getHashedPass(String userEmail) throws SQLException{
+        String sql = "SELECT pass_hash FROM User_Verify WHERE email = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setString(1, userEmail);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                String hashPass = rs.getString("pass_hash");
+
+                rs.close();
+                return (!hashPass.isEmpty()) ? hashPass:null;
+            }
+        }
+        return null;
+    }
+
 }
 
 
