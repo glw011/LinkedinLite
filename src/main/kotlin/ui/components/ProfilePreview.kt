@@ -2,11 +2,14 @@ package ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import org.example.linkedinlite.generated.resources.Res
 import org.example.linkedinlite.generated.resources.default_pfp
 import org.jetbrains.compose.resources.painterResource
+import ui.views.home.ProfileData
+import ui.views.home.ProfileUiState
 
 /**
  * Composable function for displaying a preview of a profile.
@@ -35,18 +40,26 @@ fun profilePreview(
     bio: String,
     major: String?,
     school: String?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showProfile: Boolean = false,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = modifier.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val interactionSource = remember { MutableInteractionSource() }
         // Profile Picture
         Box(
             modifier = Modifier
                 .size(96.dp)
                 .clip(CircleShape)
-                .background(Color.LightGray),
+                .background(Color.LightGray)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = onClick
+                ),
             contentAlignment = Alignment.Center
         ) {
             if (pfp != null) {
@@ -56,7 +69,7 @@ fun profilePreview(
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .size(96.dp)
-                        .clip(CircleShape)
+                        .clip(CircleShape),
                 )
             } else {
                 Image(

@@ -41,20 +41,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import data.User
+import imageBitmapToBufferedImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import service.PostService
 import ui.components.styles.styledButton
 import ui.components.styles.styledTextField
 import ui.theme.LIGHT_PURPLE
 import util.getBitmapFromFilepath
 import util.openFileChooser
+import java.util.*
 
 /**
  * Data class representing a new post with an optional photo and a description.
  */
 data class NewPost(
     var photo: ImageBitmap = ImageBitmap(0, 0),
-    var description: String = ""
+    var description: String = "",
 )
 
 /**
@@ -64,7 +68,9 @@ data class NewPost(
  * and uploading the new post. Displays feedback after upload.
  */
 @Composable
-fun postTab() {
+fun postTab(
+    currentUser: User
+) {
     var newPost by remember { mutableStateOf(NewPost()) }
     var showMessage by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -150,7 +156,7 @@ fun postTab() {
                 width = 64,
                 onClick = {
                     if (newPost.description.isNotEmpty()) {
-                        uploadPost(newPost)
+                        uploadPost(newPost, currentUser)
                         newPost = NewPost()
                         coroutineScope.launch {
                             showMessage = true
@@ -186,10 +192,10 @@ fun changePhoto(onPhotoSelected: (ImageBitmap?) -> Unit) {
  *
  * @param newPost The [NewPost] instance containing photo and description.
  */
-fun uploadPost(newPost: NewPost) {
+fun uploadPost(newPost: NewPost, currentUser: User) {
     println("Uploading post: $newPost")
-        if (newPost.photo.height == 0 || newPost.photo.width == 0) {}
-//            PostService().createPostWithImage(current_user.getId(), newPost.description, LinkedList(), imageBitmapToBufferedImage(newPost.photo))
-        else {}
-//            PostService().createPost(current_user.getId(), newPost.description, LinkedList())
+    if (newPost.photo.height != 0 || newPost.photo.width != 0)
+        PostService().createPostWithImage(currentUser.getId(), newPost.description, LinkedList(), imageBitmapToBufferedImage(newPost.photo))
+    else
+        PostService().createPost(currentUser.getId(), newPost.description, LinkedList())
 }
