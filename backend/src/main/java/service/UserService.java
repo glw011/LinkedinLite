@@ -37,6 +37,22 @@ public class UserService {
         }
     }
 
+    /**
+     * Retrieves the stored hashed password string (salt:hash) for a given user
+     *
+     * @param email the user's email address
+     * @return the stored password hash, or null if not found or empty
+     * @throws UserServiceException on database access failure
+     */
+    public String getHashedPassword(String email) {
+        try {
+            return UserDAO.getHashedPass(email);
+        } catch (SQLException e) {
+            throw new UserServiceException("Failed to fetch hashed password for: " + email, e);
+        }
+    }
+
+
     public List<Object> getAllUsers() {
         try {
 
