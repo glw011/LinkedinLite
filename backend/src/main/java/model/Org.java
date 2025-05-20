@@ -14,6 +14,7 @@ public class Org extends User {
     }
 
     public String getName(){return this.name;}
+    public void setName(String name) { this.name = name; }
 
     public void setMembersList(LinkedList<Integer> memberList){this.members = memberList;}
     public void addMember(int userId){

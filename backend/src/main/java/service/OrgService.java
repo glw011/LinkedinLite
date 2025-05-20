@@ -1,6 +1,7 @@
 package service;
 
 import dao.OrgDAO;
+import model.ModelManager;
 import model.Org;
 import model.Student;
 
@@ -42,7 +43,7 @@ public class OrgService {
             throw new IllegalArgumentException("invalid schoolId");
 
         try {
-            int orgId = OrgDAO.addOrg(name, email, hashedPass, String.valueOf(schoolId));
+            int orgId = OrgDAO.addOrg(name, email, hashedPass, ModelManager.getSchool(schoolId).getSchoolName());
             if (orgId > 0) {
                 return orgId;
             }

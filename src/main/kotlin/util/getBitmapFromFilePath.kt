@@ -10,9 +10,9 @@ import java.io.File
  * @param imagePath The file path of the image.
  * @return The ImageBitmap representation of the image, or null if the file does not exist.
  */
-fun getBitmapFromFilepath(imagePath: String): ImageBitmap? {
+fun getBitmapFromFilepath(imagePath: String): ImageBitmap {
     val file = File(imagePath)
-    var bitmap: ImageBitmap? = null
+    var bitmap: ImageBitmap = ImageBitmap(0, 0)
 
     if (file.exists()) {
         val skiaImage = org.jetbrains.skia.Image.makeFromEncoded(file.readBytes())

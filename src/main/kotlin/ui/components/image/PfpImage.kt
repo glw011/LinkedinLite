@@ -24,7 +24,7 @@ var pfpModifier = Modifier
  */
 @Composable
 fun PfpImage(
-    imageBitmap: ImageBitmap?,
+    imageBitmap: ImageBitmap,
     contentScale: ContentScale = ContentScale.Fit,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}

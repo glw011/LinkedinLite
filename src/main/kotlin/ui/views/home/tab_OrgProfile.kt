@@ -11,6 +11,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import ui.components.DetailEditDialog
 import ui.components.ProfileHeader
@@ -50,7 +51,7 @@ val exampleMembers = exampleNames.mapIndexed { index, name ->
     Member(
         name = name,
         role = exampleRoles[index],
-        profilePicture = null // Placeholder for profile picture
+        profilePicture = ImageBitmap(0, 0) // Placeholder for profile picture
     )
 }
 
@@ -95,19 +96,19 @@ fun OrgProfileTab(
                     title = uiState.headerInfo.title,
                     location = uiState.headerInfo.location,
                     school = uiState.headerInfo.school,
-                    banner = uiState.headerInfo.banner.value,
-                    profilePicture = uiState.headerInfo.profilePicture.value,
+                    banner = uiState.headerInfo.banner,
+                    profilePicture = uiState.headerInfo.profilePicture,
                     onEditHeader = { isEditingHeader = true },
                     onEditBanner = {
                         imagePath = openFileChooser()
                         if (imagePath.isNotEmpty()) {
-                            uiState.headerInfo.banner.value = getBitmapFromFilepath(imagePath)
+                            uiState.headerInfo.banner = getBitmapFromFilepath(imagePath)
                         }
                     },
                     onEditProfilePicture = {
                         imagePath = openFileChooser()
                         if (imagePath.isNotEmpty()) {
-                            uiState.headerInfo.profilePicture.value = getBitmapFromFilepath(imagePath)
+                            uiState.headerInfo.profilePicture = getBitmapFromFilepath(imagePath)
                         }
                     },
                     modifier = Modifier

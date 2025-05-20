@@ -145,22 +145,12 @@ public class ModelManager {
             int currInterestId = interests.getInt("interest_id");
             String currInterestName = interests.getString("interest_name");
 
-            String currSqlStr = String.format("SELECT * FROM Interest_FoS WHERE interest_id = %d", currInterestId);
-            ResultSet field = DBConnection2.queryDB(currSqlStr);
-
-            field.next();
-            int currFieldId = field.getInt("fos_id");
-            FoS currField = allFields.get(currFieldId);
-            field.close();
-
             Interest currInterest = new Interest(
                     currInterestId,
-                    currInterestName,
-                    currField
+                    currInterestName
             );
             allInterests.putIfAbsent(currInterest.getID(), currInterest);
             interestByName.putIfAbsent(currInterest.getName(), currInterest.getID());
-            currField.addRelatedInterest(currInterest);
         }
 
         interests.close();
@@ -308,6 +298,15 @@ public class ModelManager {
 
     // Functions to get Interest obj by id, interest id by name, Interest obj by name
     public static Interest getInterest(int id){return allInterests.get(id);}
+    public static String[] getAllInterestList(){
+        String[] interestList = new String[interestByName.size()];
+        int i = 0;
+
+        for(String name : interestByName.keySet()){
+            interestList[i++] = name;
+        }
+        return interestList;
+    }
     public static int getInterestIdByName(String name){
         if(interestByName.containsKey(name)) return interestByName.get(name);
         return -1;
@@ -337,6 +336,15 @@ public class ModelManager {
 
     // Functions to get Major obj by id, major id by name, Major obj by name
     public static Major getMajor(int id){return allMajors.get(id);}
+    public static String[] getAllMajorList(){
+        String[] majorList = new String[majorByName.size()];
+        int i = 0;
+
+        for(String name : majorByName.keySet()){
+            majorList[i++] = name;
+        }
+        return majorList;
+    }
     public static int getMajorIdByName(String name){
         if(majorByName.containsKey(name)) return majorByName.get(name);
         return -1;

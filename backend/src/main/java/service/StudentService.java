@@ -48,6 +48,7 @@ public class StudentService {
      */
     public int addStudent(
             String fname,
+            String lname,
             String email,
             String hashedPass,
             String schoolName,
@@ -59,7 +60,7 @@ public class StudentService {
             throw new IllegalArgumentException("Missing required fields");
         }
 
-        int stdId = StudentDAO.addStdnt(fname, email, hashedPass, schoolName, majorName);
+        int stdId = StudentDAO.addStdnt(fname, lname, email, hashedPass, schoolName, majorName);
         try{
             if(stdId > 0){
                 return stdId;

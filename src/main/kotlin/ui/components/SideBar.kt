@@ -51,7 +51,7 @@ var searchActive by mutableStateOf(false)
  */
 @Composable
 fun Sidebar(
-    userProfilePicture: ImageBitmap?,
+    userProfilePicture: ImageBitmap,
     selectedTab: String,
     onTabSelected: (String) -> Unit) {
     Column(
@@ -363,7 +363,7 @@ fun notificationTabButton(isSelected: Boolean, onClick: () -> Unit) {
 
 @Composable
 fun profileTabButton(
-    userProfilePicture: ImageBitmap?,
+    userProfilePicture: ImageBitmap,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {

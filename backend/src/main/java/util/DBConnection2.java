@@ -1,6 +1,9 @@
 package util;
 
 import java.sql.*;
+import java.util.Objects;
+
+import model.ModelManager;
 
 /**
  * Responsible for maintaining connection to DB and returning statement objects which allow querying of the DB
@@ -9,11 +12,17 @@ import java.sql.*;
 public class DBConnection2 {
     private static final boolean DEBUG = true;
 
-    private static final String DB_USER = System.getenv().getOrDefault("DB_USER", "dbuser");
-    private static final String DB_PASS = System.getenv().getOrDefault("DB_PASS", "CSC403");
-    private static final String DB_HOST = System.getenv().getOrDefault("DB_HOST", "localhost");
-    //private static final String DB_PORT = System.getenv().getOrDefault("DB_PORT", "3306");
-    private static final String DB_NAME = System.getenv().getOrDefault("DB_NAME", "lldb");
+//    private static final String DB_USER = System.getenv().getOrDefault("DB_USER", "root");
+//    private static final String DB_PASS = System.getenv().getOrDefault("DB_PASS", "12345678");
+//    private static final String DB_HOST = System.getenv().getOrDefault("DB_HOST", "localhost");
+//    private static final String DB_PORT = System.getenv().getOrDefault("DB_PORT", "3306");
+//    private static final String DB_NAME = System.getenv().getOrDefault("DB_NAME", "lldb");
+
+    private static final String DB_USER = "root";
+    private static final String DB_PASS = "12345678";
+    private static final String DB_HOST = "localhost";
+    private static final String DB_PORT = "3306";
+    private static final String DB_NAME = "lldb";
 
     // Add allowPublicKeyRetrieval=true
     private static final String DB_URL = String.format(

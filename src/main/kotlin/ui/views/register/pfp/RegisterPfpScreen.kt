@@ -1,10 +1,16 @@
-package ui.views.register
+package ui.views.register.pfp
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,8 +28,6 @@ fun registerPfpScreen(
     onContinue: () -> Unit,
     onBack: () -> Unit
 ) {
-    var imagePath by remember { mutableStateOf("") }
-
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Main content of the register screen
         Column(
@@ -49,19 +53,15 @@ fun registerPfpScreen(
                 Spacer(modifier = Modifier.padding(top = 32.dp))
 
                 EditablePfpImage(
-                    imageBitmap = uiState.profilePicture.value,
+                    imageBitmap = uiState.profilePicture,
                     modifier = Modifier.fillMaxHeight(0.3f),
                     onClick = {
-                        imagePath = openFileChooser()
-                        val bitmap = getBitmapFromFilepath(imagePath)
-                        if (bitmap != null) {
-                            uiState.profilePicture.value = bitmap
-                        }
+                        uiState.profilePicture = getBitmapFromFilepath(openFileChooser())
                     }
                 )
 
                 Text(
-                    text = "Please upload a profile picture for your organization",
+                    text = uiState.prompt,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(16.dp))
 

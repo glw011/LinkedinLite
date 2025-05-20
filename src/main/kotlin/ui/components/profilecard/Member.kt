@@ -15,5 +15,5 @@ import util.getBitmapFromDrawableID
 data class Member(
     val name: String,
     var role: String,
-    val profilePicture: ImageBitmap? = getBitmapFromDrawableID(Res.drawable.default_pfp),
+    val profilePicture: ImageBitmap = ImageBitmap(0, 0),
 )

@@ -45,7 +45,7 @@ import ui.components.image.PfpImage
 private fun MemberDetails(
     name: String,
     role: String,
-    profilePicture: ImageBitmap?,
+    profilePicture: ImageBitmap,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -104,7 +104,7 @@ private fun MemberDetails(
 private fun MemberSlot(
     name: String,
     role: String,
-    profilePicture: ImageBitmap?,
+    profilePicture: ImageBitmap,
     isEditable: Boolean = false,
     onDelete: () -> Unit = {},
     onClick: () -> Unit,

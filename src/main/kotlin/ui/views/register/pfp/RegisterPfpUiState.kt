@@ -1,7 +1,8 @@
-package ui.views.register
+package ui.views.register.pfp
 
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 
 /**
@@ -11,6 +12,7 @@ import androidx.compose.ui.graphics.ImageBitmap
  * @property errorMessage An optional error message to display.
  */
 data class RegisterPfpUIState(
-    var profilePicture: MutableState<ImageBitmap?> = mutableStateOf(null),
-    val errorMessage: String? = null,
-)
+    var prompt: String = ""
+) {
+    var profilePicture by mutableStateOf(ImageBitmap(0, 0))
+}

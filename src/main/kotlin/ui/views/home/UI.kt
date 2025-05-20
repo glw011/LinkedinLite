@@ -5,14 +5,22 @@ Main UI file for LinkedInLite
 
 package ui.views.home
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.AccountType
 import data.User
-import data.current_user
+import model.UserType
 import ui.components.Sidebar
 import ui.components.searchActive
 import ui.theme.DARK_MODE
@@ -39,7 +47,7 @@ fun UI(
 
             // Always Show Sidebar
             Sidebar(
-                userProfilePicture = profileUiState.headerInfo.profilePicture.value,
+                userProfilePicture = profileUiState.headerInfo.profilePicture,
                 selectedTab = selectedTab,
                 onTabSelected = { tabName -> selectedTab = tabName }
             )
@@ -65,7 +73,7 @@ fun UI(
                 when (selectedTab) {
                     "People / Orgs" -> peopleOrgsTabContent()
                     "My Profile" ->
-                        if (current_user.accountType == AccountType.ORGANIZATION) {
+                        if (currentUser.getAccountType() == UserType.ORG) {
                             OrgProfileTab(profileUiState)
                         } else {
                             IndividualProfileTab(profileUiState)

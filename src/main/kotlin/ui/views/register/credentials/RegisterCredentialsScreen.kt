@@ -1,4 +1,4 @@
-package ui.views.register
+package ui.views.register.credentials
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
@@ -11,24 +11,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import data.DataSource.tags
 import ui.components.AccountDetailField
 import ui.components.styles.styledButton
-import ui.components.styles.styledDropDownList
 import ui.theme.LIGHT_PURPLE
 
 /**
- * The registration screen allowing the user to input information about his or her organization
+ * UI state for the RegisterCredentials screen.
  *
- * @param uiState The current state of the registration screen.
- * @param onContinue Callback function for when the user clicks the continue button.
- * @param onBack Callback function for when the user clicks the back button.
+ * @param onContinue Callback function to be called when the user clicks "Continue".
+ * @param onBack Callback function to be called when the user clicks "Back".
  */
 @Composable
-fun registerOrgInfoScreen(
-    uiState: RegisterOrgInfoUiState,
-    onContinue: () -> Unit,
-    onBack: () -> Unit,
+fun registerCredentialsScreen(
+    uiState: RegisterCredentialsUiState,
+    onEvent: (RegisterCredentialsEvent) -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Main content of the register screen
@@ -49,56 +45,40 @@ fun registerOrgInfoScreen(
             Spacer(modifier = Modifier.padding(top = 32.dp))
 
             AccountDetailField(
-                label = "Organization Name",
-                prompt = "Enter name",
-                onTextChanged = { uiState.orgName = it },
-                keyboardType = KeyboardType.Text,
-                value = uiState.orgName,
+                label = "Email",
+                prompt = "Enter email",
+                keyboardType = KeyboardType.Email,
+                onTextChanged = { onEvent(RegisterCredentialsEvent.EmailChanged(it)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.padding(top = 32.dp))
 
             AccountDetailField(
-                label = "School Name",
-                prompt = "Enter school name",
-                onTextChanged = { uiState.schoolName = it },
-                keyboardType = KeyboardType.Text,
-                value = uiState.schoolName,
+                label = "Password",
+                prompt = "Enter password",
+                keyboardType = KeyboardType.Password,
+                onTextChanged = { onEvent(RegisterCredentialsEvent.PasswordChanged(it)) },
+                password = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.padding(top = 32.dp))
 
-            Text(
-                text = "Organization Tags",
-                color = MaterialTheme.colorScheme.onBackground,
+            AccountDetailField(
+                label = "Confirm Password",
+                prompt = "Re-enter password",
+                keyboardType = KeyboardType.Password,
+                onTextChanged = { onEvent(RegisterCredentialsEvent.ConfirmPasswordChanged(it)) },
+                password = true,
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.padding(top = 16.dp))
-
-            styledDropDownList(
-                items = tags,
-                modifier = Modifier,
-                width = 256,
-                multiSelect = true,
-                noSelectionText = "Select Organization Tags",
-                value = uiState.orgTags.joinToString(", "),
-                onSelect = {
-                    val selectedTag = it
-                    if (selectedTag in uiState.orgTags) {
-                        uiState.orgTags.remove(selectedTag)
-                    } else {
-                        uiState.orgTags.add(selectedTag)
-                    }
-                }
-            )
-
-            Spacer(modifier = Modifier.padding(top = 64.dp))
+            Spacer(modifier = Modifier.weight(0.15f))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -106,7 +86,9 @@ fun registerOrgInfoScreen(
                     text = "Continue",
                     width = 80,
                     xAlignment = Alignment.CenterHorizontally,
-                    onClick = { onContinue() },
+                    onClick = {
+                        onEvent(RegisterCredentialsEvent.OnContinue)
+                    },
                     buttonColor = LIGHT_PURPLE,
                     textColor = Color.White,
                 )
@@ -117,13 +99,25 @@ fun registerOrgInfoScreen(
                     text = "Back",
                     width = 80,
                     xAlignment = Alignment.CenterHorizontally,
-                    onClick = { onBack() },
+                    onClick = {
+                        onEvent(RegisterCredentialsEvent.OnBack)
+                    },
                     buttonColor = LIGHT_PURPLE,
                     textColor = Color.White,
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
             }
+
+            Spacer(modifier = Modifier.weight(0.05f))
+
+            Text(
+                text = uiState.errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = ui.theme.Typography.bodySmall
+            )
+
+            Spacer(modifier = Modifier.weight(0.3f))
         }
     }
 }

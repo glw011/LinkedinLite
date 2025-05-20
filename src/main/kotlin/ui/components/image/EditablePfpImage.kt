@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 @Composable
 private fun EditablePfpImage(
     imagePath: String,
-    imageBitmap: ImageBitmap?,
+    imageBitmap: ImageBitmap,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
@@ -88,7 +88,7 @@ private fun EditablePfpImage(
  */
 @Composable
 fun EditablePfpImage(
-    imageBitmap: ImageBitmap?,
+    imageBitmap: ImageBitmap,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
@@ -118,7 +118,7 @@ fun EditablePfpImage(
 ) {
     EditablePfpImage(
         imagePath = imagePath,
-        imageBitmap = null,
+        imageBitmap = ImageBitmap(0, 0),
         modifier = modifier,
         onClick = onClick,
     )
