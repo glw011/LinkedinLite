@@ -16,6 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bufferedImageToImageBitmap
+import dao.PictureDAO
+import dao.UserDAO
 import data.DataSource.searchFilters
 import data.getProfilesFromSearch
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +27,7 @@ import kotlinx.coroutines.withContext
 import ui.components.profilePreview
 import ui.components.searchActive
 import ui.components.searchBar
+import util.getBitmapFromFilepath
 
 /**
  * Stores the text currently entered in the search bar.
@@ -51,7 +55,8 @@ data class ProfileData(
     val bio: String,
     val tags: List<String> = listOf(),
     val major: String = "",
-    val school: String = ""
+    val school: String = "",
+    val id: Int = 0
 )
 
 /**
@@ -169,8 +174,16 @@ fun peopleOrgsTabContent() {
                     horizontalAlignment = Alignment.Start
                 ) {
                     items(filteredProfiles) { profile ->
+                        val imgPath = PictureDAO.getImgPath(UserDAO.getProfileImgId(profile.id))
+                        var profileImg: ImageBitmap? = null
+
+                        if (imgPath != null)
+                            profileImg = getBitmapFromFilepath(PictureDAO.getImgPath(UserDAO.getProfileImgId(profile.id)))
+                        else
+                            profileImg = null
+
                         profilePreview(
-                            profile.pfp,
+                            profileImg,
                             profile.name,
                             profile.bio,
                             profile.major,

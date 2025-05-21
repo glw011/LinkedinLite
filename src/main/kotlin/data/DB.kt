@@ -61,7 +61,8 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
                     bio = user.bio ?: "",
 //                    tags = interests,
                     major = major,
-                    school = school
+                    school = school,
+                    id = user.id
                 )
             }
 
@@ -126,4 +127,8 @@ suspend fun genPostList(loadMore: Boolean = false): List<Post> = withContext(Dis
             comments = LinkedList()
         )
     }
+}
+
+fun getCurrentUserProfileImg() {
+
 }

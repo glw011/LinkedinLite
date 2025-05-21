@@ -7,10 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import dao.PictureDAO
+import dao.UserDAO
 import data.Organization
 import data.Student
 import data.User
 import model.ModelManager
+import model.Org
 import model.UserType
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
@@ -110,6 +113,22 @@ fun App() {
                             registrationInfo.profilePicture,
                             registrationInfo.tags,
                         )
+
+                        val pfp = (currentUser as Student).getProfilePicture()
+                        var imgId = 0
+
+                        if (pfp.height != 0 && pfp.width != 0) {
+                            imgId = PictureDAO.addNewImg(
+                                imageBitmapToBufferedImage(pfp),
+                                (currentUser as Student).getId()
+                            )
+
+                            UserDAO.setProfileImg(
+                                (currentUser as Student).getId(),
+                                imgId
+                            )
+                        }
+
                     } else {
                         currentUser = Organization.register(
                             registrationInfo.name,
@@ -119,6 +138,21 @@ fun App() {
                             registrationInfo.profilePicture,
                             registrationInfo.tags,
                         )
+
+                        val pfp = (currentUser as Student).getProfilePicture()
+                        var imgId = 0
+
+                        if (pfp.height != 0 && pfp.width != 0) {
+                            imgId = PictureDAO.addNewImg(
+                                imageBitmapToBufferedImage(pfp),
+                                (currentUser as Organization).getId()
+                            )
+
+                            UserDAO.setProfileImg(
+                                (currentUser as Organization).getId(),
+                                imgId
+                            )
+                        }
                     }
                 }
             )
