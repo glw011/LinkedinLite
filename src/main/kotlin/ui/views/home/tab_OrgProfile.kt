@@ -35,7 +35,6 @@ import ui.components.dialog.ProfileAssociateInviteDialog
 import ui.components.dialog.ProfileTagsEditDialog
 import ui.components.profilecard.Associate
 import ui.components.profilecard.ProfileAssociatesCard
-import ui.components.profilecard.ProfilePostsCard
 import ui.components.profilecard.ProfileRecommendationCard
 import ui.components.profilecard.ProfileTagsCard
 import util.getBitmapFromFilepath
@@ -133,12 +132,6 @@ fun OrgProfileTab(
                         .border(1.dp, Color.Gray, headerShape)
                         .clip(headerShape),
                     currentUser = user
-                )
-                ProfilePostsCard(
-                    title = "Posts",
-                    modifier = Modifier
-                        .height(650.dp)
-                        .fillMaxWidth()
                 )
                 ProfileTagsCard(
                     title = "Tags",

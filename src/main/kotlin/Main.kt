@@ -126,6 +126,9 @@ fun App() {
                 onBack = { currentView = View.Login },
                 onRegister = {
                     currentView = View.Home
+                    if (registrationInfo.profilePicture.height == 0 || registrationInfo.profilePicture.width == 0) {
+                        registrationInfo.profilePicture = bufferedImageToImageBitmap(PictureDAO.getBufferedImg(7))
+                    }
                     if (registrationInfo.accountType == UserType.STUDENT) {
                         currentUser = Student.register(
                             registrationInfo.name,
@@ -163,7 +166,7 @@ fun App() {
                             registrationInfo.tags,
                         )
 
-                        val pfp = (currentUser as Student).getProfilePicture()
+                        val pfp = (currentUser as Organization).getProfilePicture()
                         var imgId = 0
 
                         if (pfp.height != 0 && pfp.width != 0) {

@@ -21,6 +21,7 @@ import ui.components.image.PfpImage
 fun ProfileSlot(
     name: String,
     description: String,
+    profilePicture: ImageBitmap,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -29,7 +30,7 @@ fun ProfileSlot(
             .fillMaxWidth()
     ) {
         PfpImage(
-            imageBitmap = ImageBitmap(0, 0),
+            imageBitmap = profilePicture,
             modifier = Modifier.size(64.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -109,6 +110,7 @@ fun PersonalProfileRecommendationCard(
             ProfileSlot(
                 name = profile.getName(),
                 description = profile.getDescription(),
+                profilePicture = profile.getProfilePicture(),
                 modifier = Modifier.height(64.dp)
             )
         }
@@ -134,6 +136,7 @@ fun OrganizationProfileRecommendationCard(
             ProfileSlot(
                 name = profile.getName(),
                 description = profile.getDescription(),
+                profilePicture = profile.getProfilePicture(),
                 modifier = Modifier.height(64.dp)
             )
         }

@@ -119,7 +119,10 @@ fun ProfileAssociateInviteDialog(
                                 if (student.getId() in org.getPendingMembershipRequests().map { it.getId() }) {
                                     return@Row
                                 }
-                                ProfileSlot(profile.name, profile.bio, modifier=Modifier.weight(1f))
+                                profile.pfp?.let {
+                                    ProfileSlot(profile.name, profile.bio,
+                                        it, modifier=Modifier.weight(1f))
+                                }
                                 styledButton(
                                     modifier = Modifier.align(Alignment.CenterVertically),
                                     width = 100,
@@ -140,7 +143,10 @@ fun ProfileAssociateInviteDialog(
                                 if (org.getId() in student.getPendingInvites().map { it.getId() }) {
                                     return@Row
                                 }
-                                ProfileSlot(profile.name, profile.bio, modifier=Modifier.weight(1f))
+                                profile.pfp?.let {
+                                    ProfileSlot(profile.name, profile.bio,
+                                        it, modifier=Modifier.weight(1f))
+                                }
                                 styledButton(
                                     modifier = Modifier.align(Alignment.CenterVertically),
                                     width = 100,

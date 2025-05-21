@@ -35,7 +35,7 @@ abstract class User(
         return "${school.city}, ${school.state}, ${school.country}"
     }
     fun getProfileBanner(): ImageBitmap {
-        return getBitmapFromFilepath(PictureDAO.getImgPath(PictureDAO.getProfileImgId(getId())))
+        return getBitmapFromFilepath(PictureDAO.getImgPath(PictureDAO.getBannerImgId(getId())))
     }
     fun getProfilePicture(): ImageBitmap {
         return getBitmapFromFilepath(PictureDAO.getImgPath(PictureDAO.getProfileImgId(getId())))
