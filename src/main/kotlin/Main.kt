@@ -12,6 +12,7 @@ import data.Student
 import data.User
 import model.ModelManager
 import model.UserType
+import ui.components.profilecard.Associate
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
@@ -29,7 +30,7 @@ fun main() = application {
         ModelManager.initModelManager()
         window.minimumSize = Dimension(800, 600)
         MainTheme {
-            App() // or pass sdao into App if needed
+            App()
         }
     }
 }
@@ -126,12 +127,30 @@ fun App() {
         View.Home -> {
             if (currentUser != null) {
                 val profileUiState = ProfileUiState(currentUser!!)
-                profileUiState.headerInfo.name = currentUser!!.getName()
-                profileUiState.headerInfo.location = currentUser!!.getLocation()
-                profileUiState.headerInfo.school = currentUser!!.getSchool()
-                profileUiState.headerInfo.profilePicture = currentUser!!.getProfilePicture()
-                profileUiState.headerInfo.title = currentUser!!.title
                 profileUiState.tags = currentUser!!.getTags()
+                profileUiState.recommendedPeople = currentUser!!.getRecommendedStudents()
+                profileUiState.relatedOrganizations = currentUser!!.getRelatedOrganizations()
+                val associates = mutableListOf<Associate>()
+                if (currentUser is Organization) {
+                    for (member in (currentUser as Organization).getMembers()) {
+                        associates.add(
+                            Associate(
+                                member.getName(),
+                                "Example Role"
+                            )
+                        )
+                    }
+                } else {
+                    for (organization in (currentUser as Student).getOrganizations()) {
+                        associates.add(
+                            Associate(
+                                organization.getName(),
+                                "Example Role"
+                            )
+                        )
+                    }
+                }
+                profileUiState.associates = associates
                 UI(profileUiState, currentUser!!)
             } else {
                 throw IllegalStateException("Failed to register user")

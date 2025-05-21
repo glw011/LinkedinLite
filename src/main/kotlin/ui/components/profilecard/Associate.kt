@@ -1,9 +1,6 @@
 package ui.components.profilecard
 
 import androidx.compose.ui.graphics.ImageBitmap
-import org.example.linkedinlite.generated.resources.Res
-import org.example.linkedinlite.generated.resources.default_pfp
-import util.getBitmapFromDrawableID
 
 /**
  * Data class representing a member in a profile card.
@@ -12,7 +9,7 @@ import util.getBitmapFromDrawableID
  * @property role The role of the member.
  * @property profilePicture The profile picture of the member. Defaults to a default image.
  */
-data class Member(
+data class Associate(
     val name: String,
     var role: String,
     val profilePicture: ImageBitmap = ImageBitmap(0, 0),

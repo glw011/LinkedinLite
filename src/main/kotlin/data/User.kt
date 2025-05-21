@@ -14,7 +14,6 @@ abstract class User(
     private var tags: List<String>,
 ) {
     abstract val title: String
-    protected var description: String = ""
 
     protected var profileBanner: ImageBitmap = ImageBitmap(0, 0)
 
@@ -31,6 +30,7 @@ abstract class User(
         return "${school.city}, ${school.state}, ${school.country}"
     }
     abstract fun getProfilePicture(): ImageBitmap
+    abstract fun getDescription(): String
     abstract fun getTags(): List<String>
     abstract fun getRecommendedStudents(): List<Student>
     abstract fun getRelatedOrganizations(): List<Organization>
@@ -42,6 +42,7 @@ abstract class User(
     abstract fun setEmail(email: String)
     abstract fun setSchool(school: String)
     abstract fun setProfilePicture(profilePicture: ImageBitmap)
+    abstract fun setDescription(description: String)
     abstract fun setTags(tags: List<String>)
     abstract fun addTag(tag: String)
     abstract fun removeTag(tag: String)

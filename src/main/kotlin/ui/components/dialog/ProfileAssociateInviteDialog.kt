@@ -19,7 +19,7 @@ import androidx.compose.ui.window.Dialog
  * @param onCancel Callback for when the cancel button is clicked or dialog is dismissed.
  */
 @Composable
-fun ProfileMemberInviteDialog(
+fun ProfileAssociateInviteDialog(
     onCancel: () -> Unit,
 ) {
     Dialog(

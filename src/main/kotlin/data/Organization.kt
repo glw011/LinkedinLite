@@ -2,12 +2,14 @@ package data
 
 import ProfileRecommender
 import androidx.compose.ui.graphics.ImageBitmap
+import dao.OrgDAO
+import dao.UserDAO
 import model.ModelManager
 import model.Org
 import model.School
 import model.UserType
 import service.OrgService
-import java.util.LinkedList
+import service.StudentService
 
 class Organization private constructor(
     private val id: Int,
@@ -42,6 +44,12 @@ class Organization private constructor(
     override fun getProfilePicture(): ImageBitmap {
         return profilePicture
     }
+    override fun getDescription(): String {
+        if (getModel().bio == null) {
+            return ""
+        }
+        return getModel().bio
+    }
     override fun getTags(): List<String> {
         val tagIDs = getModel().interests.toList()
         val tags = mutableListOf<String>()
@@ -58,6 +66,14 @@ class Organization private constructor(
         return ProfileRecommender.recommendOrganizations(this, 4)
             .map { fromModel(it) }
     }
+    fun getMembers(): List<Student> {
+        return getModel().membersList.map { Student.fromModel(StudentService().getStudentById(it)) }
+    }
+    fun getPendingMembershipRequests(): List<Student> {
+        return OrgService().getPendingRequests(getId()).keys.map {
+            Student.fromModel(StudentService().getStudentById(it))
+        }
+    }
 
     override fun setName(name: String) {
         getModel().name = name
@@ -68,27 +84,54 @@ class Organization private constructor(
     }
 
     override fun setSchool(school: String) {
-        getModel().school = ModelManager.getSchoolByName(school)
+        OrgDAO.setSchool(getId(), ModelManager.getSchoolIdByName(school))
     }
     override fun setProfilePicture(profilePicture: ImageBitmap) {
         this.profilePicture = profilePicture
     }
+    override fun setDescription(description: String) {
+        OrgDAO.setBio(getId(), description)
+    }
     override fun setTags(tags: List<String>) {
-        val tagIDs = mutableListOf<Int>()
-        for (tag in tags) {
-            tagIDs.add(ModelManager.getInterestByName(tag).id)
+        val currentTags = getModel().interests.toList()
+        for (tagID in currentTags) {
+            if (!tags.contains(ModelManager.getInterest(tagID).name)) {
+                UserDAO.delUserInterest(id, tagID)
+            }
         }
-        getModel().interests = (tagIDs as LinkedList<Int>?)
+        for (tag in tags) {
+            if (!getModel().interests.contains(ModelManager.getInterestByName(tag).id)) {
+                UserDAO.addUserInterest(getId(), ModelManager.getInterestByName(tag).id)
+            }
+        }
     }
     override fun addTag(tag: String) {
-        val tagIDs = getModel().interests
-        tagIDs.add(ModelManager.getInterestByName(tag).id)
-        getModel().interests = tagIDs
+        UserDAO.addUserInterest(getId(), ModelManager.getInterestByName(tag).id)
     }
     override fun removeTag(tag: String) {
-        val tagIDs = getModel().interests
-        tagIDs.remove(ModelManager.getInterestByName(tag).id)
-        getModel().interests = tagIDs
+        UserDAO.delUserInterest(getId(), ModelManager.getInterestByName(tag).id)
+    }
+    fun setMembers(members: List<Student>) {
+        for (member in members) {
+            if (!getModel().membersList.contains(member.getId())) {
+                OrgService().addMember(getId(), member.getId())
+            }
+        }
+    }
+    fun addMember(member: Student) {
+        OrgService().addMember(getId(), member.getId())
+    }
+    fun removeMember(member: Student) {
+        OrgService().delMember(getId(), member.getId())
+    }
+    fun inviteMember(member: Student) {
+        OrgService().inviteMember(getId(), member.getId())
+    }
+    fun acceptMember(member: Student) {
+        OrgService().approveMemberRequest(getId(), member.getId())
+    }
+    fun rejectMember(member: Student) {
+        OrgService().denyMemberRequest(getId(), member.getId())
     }
 
     companion object {
@@ -121,6 +164,9 @@ class Organization private constructor(
                 password,
                 ModelManager.getSchoolIdByName(school),
             )
+            for (tag in tags) {
+                OrgDAO.addUserInterest(id, ModelManager.getInterestByName(tag).id)
+            }
             return Organization(
                 id,
                 name,

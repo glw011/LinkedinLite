@@ -87,7 +87,7 @@ fun registerInfoScreen(
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
             styledDropDownList(
-                items = ModelManager.getAllSchoolsList().toList(),
+                items = ModelManager.getAllSchoolsList().toList().sortedByDescending { it },
                 modifier = Modifier,
                 width = 256,
                 multiSelect = false,
@@ -108,7 +108,7 @@ fun registerInfoScreen(
                 Spacer(modifier = Modifier.padding(top = 16.dp))
 
                 styledDropDownList(
-                    items = ModelManager.getAllInterestList().toList(),
+                    items = ModelManager.getAllInterestList().toList().sortedByDescending { it },
                     modifier = Modifier,
                     width = 256,
                     multiSelect = true,

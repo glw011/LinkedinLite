@@ -3,7 +3,14 @@ package ui.components.profilecard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,7 +49,7 @@ import ui.components.image.PfpImage
  * @param modifier The modifier for the surface.
  */
 @Composable
-private fun MemberDetails(
+private fun AssociateDetails(
     name: String,
     role: String,
     profilePicture: ImageBitmap,
@@ -101,7 +108,7 @@ private fun MemberDetails(
  * @param modifier The modifier for the slot.
  */
 @Composable
-private fun MemberSlot(
+private fun AssociateSlot(
     name: String,
     role: String,
     profilePicture: ImageBitmap,
@@ -115,7 +122,7 @@ private fun MemberSlot(
             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
             .clickable(onClick = onClick)
     ) {
-        MemberDetails(
+        AssociateDetails(
             name = name,
             role = role,
             profilePicture = profilePicture,
@@ -149,12 +156,12 @@ private fun MemberSlot(
  * @param modifier Modifier to apply to the card.
  */
 @Composable
-fun ProfileMembersCard(
+fun ProfileAssociatesCard(
     title: String,
     subtitle: String = "",
-    members: MutableList<Member>,
-    onMemberClick: (Member) -> Unit,
-    onAddMemberClick: () -> Unit,
+    associates: MutableList<Associate>,
+    onAssociateClick: (Associate) -> Unit,
+    onAddAssociateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isEditing by rememberSaveable{ mutableStateOf(false) }
@@ -176,21 +183,21 @@ fun ProfileMembersCard(
                 .fillMaxHeight()
                 .clip(RoundedCornerShape(8.dp))
 
-            items(members.size) { index ->
-                MemberSlot(
-                    name = members[index].name,
-                    role = members[index].role,
-                    profilePicture = members[index].profilePicture,
+            items(associates.size) { index ->
+                AssociateSlot(
+                    name = associates[index].name,
+                    role = associates[index].role,
+                    profilePicture = associates[index].profilePicture,
                     isEditable = isEditing,
                     onClick = {
                         if (isEditing) {
-                            onMemberClick(members[index])
+                            onAssociateClick(associates[index])
                         } else {
                             // Handle view member action
                         }
                     },
                     onDelete = {
-                        members.remove(members[index])
+                        associates.remove(associates[index])
                     },
                     modifier = itemModifier
                 )
@@ -199,7 +206,7 @@ fun ProfileMembersCard(
             item {
                 Box(
                     modifier = itemModifier
-                        .clickable(onClick = { onAddMemberClick() })
+                        .clickable(onClick = { onAddAssociateClick() })
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,

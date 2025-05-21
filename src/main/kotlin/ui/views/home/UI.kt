@@ -74,9 +74,9 @@ fun UI(
                     "People / Orgs" -> peopleOrgsTabContent()
                     "My Profile" ->
                         if (currentUser.getAccountType() == UserType.ORG) {
-                            OrgProfileTab(profileUiState)
+                            OrgProfileTab(currentUser, profileUiState)
                         } else {
-                            IndividualProfileTab(profileUiState)
+                            IndividualProfileTab(currentUser, profileUiState)
                         }
                     "Home" -> homeTab()
                     "Post" -> postTab()

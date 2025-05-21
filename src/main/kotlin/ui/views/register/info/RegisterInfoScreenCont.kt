@@ -53,7 +53,7 @@ fun registerInfoScreenCont(
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
             styledDropDownList(
-                items = ModelManager.getAllInterestList().toList(),
+                items = ModelManager.getAllInterestList().toList().sortedByDescending { it },
                 modifier = Modifier,
                 width = 256,
                 multiSelect = true,
@@ -72,7 +72,7 @@ fun registerInfoScreenCont(
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
             styledDropDownList(
-                items = ModelManager.getAllMajorList().toList(),
+                items = ModelManager.getAllMajorList().toList().sortedByDescending { it },
                 modifier = Modifier,
                 width = 256,
                 multiSelect = false,

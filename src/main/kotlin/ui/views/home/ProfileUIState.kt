@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import data.Organization
 import data.Student
 import data.User
-import ui.components.profilecard.Member
+import ui.components.profilecard.Associate
 
 /**
  * Data class holding the UI state for a profile screen
@@ -21,14 +21,14 @@ data class ProfileUiState(
     var user: User,
     var recommendedPeople: List<Student> = listOf(),
     var relatedOrganizations: List<Organization> = listOf(),
-    var members: List<Member> = listOf(),
+    var associates: List<Associate> = listOf(),
 ) {
     var headerInfo: ProfileHeaderInfo = ProfileHeaderInfo(
-        name = user.getName(),
-        description = "",
-        title = user.title,
-        location = user.getLocation(),
-        school = user.getSchool(),
+        _name = user.getName(),
+        _description = user.getDescription(),
+        _title = user.title,
+        _location = user.getLocation(),
+        _school = user.getSchool(),
     )
     var tags = user.getTags()
 }
@@ -43,12 +43,17 @@ data class ProfileUiState(
  * @property profilePicture The ImageBitmap for the profile picture. Nullable.
  */
 data class ProfileHeaderInfo(
-    var name: String = "",
-    var description: String = "",
-    var title: String = "",
-    var location: String = "",
-    var school: String = "",
-) {
+    private var _name: String = "",
+    private var _description: String = "",
+    private var _title: String = "",
+    private var _location: String = "",
+    private var _school: String = "",
+){
+    var name by mutableStateOf(_name)
+    var description by mutableStateOf(_description)
+    var title by mutableStateOf(_title)
+    var location by mutableStateOf(_location)
+    var school by mutableStateOf(_school)
     var banner by mutableStateOf(ImageBitmap(0, 0))
     var profilePicture by mutableStateOf(ImageBitmap(0, 0))
 }

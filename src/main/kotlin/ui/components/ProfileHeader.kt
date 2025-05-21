@@ -16,9 +16,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import model.ModelManager
 import ui.components.dialog.EditDialog
 import ui.components.image.Banner
 import ui.components.image.EditablePfpImage
+import ui.components.styles.styledDropDownList
 
 /**
  * Creates a dialog window for editing profile details.
@@ -34,7 +36,6 @@ import ui.components.image.EditablePfpImage
 fun DetailEditDialog(
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
-    onLocationChanged: (String) -> Unit,
     onSchoolChanged: (String) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
@@ -50,21 +51,31 @@ fun DetailEditDialog(
             prompt = "Enter your description",
             onEdit = onDescriptionChanged,
         ),
-        Field(
-            title = "Location",
-            prompt = "Enter your location",
-            onEdit = onLocationChanged,
-        ),
-        Field(
-            title = "School",
-            prompt = "Enter your school",
-            onEdit = onSchoolChanged,
-        ),
     )
 
     EditDialog(
         title = "Edit Profile",
         fields = fields,
+        otherContent = {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "School",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                styledDropDownList(
+                    items = ModelManager.getAllSchoolsList().toList().sortedByDescending { it },
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    width = 256,
+                    multiSelect = false,
+                    noSelectionText = "Select School",
+                    onSelect = { onSchoolChanged(it) },
+                )
+            }
+        },
         onCancel = onCancel,
         onConfirm = onSave,
         modifier = Modifier
