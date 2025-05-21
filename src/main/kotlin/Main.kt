@@ -59,6 +59,8 @@ data class RegistrationInfo(
     var accountType: UserType = UserType.STUDENT,
 )
 
+var global_current_user: User? = null
+
 /**
  * Main application composable.
  */
@@ -228,4 +230,6 @@ fun App() {
             }
         }
     }
+
+    global_current_user = currentUser
 }

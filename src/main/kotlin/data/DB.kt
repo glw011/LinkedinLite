@@ -1,9 +1,11 @@
 package data
 
 import androidx.compose.ui.graphics.ImageBitmap
+import dao.InterestDAO
 import dao.PictureDAO
 import dao.PostDAO
 import dao.UserDAO
+import global_current_user
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import model.ModelManager
@@ -12,6 +14,7 @@ import model.Student
 import service.StudentService
 import service.UserService
 import ui.components.Post
+import ui.components.userPfp
 import ui.views.home.ProfileData
 import util.getBitmapFromFilepath
 import java.util.LinkedList
@@ -45,9 +48,8 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
                 val fname = user.fname?.lowercase() ?: ""
                 val lname = user.lname?.lowercase() ?: ""
                 val fullname = (fname + " " + lname)
-//                val interests = user.interestList.mapNotNull { id ->
-//                    ModelManager.getInterest(id)?.name
-//                }
+                val interests = UserDAO.getAllUserInterests(user.id)
+                    .mapNotNull { ModelManager.getInterest(it)?.name }
                 val email = user.email?.lowercase() ?: ""
                 val major = ModelManager.getMajor(user.major)?.name ?: ""
                 val school = ModelManager.getSchool(user.school.schoolId)?.name ?: ""
@@ -63,7 +65,7 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
                     pfp = null,
                     name = "${user.fname} ${user.lname}",
                     bio = user.bio ?: "",
-//                    tags = interests,
+                    tags = interests,
                     email = user.email,
                     major = major,
                     school = school,
@@ -114,32 +116,42 @@ private const val PAGE_SIZE = 25
 suspend fun genPostList(loadMore: Boolean = false): List<Post> = withContext(Dispatchers.IO) {
     if (!loadMore) currentOffset = 0 // reset if not loading more
 
-    val posts = PostDAO.getAllPosts()
+    val currentInterestNames = global_current_user?.let {
+        UserDAO.getAllUserInterests(it.getId())
+            .mapNotNull { id -> ModelManager.getInterest(id)?.name }
+            .toSet()
+    } ?: emptySet()
+
+    val filteredPosts = PostDAO.getAllPosts()
+        .filter { post ->
+            val ownerInterestNames = UserDAO.getAllUserInterests(post.ownerId)
+                .mapNotNull { id -> ModelManager.getInterest(id)?.name }
+                .toSet()
+
+            currentInterestNames.intersect(ownerInterestNames).isNotEmpty()
+        }
         .sortedByDescending { it.postDate }
+
+    val paginatedPosts = filteredPosts
         .drop(currentOffset)
         .take(PAGE_SIZE)
 
-    currentOffset += posts.size
+    currentOffset += paginatedPosts.size
 
-    posts.map { post ->
+    paginatedPosts.map { post ->
         val imageBitmap = post.postImage?.path?.let { getBitmapFromFilepath(it) }
         val student = StudentService().getStudentById(post.ownerId)
         val userName = listOfNotNull(student.fname, student.lname).joinToString(" ")
-        val imgPath = PictureDAO.getImgPath(UserDAO.getProfileImgId(post.ownerId))
-        var profileImg: ImageBitmap? = null
-
-        if (imgPath != null)
-            profileImg = getBitmapFromFilepath(PictureDAO.getImgPath(UserDAO.getProfileImgId(post.ownerId)))
-        else
-            profileImg = null
+        val profileImgPath = PictureDAO.getImgPath(UserDAO.getProfileImgId(post.ownerId))
+        val profileImg = profileImgPath?.let { getBitmapFromFilepath(it) }
 
         Post(
             postImage = imageBitmap,
             userName = userName,
             description = post.content ?: "",
             comments = LinkedList(),
-            post.ownerId,
-            profileImg
+            userId = post.ownerId,
+            ownerPfp = profileImg
         )
     }
 }
