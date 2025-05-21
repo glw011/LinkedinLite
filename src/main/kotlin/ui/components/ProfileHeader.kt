@@ -19,15 +19,12 @@ import androidx.compose.ui.unit.dp
 import dao.PictureDAO
 import dao.UserDAO
 import data.User
-import org.example.linkedinlite.generated.resources.Res
-import org.example.linkedinlite.generated.resources.default_pfp
-import org.jetbrains.compose.resources.imageResource
 import model.ModelManager
 import ui.components.dialog.EditDialog
 import ui.components.image.Banner
 import ui.components.image.EditablePfpImage
-import util.getBitmapFromFilepath
 import ui.components.styles.styledDropDownList
+import util.getBitmapFromFilepath
 
 /**
  * Creates a dialog window for editing profile details.
@@ -127,7 +124,7 @@ fun ProfileHeader(
     onEditBanner: () -> Unit,
     onEditProfilePicture: () -> Unit,
     modifier: Modifier = Modifier,
-    currentUser: User
+    currentUser: User,
 ) {
     Box(
         modifier = modifier
@@ -170,7 +167,7 @@ fun ProfileHeader(
                 profileImg = getBitmapFromFilepath(PictureDAO.getImgPath(UserDAO.getProfileImgId(currentUser.getId())))
 
             EditablePfpImage(
-                imageBitmap = profileImg ?: imageResource(Res.drawable.default_pfp),
+                imageBitmap = profilePicture,
                 modifier = Modifier
                     .size(96.dp)
                     .border(2.dp, Color.Gray, CircleShape)

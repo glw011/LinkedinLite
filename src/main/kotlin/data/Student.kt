@@ -2,15 +2,16 @@ package data
 
 import ProfileRecommender
 import androidx.compose.ui.graphics.ImageBitmap
+import dao.PictureDAO
 import dao.StudentDAO
 import dao.UserDAO
+import imageBitmapToBufferedImage
 import model.ModelManager
 import model.School
 import model.Student
 import model.UserType
 import service.OrgService
 import service.StudentService
-import java.util.*
 
 class Student private constructor(
     private val id: Int,
@@ -52,9 +53,6 @@ class Student private constructor(
     }
     fun getMajor(): String {
         return major
-    }
-    override fun getProfilePicture(): ImageBitmap {
-        return profilePicture
     }
     override fun getTags(): List<String> {
         val tagIDs = getModel().interests.toList()
@@ -115,9 +113,6 @@ class Student private constructor(
     fun setMajor(major: String) {
         getModel().major = ModelManager.getMajorIdByName(major)
         StudentService().updateStudent(getModel())
-    }
-    override fun setProfilePicture(profilePicture: ImageBitmap) {
-        this.profilePicture = profilePicture
     }
     override fun setDescription(description: String) {
         StudentDAO.setBio(getId(), description)
@@ -206,6 +201,7 @@ class Student private constructor(
                 school,
                 major
             )
+            StudentDAO.setProfileImg(id, PictureDAO.addNewImg(imageBitmapToBufferedImage(profilePicture), id))
             for (tag in tags) {
                 UserDAO.addUserInterest(id, ModelManager.getInterestByName(tag).id)
             }

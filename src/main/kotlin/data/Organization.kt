@@ -3,14 +3,15 @@ package data
 import ProfileRecommender
 import androidx.compose.ui.graphics.ImageBitmap
 import dao.OrgDAO
+import dao.PictureDAO
 import dao.UserDAO
+import imageBitmapToBufferedImage
 import model.ModelManager
 import model.Org
 import model.School
 import model.UserType
 import service.OrgService
 import service.StudentService
-import java.util.*
 
 class Organization private constructor(
     private val id: Int,
@@ -42,9 +43,6 @@ class Organization private constructor(
     override fun getSchool(): String {
         return getModel().school.schoolName
     }
-    override fun getProfilePicture(): ImageBitmap {
-        return profilePicture
-    }
     override fun getDescription(): String {
         if (getModel().bio == null) {
             return ""
@@ -70,6 +68,14 @@ class Organization private constructor(
     fun getMembers(): List<Student> {
         return getModel().membersList.map { Student.fromModel(StudentService().getStudentById(it)) }
     }
+    fun getMemberRole(member: Student): String {
+        val role = OrgService().getMemberRole(member.getId(), getId())
+        if (role.isEmpty()) {
+            return "Member"
+        } else {
+            return role
+        }
+    }
     fun getPendingMembershipRequests(): List<Student> {
         val pendingRequests = OrgService().getPendingRequests(getId())
         if (pendingRequests == null) {
@@ -89,9 +95,6 @@ class Organization private constructor(
 
     override fun setSchool(school: String) {
         OrgDAO.setSchool(getId(), ModelManager.getSchoolIdByName(school))
-    }
-    override fun setProfilePicture(profilePicture: ImageBitmap) {
-        this.profilePicture = profilePicture
     }
     override fun setDescription(description: String) {
         OrgDAO.setBio(getId(), description)
@@ -172,6 +175,7 @@ class Organization private constructor(
                 password,
                 ModelManager.getSchoolIdByName(school),
             )
+            UserDAO.setProfileImg(id, PictureDAO.addNewImg(imageBitmapToBufferedImage(profilePicture), id))
             for (tag in tags) {
                 OrgDAO.addUserInterest(id, ModelManager.getInterestByName(tag).id)
             }

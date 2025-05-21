@@ -29,6 +29,8 @@ data class ProfileUiState(
         _title = user.title,
         _location = user.getLocation(),
         _school = user.getSchool(),
+        _banner = user.getProfileBanner(),
+        _profilePicture = user.getProfilePicture()
     )
     var tags = user.getTags()
     var associates = mutableStateListOf<Associate>()
@@ -49,12 +51,14 @@ data class ProfileHeaderInfo(
     private var _title: String = "",
     private var _location: String = "",
     private var _school: String = "",
+    private var _banner: ImageBitmap = ImageBitmap(0, 0),
+    private var _profilePicture: ImageBitmap = ImageBitmap(0, 0),
 ){
     var name by mutableStateOf(_name)
     var description by mutableStateOf(_description)
     var title by mutableStateOf(_title)
     var location by mutableStateOf(_location)
     var school by mutableStateOf(_school)
-    var banner by mutableStateOf(ImageBitmap(0, 0))
-    var profilePicture by mutableStateOf(ImageBitmap(0, 0))
+    var banner by mutableStateOf(_banner)
+    var profilePicture by mutableStateOf(_profilePicture)
 }

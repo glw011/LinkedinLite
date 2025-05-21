@@ -25,6 +25,7 @@ import data.Student
 import data.User
 import model.UserType
 import ui.components.image.PfpImage
+import ui.components.profilecard.Associate
 import ui.components.styles.styledButton
 
 @Composable
@@ -119,6 +120,14 @@ fun NotificationsTab(
                     profilePicture = organization.getProfilePicture(),
                     onAccept = {
                         (user as Student).acceptMembership(organization)
+                        profileUiState.associates.add(
+                            Associate(
+                            organization.getEmail(),
+                            organization.getName(),
+                            organization.getMemberRole(user),
+                            organization.getProfilePicture()
+                            )
+                        )
                         uiState.notifications.remove(organization)
                     },
                     onReject = {
@@ -137,6 +146,14 @@ fun NotificationsTab(
                     profilePicture = student.getProfilePicture(),
                     onAccept = {
                         (user as Organization).acceptMember(student)
+                        profileUiState.associates.add(
+                            Associate(
+                                student.getEmail(),
+                                student.getName(),
+                                (user as Organization).getMemberRole(student),
+                                student.getProfilePicture()
+                            )
+                        )
                         uiState.notifications.remove(student)
                     },
                     onReject = {

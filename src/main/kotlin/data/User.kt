@@ -1,8 +1,12 @@
 package data
 
 import androidx.compose.ui.graphics.ImageBitmap
+import dao.PictureDAO
+import dao.UserDAO
+import imageBitmapToBufferedImage
 import model.School
 import model.UserType
+import util.getBitmapFromFilepath
 import util.writeToFile
 
 abstract class User(
@@ -16,7 +20,7 @@ abstract class User(
 ) {
     abstract val title: String
 
-    protected var profileBanner: ImageBitmap = ImageBitmap(0, 0)
+    private var profileBanner: ImageBitmap = ImageBitmap(0, 0)
 
 
     abstract fun getModel(): Any
@@ -30,7 +34,12 @@ abstract class User(
     fun getLocation(): String {
         return "${school.city}, ${school.state}, ${school.country}"
     }
-    abstract fun getProfilePicture(): ImageBitmap
+    fun getProfileBanner(): ImageBitmap {
+        return getBitmapFromFilepath(PictureDAO.getImgPath(PictureDAO.getProfileImgId(getId())))
+    }
+    fun getProfilePicture(): ImageBitmap {
+        return getBitmapFromFilepath(PictureDAO.getImgPath(PictureDAO.getProfileImgId(getId())))
+    }
     abstract fun getDescription(): String
     abstract fun getTags(): List<String>
     abstract fun getRecommendedStudents(): List<Student>
@@ -42,7 +51,12 @@ abstract class User(
     abstract fun setName(name: String)
     abstract fun setEmail(email: String)
     abstract fun setSchool(school: String)
-    abstract fun setProfilePicture(profilePicture: ImageBitmap)
+    fun setProfileBanner(profileBanner: ImageBitmap) {
+        UserDAO.setBannerImg(getId(), PictureDAO.addNewImg(imageBitmapToBufferedImage(profileBanner), getId()))
+    }
+    fun setProfilePicture(profilePicture: ImageBitmap) {
+        UserDAO.setProfileImg(getId(), PictureDAO.addNewImg(imageBitmapToBufferedImage(profilePicture), getId()))
+    }
     abstract fun setDescription(description: String)
     abstract fun setTags(tags: List<String>)
     abstract fun addTag(tag: String)

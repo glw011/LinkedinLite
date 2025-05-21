@@ -23,7 +23,6 @@ import dao.PictureDAO
 import dao.UserDAO
 import data.User
 import imageBitmapToBufferedImage
-import data.User
 import model.ModelManager
 import ui.components.DetailEditDialog
 import ui.components.ProfileHeader
@@ -85,6 +84,19 @@ fun IndividualProfileTab(
                         if (imagePath.isNotEmpty()) {
                             uiState.headerInfo.banner = getBitmapFromFilepath(imagePath)
                         }
+
+                        var imgId = 0
+
+                        if (uiState.headerInfo.banner.height != 0 && uiState.headerInfo.banner.width != 0) {
+                            imgId = PictureDAO.addNewImg(
+                                imageBitmapToBufferedImage(uiState.headerInfo.banner),
+                                (user as User).getId()
+                            )
+                            UserDAO.setBannerImg(
+                                (user as User).getId(),
+                                imgId
+                            )
+                        }
                     },
                     onEditProfilePicture = {
                         imagePath = openFileChooser()
@@ -97,11 +109,10 @@ fun IndividualProfileTab(
                         if (uiState.headerInfo.profilePicture.height != 0 && uiState.headerInfo.profilePicture.width != 0) {
                             imgId = PictureDAO.addNewImg(
                                 imageBitmapToBufferedImage(uiState.headerInfo.profilePicture),
-                                (currentUser as User).getId()
+                                (user as User).getId()
                             )
-
                             UserDAO.setProfileImg(
-                                (currentUser as User).getId(),
+                                (user as User).getId(),
                                 imgId
                             )
                         }

@@ -20,7 +20,11 @@ import ui.components.profilecard.Associate
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
-import ui.views.login.*
+import ui.views.login.LoginEvent
+import ui.views.login.LoginResult
+import ui.views.login.LoginUiState
+import ui.views.login.loginScreen
+import ui.views.login.onLoginEvent
 import ui.views.register.Register
 import util.readLinesFromFile
 import util.writeToFile
@@ -81,6 +85,8 @@ fun App() {
         }
     } catch (e: IndexOutOfBoundsException) {
         // No previous login data found, continue to login screen
+    } catch (e: NullPointerException) {
+        // Previous login data found but user is null, continue to login screen
     }
 
     when (currentView) {
@@ -190,7 +196,8 @@ fun App() {
                             Associate(
                                 member.getEmail(),
                                 member.getName(),
-                                "Example Role"
+                                (currentUser as Organization).getMemberRole(member),
+                                member.getProfilePicture()
                             )
                         )
                     }
@@ -200,7 +207,8 @@ fun App() {
                             Associate(
                                 organization.getEmail(),
                                 organization.getName(),
-                                "Example Role"
+                                organization.getMemberRole(currentUser as Student),
+                                organization.getProfilePicture()
                             )
                         )
                     }

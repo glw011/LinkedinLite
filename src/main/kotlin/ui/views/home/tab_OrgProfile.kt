@@ -20,9 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import dao.PictureDAO
+import dao.UserDAO
 import data.Organization
 import data.Student
 import data.User
+import imageBitmapToBufferedImage
 import model.ModelManager
 import service.StudentService
 import ui.components.DetailEditDialog
@@ -91,11 +94,37 @@ fun OrgProfileTab(
                         if (imagePath.isNotEmpty()) {
                             uiState.headerInfo.banner = getBitmapFromFilepath(imagePath)
                         }
+
+                        var imgId = 0
+
+                        if (uiState.headerInfo.banner.height != 0 && uiState.headerInfo.banner.width != 0) {
+                            imgId = PictureDAO.addNewImg(
+                                imageBitmapToBufferedImage(uiState.headerInfo.banner),
+                                (user as User).getId()
+                            )
+                            UserDAO.setBannerImg(
+                                (user as User).getId(),
+                                imgId
+                            )
+                        }
                     },
                     onEditProfilePicture = {
                         imagePath = openFileChooser()
                         if (imagePath.isNotEmpty()) {
                             uiState.headerInfo.profilePicture = getBitmapFromFilepath(imagePath)
+                        }
+
+                        var imgId = 0
+
+                        if (uiState.headerInfo.profilePicture.height != 0 && uiState.headerInfo.profilePicture.width != 0) {
+                            imgId = PictureDAO.addNewImg(
+                                imageBitmapToBufferedImage(uiState.headerInfo.profilePicture),
+                                (user as User).getId()
+                            )
+                            UserDAO.setProfileImg(
+                                (user as User).getId(),
+                                imgId
+                            )
                         }
                     },
                     modifier = Modifier

@@ -201,9 +201,6 @@ public class OrgService {
             if(role == null){
                 throw new OrgServiceException("Org not found: ID=" + orgId);
             }
-            else if (role.isBlank()) {
-                throw new OrgServiceException("Student member ID="+studentId+" not found as member of Org ID="+orgId);
-            }
             return role;
         } catch (SQLException e) {
             throw new OrgServiceException("Error fetching role for Student ID="+studentId+" for Org ID=" + orgId, e);

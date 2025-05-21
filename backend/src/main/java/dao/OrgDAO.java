@@ -472,6 +472,7 @@ public class OrgDAO extends UserDAO {
             if(rs.next()){
                 String role = rs.getString("role");
 
+                if(role == null) return "";
                 return (!role.isEmpty()) ? role:null;
             }
         }
