@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.example.linkedinlite.generated.resources.Res
 import org.example.linkedinlite.generated.resources.default_pfp
+import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.painterResource
 import ui.components.styles.styledTextField
 import ui.theme.LIGHT_PURPLE
@@ -57,7 +58,9 @@ data class Post(
     val postImage: ImageBitmap?,
     val userName: String = "",
     val description: String = "",
-    val comments: LinkedList<Comment> = LinkedList()
+    val comments: LinkedList<Comment> = LinkedList(),
+    val userId: Int,
+    val ownerPfp: ImageBitmap?
 )
 
 /**
@@ -144,13 +147,14 @@ fun drawPost(post: Post) {
                         ) {
                             Column(modifier = Modifier.fillMaxSize()) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Image(
+                                    ui.components.image.Image(
+                                        bitmap = post.ownerPfp ?: imageResource(Res.drawable.default_pfp),
+                                        defaultImage = imageResource(Res.drawable.default_pfp),
                                         modifier = Modifier
                                             .height(16.dp)
                                             .width(16.dp)
                                             .clip(CircleShape),
                                         alignment = Alignment.Center,
-                                        painter = painterResource(Res.drawable.default_pfp),
                                         contentDescription = "Profile Picture",
                                     )
 

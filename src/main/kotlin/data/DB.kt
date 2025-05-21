@@ -1,6 +1,9 @@
 package data
 
+import androidx.compose.ui.graphics.ImageBitmap
+import dao.PictureDAO
 import dao.PostDAO
+import dao.UserDAO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import model.ModelManager
@@ -63,7 +66,8 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
 //                    tags = interests,
                     email = user.email,
                     major = major,
-                    school = school
+                    school = school,
+                    id = user.id
                 )
             }
 
@@ -121,12 +125,25 @@ suspend fun genPostList(loadMore: Boolean = false): List<Post> = withContext(Dis
         val imageBitmap = post.postImage?.path?.let { getBitmapFromFilepath(it) }
         val student = StudentService().getStudentById(post.ownerId)
         val userName = listOfNotNull(student.fname, student.lname).joinToString(" ")
+        val imgPath = PictureDAO.getImgPath(UserDAO.getProfileImgId(post.ownerId))
+        var profileImg: ImageBitmap? = null
+
+        if (imgPath != null)
+            profileImg = getBitmapFromFilepath(PictureDAO.getImgPath(UserDAO.getProfileImgId(post.ownerId)))
+        else
+            profileImg = null
 
         Post(
             postImage = imageBitmap,
             userName = userName,
             description = post.content ?: "",
-            comments = LinkedList()
+            comments = LinkedList(),
+            post.ownerId,
+            profileImg
         )
     }
+}
+
+fun getCurrentUserProfileImg() {
+
 }

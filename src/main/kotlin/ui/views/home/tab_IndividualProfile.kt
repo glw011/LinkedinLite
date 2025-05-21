@@ -19,6 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import dao.PictureDAO
+import dao.UserDAO
+import data.User
+import imageBitmapToBufferedImage
 import data.User
 import model.ModelManager
 import ui.components.DetailEditDialog
@@ -87,12 +91,27 @@ fun IndividualProfileTab(
                         if (imagePath.isNotEmpty()) {
                             uiState.headerInfo.profilePicture = getBitmapFromFilepath(imagePath)
                         }
+
+                        var imgId = 0
+
+                        if (uiState.headerInfo.profilePicture.height != 0 && uiState.headerInfo.profilePicture.width != 0) {
+                            imgId = PictureDAO.addNewImg(
+                                imageBitmapToBufferedImage(uiState.headerInfo.profilePicture),
+                                (currentUser as User).getId()
+                            )
+
+                            UserDAO.setProfileImg(
+                                (currentUser as User).getId(),
+                                imgId
+                            )
+                        }
                     },
                     modifier = Modifier
                         .wrapContentHeight()
                         .fillMaxWidth()
                         .border(1.dp, Color.Gray, headerShape)
-                        .clip(headerShape)
+                        .clip(headerShape),
+                    currentUser = user
                 )
                 ProfilePostsCard(
                     title = "Posts",

@@ -1,9 +1,6 @@
 package util;
 
 import java.sql.*;
-import java.util.Objects;
-
-import model.ModelManager;
 
 /**
  * Responsible for maintaining connection to DB and returning statement objects which allow querying of the DB

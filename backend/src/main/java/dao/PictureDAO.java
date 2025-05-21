@@ -143,6 +143,7 @@ public class PictureDAO {
     private static BufferedImage readImgFromDisk(String imgPath) throws IOException{
         BufferedImage image = null;
         File imgFile = new File(imgPath);
+        System.out.println(imgPath);
 
         try{
             image = ImageIO.read(imgFile);

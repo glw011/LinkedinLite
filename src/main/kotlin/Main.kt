@@ -8,6 +8,8 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import dao.PictureDAO
+import dao.UserDAO
 import data.Organization
 import data.Student
 import data.User
@@ -18,11 +20,7 @@ import ui.components.profilecard.Associate
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
-import ui.views.login.LoginEvent
-import ui.views.login.LoginResult
-import ui.views.login.LoginUiState
-import ui.views.login.loginScreen
-import ui.views.login.onLoginEvent
+import ui.views.login.*
 import ui.views.register.Register
 import util.readLinesFromFile
 import util.writeToFile
@@ -133,6 +131,22 @@ fun App() {
                             registrationInfo.profilePicture,
                             registrationInfo.tags,
                         )
+
+                        val pfp = (currentUser as Student).getProfilePicture()
+                        var imgId = 0
+
+                        if (pfp.height != 0 && pfp.width != 0) {
+                            imgId = PictureDAO.addNewImg(
+                                imageBitmapToBufferedImage(pfp),
+                                (currentUser as Student).getId()
+                            )
+
+                            UserDAO.setProfileImg(
+                                (currentUser as Student).getId(),
+                                imgId
+                            )
+                        }
+
                     } else {
                         currentUser = Organization.register(
                             registrationInfo.name,
@@ -142,6 +156,21 @@ fun App() {
                             registrationInfo.profilePicture,
                             registrationInfo.tags,
                         )
+
+                        val pfp = (currentUser as Student).getProfilePicture()
+                        var imgId = 0
+
+                        if (pfp.height != 0 && pfp.width != 0) {
+                            imgId = PictureDAO.addNewImg(
+                                imageBitmapToBufferedImage(pfp),
+                                (currentUser as Organization).getId()
+                            )
+
+                            UserDAO.setProfileImg(
+                                (currentUser as Organization).getId(),
+                                imgId
+                            )
+                        }
                     }
                     val email = currentUser!!.getEmail()
                     writeToFile("${email}\n${UserService().getHashedPassword(email)}")

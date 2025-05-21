@@ -102,7 +102,8 @@ fun OrgProfileTab(
                         .wrapContentHeight()
                         .fillMaxWidth()
                         .border(1.dp, Color.Gray, headerShape)
-                        .clip(headerShape)
+                        .clip(headerShape),
+                    currentUser = user
                 )
                 ProfilePostsCard(
                     title = "Posts",

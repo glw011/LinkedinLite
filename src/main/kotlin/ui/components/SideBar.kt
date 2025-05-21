@@ -26,11 +26,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import dao.PictureDAO
+import dao.UserDAO
+import data.User
 import org.example.linkedinlite.generated.resources.Res
 import org.example.linkedinlite.generated.resources.default_pfp
 import org.jetbrains.compose.resources.imageResource
 import ui.components.image.Image
 import ui.theme.LIGHT_PURPLE
+import util.getBitmapFromFilepath
 
 var FadeSpeed by mutableStateOf(100)
 
@@ -53,7 +57,9 @@ var searchActive by mutableStateOf(false)
 fun Sidebar(
     userProfilePicture: ImageBitmap,
     selectedTab: String,
-    onTabSelected: (String) -> Unit) {
+    onTabSelected: (String) -> Unit,
+    currentUser: User
+) {
     Column(
         modifier = Modifier
             .width(64.dp)
@@ -115,6 +121,7 @@ fun Sidebar(
                 onTabSelected("My Profile")
                 println("My Profile Tab")
             },
+            currentUser
         )
 
         settingsTabButton(
@@ -365,7 +372,8 @@ fun notificationTabButton(isSelected: Boolean, onClick: () -> Unit) {
 fun profileTabButton(
     userProfilePicture: ImageBitmap,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    currentUser: User
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -381,10 +389,17 @@ fun profileTabButton(
             ),
         contentAlignment = Alignment.Center
     ) {
+        val imgPath = PictureDAO.getImgPath(UserDAO.getProfileImgId(currentUser.getId()))
+        var profileImg: ImageBitmap? = null
+
+        if (imgPath != null)
+            profileImg = getBitmapFromFilepath(PictureDAO.getImgPath(UserDAO.getProfileImgId(currentUser.getId())))
+        else
+            profileImg = null
 
         // Temporary default pfp
         Image(
-            bitmap = userProfilePicture,
+            bitmap = profileImg ?: imageResource(Res.drawable.default_pfp),
             defaultImage = imageResource(Res.drawable.default_pfp),
             contentDescription = "Default Profile Picture",
             contentScale = ContentScale.FillBounds,

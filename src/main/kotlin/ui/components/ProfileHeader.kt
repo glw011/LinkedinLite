@@ -16,10 +16,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import dao.PictureDAO
+import dao.UserDAO
+import data.User
+import org.example.linkedinlite.generated.resources.Res
+import org.example.linkedinlite.generated.resources.default_pfp
+import org.jetbrains.compose.resources.imageResource
 import model.ModelManager
 import ui.components.dialog.EditDialog
 import ui.components.image.Banner
 import ui.components.image.EditablePfpImage
+import util.getBitmapFromFilepath
 import ui.components.styles.styledDropDownList
 
 /**
@@ -120,6 +127,7 @@ fun ProfileHeader(
     onEditBanner: () -> Unit,
     onEditProfilePicture: () -> Unit,
     modifier: Modifier = Modifier,
+    currentUser: User
 ) {
     Box(
         modifier = modifier
@@ -154,8 +162,15 @@ fun ProfileHeader(
                 .padding(start = 16.dp)
         ) {
             Spacer(modifier = Modifier.fillMaxWidth().height(64.dp))
+
+            val imgPath = PictureDAO.getImgPath(UserDAO.getProfileImgId(currentUser.getId()))
+            var profileImg: ImageBitmap? = null
+
+            if (imgPath != null)
+                profileImg = getBitmapFromFilepath(PictureDAO.getImgPath(UserDAO.getProfileImgId(currentUser.getId())))
+
             EditablePfpImage(
-                imageBitmap = profilePicture,
+                imageBitmap = profileImg ?: imageResource(Res.drawable.default_pfp),
                 modifier = Modifier
                     .size(96.dp)
                     .border(2.dp, Color.Gray, CircleShape)
