@@ -190,4 +190,35 @@ public class OrgService {
             super(message, cause);
         }
     }
+
+    /**
+     * Fetch a student's role within an Org by the student's ID and org's ID
+     * @throws OrgServiceException if not found or on SQL error
+     */
+    public String getMemberRole(int studentId, int orgId) {
+        try {
+            String role = OrgDAO.getMemberRole(studentId, orgId);
+            if(role == null){
+                throw new OrgServiceException("Org not found: ID=" + orgId);
+            }
+            else if (role.isBlank()) {
+                throw new OrgServiceException("Student member ID="+studentId+" not found as member of Org ID="+orgId);
+            }
+            return role;
+        } catch (SQLException e) {
+            throw new OrgServiceException("Error fetching role for Student ID="+studentId+" for Org ID=" + orgId, e);
+        }
+    }
+
+    /**
+     * Set a student's role within an Org by the student's ID and org's ID
+     * @throws OrgServiceException if not found or on SQL error
+     */
+    public boolean setMemberRole(int studentId, int orgId, String role) {
+        try {
+            return OrgDAO.setMemberRole(studentId, orgId, role);
+        } catch (SQLException e) {
+            throw new OrgServiceException("Error setting role for Student ID="+studentId+" for Org ID=" + orgId, e);
+        }
+    }
 }

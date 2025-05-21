@@ -79,7 +79,7 @@ fun UI(
                             IndividualProfileTab(currentUser, profileUiState)
                         }
                     "Home" -> homeTab()
-                    "Post" -> postTab()
+                    "Post" -> postTab(currentUser)
                     "Notifications" -> NotificationsTab()
                     // Add your new tab content composables here
                 }

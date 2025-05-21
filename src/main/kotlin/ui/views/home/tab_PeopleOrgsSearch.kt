@@ -180,7 +180,15 @@ fun peopleOrgsTabContent() {
                     horizontalAlignment = Alignment.Start
                 ) {
                     items(filteredProfiles) { profile ->
-                        profilePreview(profile.pfp, profile.name, profile.bio, profile.major, profile.school)
+                        profilePreview(
+                            profile.pfp,
+                            profile.name,
+                            profile.bio,
+                            profile.major,
+                            profile.school,
+                            onClick = {
+//                                OrgProfileTab(ProfileUiState())
+                            })
                     }
                 }
             }

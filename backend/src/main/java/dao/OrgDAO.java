@@ -65,21 +65,22 @@ public class OrgDAO extends UserDAO {
                         results.getString("name"),
                         ModelManager.getSchool(results.getInt("school_id"))
                 );
-            } else {
-                throw new SQLException("Org not found: ID=" + orgId);
+
+
+                orgObj.setBio(results.getString("bio"));
+                orgObj.setProfilePicId(results.getInt("pfp_id"));
+
+                orgObj.setInterestList(getAllUserInterests(orgObj.getID()));
+                orgObj.setMembersList(getAllMembers(orgObj.getID()));
+                orgObj.setFollowingList(getAllFollowedUsers(orgObj.getID()));
+                orgObj.setPostsList(getAllUserPosts(orgObj.getID()));
+                orgObj.setOwnedImgsList(getAllOwnedImages(orgObj.getID()));
+                orgObj.setBannerImgId(getBannerImgId(orgObj.getID()));
+
+                return orgObj;
             }
-
-            orgObj.setBio(results.getString("bio"));
-            orgObj.setProfilePicId(results.getInt("pfp_id"));
-
-            orgObj.setInterestList(getAllUserInterests(orgObj.getID()));
-            orgObj.setMembersList(getAllMembers(orgObj.getID()));
-            orgObj.setFollowingList(getAllFollowedUsers(orgObj.getID()));
-            orgObj.setPostsList(getAllUserPosts(orgObj.getID()));
-            orgObj.setOwnedImgsList(getAllOwnedImages(orgObj.getID()));
-            orgObj.setBannerImgId(getBannerImgId(orgObj.getID()));
         }
-        return orgObj;
+        return null;
     }
 
     public static HashMap<Integer, Org> getAllOrgs() throws SQLException {
@@ -458,6 +459,36 @@ public class OrgDAO extends UserDAO {
         return resultLst;
     }
 
+
+
+    public static String getMemberRole(int studentId, int orgId) throws SQLException{
+        String sql = "SELECT role FROM Org_Membership WHERE student_id = ? AND org_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setInt(1, studentId);
+            pstmt.setInt(2, orgId);
+
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                String role = rs.getString("role");
+
+                return (!role.isEmpty()) ? role:null;
+            }
+        }
+        return null;
+    }
+
+    public static boolean setMemberRole(int studentId, int orgId, String role) throws SQLException{
+        String sql = "UPDATE Org_Membership SET role = ? WHERE student_id = ? AND org_id = ?";
+
+        try(PreparedStatement pstmt = DBConnection2.getPstmt(sql)){
+            pstmt.setString(1, role);
+            pstmt.setInt(2, studentId);
+            pstmt.setInt(3, orgId);
+
+            return pstmt.executeUpdate() > 0;
+        }
+    }
 }
 
 
