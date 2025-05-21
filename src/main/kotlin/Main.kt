@@ -12,6 +12,7 @@ import data.Student
 import data.User
 import model.ModelManager
 import model.UserType
+import service.UserService
 import ui.components.profilecard.Associate
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
@@ -22,7 +23,8 @@ import ui.views.login.LoginUiState
 import ui.views.login.loginScreen
 import ui.views.login.onLoginEvent
 import ui.views.register.Register
-import util.updateScreenDimensions
+import util.readLinesFromFile
+import util.writeToFile
 import java.awt.Dimension
 
 fun main() = application {
@@ -64,7 +66,23 @@ fun App() {
     val registrationInfo by rememberSaveable { mutableStateOf(RegistrationInfo()) }
     var loginUiState by rememberSaveable { mutableStateOf(LoginUiState()) }
 
-    updateScreenDimensions()
+    try {
+        if (currentUser == null) {
+            val email = readLinesFromFile()[0]
+            val userId = ModelManager.getUserId(email)
+            val userType = ModelManager.getUserType(userId)
+            currentUser = when (userType) {
+                UserType.STUDENT -> Student.login(email)
+                UserType.ORG -> Organization.login(email)
+                else -> null
+            }
+            if (currentUser != null) {
+                currentView = View.Home
+            }
+        }
+    } catch (e: IndexOutOfBoundsException) {
+        // No previous login data found, continue to login screen
+    }
 
     when (currentView) {
         View.Login -> {
@@ -83,6 +101,9 @@ fun App() {
                                     UserType.ORG -> Organization.login(loginUiState.email)
                                     else -> null
                                 }
+                                val email = currentUser!!.getEmail()
+                                writeToFile("${email}\n${UserService().getHashedPassword(email)}")
+                                loginUiState = LoginUiState()
                             }
                             is LoginResult.Error -> { loginUiState.errorMessage = result.message }
                             null -> {}
@@ -121,12 +142,14 @@ fun App() {
                             registrationInfo.tags,
                         )
                     }
+                    val email = currentUser!!.getEmail()
+                    writeToFile("${email}\n${UserService().getHashedPassword(email)}")
                 }
             )
         }
         View.Home -> {
             if (currentUser != null) {
-                val profileUiState = ProfileUiState(currentUser!!)
+                var profileUiState = ProfileUiState(currentUser!!)
                 profileUiState.tags = currentUser!!.getTags()
                 profileUiState.recommendedPeople = currentUser!!.getRecommendedStudents()
                 profileUiState.relatedOrganizations = currentUser!!.getRelatedOrganizations()
@@ -153,7 +176,15 @@ fun App() {
                     }
                 }
                 profileUiState.associates = associates
-                UI(profileUiState, currentUser!!)
+                UI(
+                    profileUiState = profileUiState,
+                    currentUser = currentUser!!,
+                    onLogout = {
+                        currentUser!!.logout()
+                        currentUser = null
+                        currentView = View.Login
+                    },
+                )
             } else {
                 throw IllegalStateException("Failed to register user")
             }

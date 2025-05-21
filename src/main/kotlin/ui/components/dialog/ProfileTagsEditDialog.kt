@@ -67,7 +67,11 @@ fun ProfileTagsEditDialog(
 
                 // Tags Dropdown
                 styledDropDownList(
-                    items = ModelManager.getAllInterestsList().toList(),
+                    items = ModelManager
+                        .getAllInterestsList()
+                        .toList()
+                        .sortedByDescending { it }
+                        .asReversed(),
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     multiSelect = true,

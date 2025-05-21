@@ -331,9 +331,6 @@ class ProfileRecommender {
                 val recommendationSlotsLeft = n - recommendedUsers.size
 
                 if (potentialUsers.size <= recommendationSlotsLeft) {
-                    for (potentialUser in potentialUsers) {
-                            println("Potential users: ${potentialUser.fname + potentialUser.lname}, Score: ${userScores[potentialUser]}")
-                    }
                     recommendedUsers.addAll(potentialUsers)
                     if (potentialUsers.size == recommendationSlotsLeft) {
                         break
@@ -341,13 +338,7 @@ class ProfileRecommender {
                         userLists.removeAt(0)
                     }
                 } else {
-                    for (potentialUser in potentialUsers) {
-                            println("Potential user (preshuffle): ${potentialUser.fname + potentialUser.lname}, Score: ${userScores[potentialUser]}")
-                    }
                     recommendedUsers.addAll(potentialUsers.shuffled().take(recommendationSlotsLeft))
-                    for (potentialUser in potentialUsers.take(recommendationSlotsLeft)) {
-                            println("Potential user (postshuffle): ${potentialUser.fname + potentialUser.lname}, Score: ${userScores[potentialUser]}")
-                    }
                     break
                 }
             }
@@ -376,9 +367,6 @@ class ProfileRecommender {
                 val recommendationSlotsLeft = n - recommendedUsers.size
 
                 if (potentialUsers.size <= recommendationSlotsLeft) {
-                    for (potentialUser in potentialUsers) {
-                            println("Potential organizations: ${potentialUser.getName()}, Score: ${userScores[potentialUser]}")
-                    }
                     recommendedUsers.addAll(potentialUsers)
                     if (potentialUsers.size == recommendationSlotsLeft) {
                         break
@@ -386,13 +374,7 @@ class ProfileRecommender {
                         userLists.removeAt(0)
                     }
                 } else {
-                    for (potentialUser in potentialUsers) {
-                            println("Potential organization (preshuffle): ${potentialUser.getName()}, Score: ${userScores[potentialUser]}")
-                    }
                     recommendedUsers.addAll(potentialUsers.shuffled().take(recommendationSlotsLeft))
-                    for (potentialUser in recommendedUsers) {
-                            println("Potential organization (postshuffle): ${potentialUser.getName()}, Score: ${userScores[potentialUser]}")
-                    }
                     break
                 }
             }

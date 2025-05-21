@@ -67,7 +67,11 @@ fun DetailEditDialog(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 styledDropDownList(
-                    items = ModelManager.getAllSchoolsList().toList().sortedByDescending { it },
+                    items = ModelManager
+                        .getAllSchoolsList()
+                        .toList()
+                        .sortedByDescending { it }
+                        .asReversed(),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     width = 256,
                     multiSelect = false,

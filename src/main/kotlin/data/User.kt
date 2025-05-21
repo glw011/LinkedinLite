@@ -3,6 +3,7 @@ package data
 import androidx.compose.ui.graphics.ImageBitmap
 import model.School
 import model.UserType
+import util.writeToFile
 
 abstract class User(
     private val id: Int,
@@ -46,4 +47,8 @@ abstract class User(
     abstract fun setTags(tags: List<String>)
     abstract fun addTag(tag: String)
     abstract fun removeTag(tag: String)
+
+    fun logout() {
+        writeToFile("")
+    }
 }

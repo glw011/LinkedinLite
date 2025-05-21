@@ -197,12 +197,7 @@ fun ProfileAssociatesCard(
                             // Handle view member action
                         }
                     },
-                    onDelete = {
-                        if (associates.isNotEmpty()) {
-                            associates.remove(associates[index])
-                            onRemoveAssociate(associates[index])
-                        }
-                    },
+                    onDelete = { onRemoveAssociate(associates[index]) },
                     modifier = itemModifier
                 )
             }
