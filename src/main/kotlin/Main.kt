@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -14,12 +15,15 @@ import data.Student
 import data.User
 import model.ModelManager
 import model.UserType
+import service.UserService
+import ui.components.profilecard.Associate
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
 import ui.views.login.*
 import ui.views.register.Register
-import util.updateScreenDimensions
+import util.readLinesFromFile
+import util.writeToFile
 import java.awt.Dimension
 
 fun main() = application {
@@ -27,7 +31,7 @@ fun main() = application {
         ModelManager.initModelManager()
         window.minimumSize = Dimension(800, 600)
         MainTheme {
-            App() // or pass sdao into App if needed
+            App()
         }
     }
 }
@@ -61,7 +65,23 @@ fun App() {
     val registrationInfo by rememberSaveable { mutableStateOf(RegistrationInfo()) }
     var loginUiState by rememberSaveable { mutableStateOf(LoginUiState()) }
 
-    updateScreenDimensions()
+    try {
+        if (currentUser == null) {
+            val email = readLinesFromFile()[0]
+            val userId = ModelManager.getUserId(email)
+            val userType = ModelManager.getUserType(userId)
+            currentUser = when (userType) {
+                UserType.STUDENT -> Student.login(email)
+                UserType.ORG -> Organization.login(email)
+                else -> null
+            }
+            if (currentUser != null) {
+                currentView = View.Home
+            }
+        }
+    } catch (e: IndexOutOfBoundsException) {
+        // No previous login data found, continue to login screen
+    }
 
     when (currentView) {
         View.Login -> {
@@ -80,6 +100,9 @@ fun App() {
                                     UserType.ORG -> Organization.login(loginUiState.email)
                                     else -> null
                                 }
+                                val email = currentUser!!.getEmail()
+                                writeToFile("${email}\n${UserService().getHashedPassword(email)}")
+                                loginUiState = LoginUiState()
                             }
                             is LoginResult.Error -> { loginUiState.errorMessage = result.message }
                             null -> {}
@@ -149,19 +172,49 @@ fun App() {
                             )
                         }
                     }
+                    val email = currentUser!!.getEmail()
+                    writeToFile("${email}\n${UserService().getHashedPassword(email)}")
                 }
             )
         }
         View.Home -> {
             if (currentUser != null) {
-                val profileUiState = ProfileUiState(currentUser!!)
-                profileUiState.headerInfo.name = currentUser!!.getName()
-                profileUiState.headerInfo.location = currentUser!!.getLocation()
-                profileUiState.headerInfo.school = currentUser!!.getSchool()
-                profileUiState.headerInfo.profilePicture = currentUser!!.getProfilePicture()
-                profileUiState.headerInfo.title = currentUser!!.title
+                var profileUiState = ProfileUiState(currentUser!!)
                 profileUiState.tags = currentUser!!.getTags()
-                UI(profileUiState, currentUser!!)
+                profileUiState.recommendedPeople = currentUser!!.getRecommendedStudents()
+                profileUiState.relatedOrganizations = currentUser!!.getRelatedOrganizations()
+                val associates = mutableListOf<Associate>()
+                if (currentUser is Organization) {
+                    for (member in (currentUser as Organization).getMembers()) {
+                        associates.add(
+                            Associate(
+                                member.getEmail(),
+                                member.getName(),
+                                "Example Role"
+                            )
+                        )
+                    }
+                } else {
+                    for (organization in (currentUser as Student).getOrganizations()) {
+                        associates.add(
+                            Associate(
+                                organization.getEmail(),
+                                organization.getName(),
+                                "Example Role"
+                            )
+                        )
+                    }
+                }
+                profileUiState.associates = associates.toMutableStateList()
+                UI(
+                    profileUiState = profileUiState,
+                    currentUser = currentUser!!,
+                    onLogout = {
+                        currentUser!!.logout()
+                        currentUser = null
+                        currentView = View.Login
+                    },
+                )
             } else {
                 throw IllegalStateException("Failed to register user")
             }

@@ -11,7 +11,12 @@ class ProfileRecommender {
     companion object {
         private fun filterStudentRecommendation(user: User, allUsers: MutableList<Student>) {
             allUsers.removeIf { it.id == user.getId() }
-            val model = StudentService().getStudentById(user.getId())
+            val model: model.User
+            if (user.getAccountType() == UserType.STUDENT) {
+                model = StudentService().getStudentById(user.getId())
+            } else {
+                model = OrgService().getOrgById(user.getId())
+            }
             val studentFollowingList = model.getFollowingList().toList()
                 .filter { ModelManager.getUserType(it) == UserType.STUDENT }
                 .map { StudentService().getStudentById(it) }
@@ -19,7 +24,12 @@ class ProfileRecommender {
         }
         private fun filterOrgRecommendation(user: User, allUsers: MutableList<Org>) {
             allUsers.removeIf { it.id == user.getId() }
-            val model = OrgService().getOrgById(user.getId())
+            val model: model.User
+            if (user.getAccountType() == UserType.STUDENT) {
+                model = StudentService().getStudentById(user.getId())
+            } else {
+                model = OrgService().getOrgById(user.getId())
+            }
             val orgFollowingList = model.getFollowingList().toList()
                 .filter { ModelManager.getUserType(it) == UserType.ORG }
                 .map { OrgService().getOrgById(it) }
@@ -46,6 +56,11 @@ class ProfileRecommender {
                     if (orgTags.contains(tag)) {
                         currentScore++
                     }
+                }
+
+                // Increase score if users have the same school
+                if (student.getSchool() == org.getSchool()) {
+                    currentScore++
                 }
 
                 // Increase score if users are following the same students
@@ -107,7 +122,7 @@ class ProfileRecommender {
                 }
                 for (org in studentOrganizations) {
                     if (otherStudentOrganizations.contains(org)) {
-                        currentScore += 2
+                        currentScore++
                     } else {
                         val orgTags = org.interests.toList().map {
                             ModelManager.getInterest(it).name
@@ -135,7 +150,7 @@ class ProfileRecommender {
                 val studentSchool = student.getSchool()
                 val otherStudentSchool = otherStudent.getSchool()
                 if (studentSchool == otherStudentSchool) {
-                    currentScore += 2
+                    currentScore++
                 }
 
                 // Increase score if the students' organizations have the same tags
@@ -192,7 +207,7 @@ class ProfileRecommender {
                 val orgSchool = org.getSchool()
                 val otherOrgSchool = otherOrg.getSchool()
                 if (orgSchool == otherOrgSchool) {
-                    currentScore += 2
+                    currentScore++
                 }
 
                 // Increase score if the organizations have the same members
@@ -233,6 +248,13 @@ class ProfileRecommender {
                     if (studentTags.contains(tag)) {
                         currentScore++
                     }
+                }
+
+                // Increase score if users are in the same school
+                val orgSchool = org.getSchool()
+                val studentSchool = student.getSchool()
+                if (orgSchool == studentSchool) {
+                    currentScore++
                 }
 
                 // Increase score if users are following the same students
@@ -303,21 +325,22 @@ class ProfileRecommender {
                 usersWithTopScores[score] = usersWithTopScore
             }
             val recommendedUsers = mutableListOf<Student>()
-            for ((score, users) in usersWithTopScores) {
-                if (recommendedUsers.size >= n) {
+            val userLists = usersWithTopScores.values.toMutableList().asReversed()
+            while (recommendedUsers.size < n && userLists.isNotEmpty()) {
+                val potentialUsers = userLists[0]
+                val recommendationSlotsLeft = n - recommendedUsers.size
+
+                if (potentialUsers.size <= recommendationSlotsLeft) {
+                    recommendedUsers.addAll(potentialUsers)
+                    if (potentialUsers.size == recommendationSlotsLeft) {
+                        break
+                    } else {
+                        userLists.removeAt(0)
+                    }
+                } else {
+                    recommendedUsers.addAll(potentialUsers.shuffled().take(recommendationSlotsLeft))
                     break
                 }
-                else if (users.size > 1) {
-                    usersWithTopScores[score] = users.shuffled()
-                }
-                val potentialUser = usersWithTopScores[score]!![0]
-                val numOfSameSchoolRecommendations = recommendedUsers
-                    .filter { it.getSchool().schoolName == user.getSchool() }
-                    .size
-                if (numOfSameSchoolRecommendations > 2 && potentialUser.getSchool().schoolName == user.getSchool()) {
-                    continue
-                }
-                recommendedUsers.add(potentialUser)
             }
             return recommendedUsers
         }
@@ -338,21 +361,22 @@ class ProfileRecommender {
                 usersWithTopScores[score] = usersWithTopScore
             }
             val recommendedUsers = mutableListOf<Org>()
-            for ((score, users) in usersWithTopScores) {
-                if (recommendedUsers.size >= n) {
+            val userLists = usersWithTopScores.values.toMutableList()
+            while (recommendedUsers.size < n && userLists.isNotEmpty()) {
+                val potentialUsers = userLists[0]
+                val recommendationSlotsLeft = n - recommendedUsers.size
+
+                if (potentialUsers.size <= recommendationSlotsLeft) {
+                    recommendedUsers.addAll(potentialUsers)
+                    if (potentialUsers.size == recommendationSlotsLeft) {
+                        break
+                    } else {
+                        userLists.removeAt(0)
+                    }
+                } else {
+                    recommendedUsers.addAll(potentialUsers.shuffled().take(recommendationSlotsLeft))
                     break
                 }
-                else if (users.size > 1) {
-                    usersWithTopScores[score] = users.shuffled()
-                }
-                val potentialUser = usersWithTopScores[score]!![0]
-                val numOfSameSchoolRecommendations = recommendedUsers
-                    .filter { it.getSchool().schoolName == user.getSchool() }
-                    .size
-                if (numOfSameSchoolRecommendations > 2 && potentialUser.getSchool().schoolName == user.getSchool()) {
-                    continue
-                }
-                recommendedUsers.add(potentialUser)
             }
             return recommendedUsers
         }

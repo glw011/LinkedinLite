@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import ui.components.Field
-import ui.components.profilecard.Member
+import ui.components.profilecard.Associate
 
 /**
  * A dialog for editing a member's role in a profile.
@@ -19,14 +19,14 @@ import ui.components.profilecard.Member
  * @param onCancel Callback for when the cancel button is clicked or dialog is dismissed.
  */
 @Composable
-fun ProfileMemberEditDialog(
-    member: Member,
+fun ProfileAssociateEditDialog(
+    associate: Associate,
     onRoleChange: (String) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit
 ) {
     EditDialog(
-        title = "Edit ${member.name}",
+        title = "Edit ${associate.name}",
         fields = listOf(
             Field(
                 title = "Role",

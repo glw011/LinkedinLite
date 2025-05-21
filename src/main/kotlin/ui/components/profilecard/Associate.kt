@@ -9,7 +9,8 @@ import androidx.compose.ui.graphics.ImageBitmap
  * @property role The role of the member.
  * @property profilePicture The profile picture of the member. Defaults to a default image.
  */
-data class Member(
+data class Associate(
+    val email: String,
     val name: String,
     var role: String,
     val profilePicture: ImageBitmap = ImageBitmap(0, 0),

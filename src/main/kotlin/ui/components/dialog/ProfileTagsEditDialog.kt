@@ -1,6 +1,13 @@
 package ui.components.dialog
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -13,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import data.DataSource
+import model.ModelManager
 import ui.components.styles.styledButton
 import ui.components.styles.styledDropDownList
 
@@ -28,7 +35,7 @@ import ui.components.styles.styledDropDownList
 @Composable
 fun ProfileTagsEditDialog(
     tags: List<String>,
-    onSelect: (String) -> Unit,
+    onSelect: (List<String>) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -60,14 +67,20 @@ fun ProfileTagsEditDialog(
 
                 // Tags Dropdown
                 styledDropDownList(
-                    items = DataSource.tags,
+                    items = ModelManager
+                        .getAllInterestsList()
+                        .toList()
+                        .sortedByDescending { it }
+                        .asReversed(),
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     multiSelect = true,
-                    noSelectionText = "Select Organization Tags",
+                    noSelectionText = "Select Tags",
                     value = tags.joinToString(", "),
                     itemsSelected = tags,
-                    onSelect = onSelect,
+                    onSelectionChange = {
+                        onSelect(it)
+                    },
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

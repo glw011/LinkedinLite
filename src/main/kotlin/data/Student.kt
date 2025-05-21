@@ -2,6 +2,8 @@ package data
 
 import ProfileRecommender
 import androidx.compose.ui.graphics.ImageBitmap
+import dao.StudentDAO
+import dao.UserDAO
 import model.ModelManager
 import model.School
 import model.Student
@@ -29,8 +31,6 @@ class Student private constructor(
     tags
 ) {
     override val title = "Student"
-
-    private var organizations: List<Organization> = listOf()
 
     override fun getModel(): Student {
         return StudentService().getStudentById(id)
@@ -64,13 +64,14 @@ class Student private constructor(
         }
         return tags
     }
-    fun getOrganizations(): List<Organization> {
-        val orgIDs = getModel().orgList.toList()
-        val orgs = mutableListOf<Organization>()
-        for (orgID in orgIDs) {
-            orgs.add(Organization.fromModel(OrgService().getOrgById(orgID)))
+    override fun getDescription(): String {
+        if (getModel().bio == null) {
+            return ""
         }
-        return orgs.toList()
+        return getModel().bio
+    }
+    fun getOrganizations(): List<Organization> {
+        return getModel().orgList.toList().map { Organization.fromModel(OrgService().getOrgById(it)) }
     }
 
     override fun getRecommendedStudents(): List<data.Student> {
@@ -81,6 +82,14 @@ class Student private constructor(
         return ProfileRecommender.recommendOrganizations(this, 4)
             .map { Organization.fromModel(it) }
     }
+    fun getPendingInvites(): List<Organization> {
+        val pendingInvites = StudentDAO.getAllPendingInvites(getId())
+        if (pendingInvites == null) {
+            return emptyList()
+        } else {
+            return pendingInvites.map { Organization.fromModel(it) }
+        }
+    }
 
     override fun setName(name: String) {
         setFirstName(name.split(" ")[0])
@@ -88,9 +97,10 @@ class Student private constructor(
     }
     fun setFirstName(name: String) {
         getModel().fname = name
+        StudentService().updateStudent(getModel())
     }
     fun setLastName(surname: String) {
-        getModel().lname = surname
+        StudentDAO.setLName(getId(), surname)
     }
 
     override fun setEmail(email: String) {
@@ -99,29 +109,65 @@ class Student private constructor(
 
     override fun setSchool(school: String) {
         getModel().school = ModelManager.getSchoolByName(school)
+        StudentDAO.setSchool(getId(), ModelManager.getSchoolByName(school).id)
+        StudentService().updateStudent(getModel())
     }
     fun setMajor(major: String) {
         getModel().major = ModelManager.getMajorIdByName(major)
+        StudentService().updateStudent(getModel())
     }
     override fun setProfilePicture(profilePicture: ImageBitmap) {
         this.profilePicture = profilePicture
     }
+    override fun setDescription(description: String) {
+        StudentDAO.setBio(getId(), description)
+    }
     override fun setTags(tags: List<String>) {
-        val tagIDs = mutableListOf<Int>()
-        for (tag in tags) {
-            tagIDs.add(ModelManager.getInterestByName(tag).id)
+        val currentTags = getModel().interests.toList()
+        for (tagID in currentTags) {
+            if (!tags.contains(ModelManager.getInterest(tagID).name)) {
+                UserDAO.delUserInterest(id, tagID)
+            }
         }
-        getModel().interests = (tagIDs as LinkedList<Int>?)
+        for (tag in tags) {
+            if (!getModel().interests.contains(ModelManager.getInterestByName(tag).id)) {
+                UserDAO.addUserInterest(id, ModelManager.getInterestByName(tag).id)
+            }
+        }
     }
     override fun addTag(tag: String) {
-        val tagIDs = getModel().interests
-        tagIDs.add(ModelManager.getInterestByName(tag).id)
-        getModel().interests = tagIDs
+        UserDAO.addUserInterest(id, ModelManager.getInterestByName(tag).id)
     }
     override fun removeTag(tag: String) {
-        val tagIDs = getModel().interests
-        tagIDs.remove(ModelManager.getInterestByName(tag).id)
-        getModel().interests = tagIDs
+        UserDAO.delUserInterest(id, ModelManager.getInterestByName(tag).id)
+    }
+    fun setOrganizations(organizations: List<Organization>) {
+        for (org in organizations) {
+            if (!getModel().orgList.contains(org.getId())) {
+                OrgService().getOrgById(org.getId()).addMember(getId())
+            }
+        }
+    }
+    fun addOrganization(organization: Organization) {
+        if (!getModel().orgList.contains(organization.getId())) {
+            OrgService().getOrgById(organization.getId()).addMember(getId())
+        }
+    }
+    fun removeOrganization(organization: Organization) {
+        if (getModel().orgList.contains(organization.getId())) {
+            OrgService().getOrgById(organization.getId()).removeMember(getId())
+        }
+    }
+    fun requestMembership(organization: Organization) {
+        if (!getModel().orgList.contains(organization.getId())) {
+            StudentDAO.requestMembership(getId(), organization.getId())
+        }
+    }
+    fun acceptMembership(organization: Organization) {
+        StudentDAO.approveOrgInvite(getId(), organization.getId())
+    }
+    fun rejectMembership(organization: Organization) {
+        StudentDAO.denyOrgInvite(getId(), organization.getId())
     }
 
     companion object {
@@ -160,6 +206,9 @@ class Student private constructor(
                 school,
                 major
             )
+            for (tag in tags) {
+                UserDAO.addUserInterest(id, ModelManager.getInterestByName(tag).id)
+            }
             return Student(
                 id,
                 name,

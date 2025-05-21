@@ -8,13 +8,18 @@ package ui.views.home
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import data.User
 import model.UserType
 import ui.components.Sidebar
 import ui.components.searchActive
-import ui.theme.DARK_MODE
 
 /**
  * The main UI composable for the LinkedInLite application.
@@ -30,8 +35,9 @@ import ui.theme.DARK_MODE
 fun UI(
     profileUiState: ProfileUiState,
     currentUser: User,
+    onLogout: () -> Unit,
 ) {
-    Surface(modifier = Modifier.fillMaxSize(), color = if (DARK_MODE) ui.theme.backgroundDark else ui.theme.backgroundLight) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         var selectedTab by remember { mutableStateOf("Home") }
 
         Row(Modifier.fillMaxSize()) {
@@ -66,13 +72,14 @@ fun UI(
                     "People / Orgs" -> peopleOrgsTabContent()
                     "My Profile" ->
                         if (currentUser.getAccountType() == UserType.ORG) {
-                            OrgProfileTab(profileUiState, currentUser)
+                            OrgProfileTab(currentUser, profileUiState)
                         } else {
-                            IndividualProfileTab(profileUiState, currentUser)
+                            IndividualProfileTab(currentUser, profileUiState)
                         }
                     "Home" -> homeTab()
                     "Post" -> postTab(currentUser)
-                    "Notifications" -> NotificationsTab()
+                    "Notifications" -> NotificationsTab(currentUser, NotificationsUiState(currentUser), profileUiState)
+                    "Settings" -> SettingsTab(onLogout = onLogout)
                     // Add your new tab content composables here
                 }
             }
