@@ -210,13 +210,14 @@ fun drawPost(post: Post) {
                         ) {
                             Column(modifier = Modifier.fillMaxSize()) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Image(
+                                    ui.components.image.Image(
+                                        bitmap = post.ownerPfp ?: imageResource(Res.drawable.default_pfp),
+                                        defaultImage = imageResource(Res.drawable.default_pfp),
                                         modifier = Modifier
                                             .height(16.dp)
                                             .width(16.dp)
                                             .clip(CircleShape),
                                         alignment = Alignment.Center,
-                                        painter = painterResource(Res.drawable.default_pfp),
                                         contentDescription = "Profile Picture",
                                     )
 
