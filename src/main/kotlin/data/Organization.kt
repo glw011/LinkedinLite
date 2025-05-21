@@ -131,7 +131,11 @@ class Organization private constructor(
         OrgService().inviteMember(getId(), member.getId())
     }
     fun acceptMember(member: Student) {
-        OrgService().approveMemberRequest(getId(), member.getId())
+        try {
+            OrgService().approveMemberRequest(getId(), member.getId())
+        } catch (e: Exception) {
+            // Let the exception pass
+        }
     }
     fun rejectMember(member: Student) {
         OrgService().denyMemberRequest(getId(), member.getId())

@@ -1,6 +1,7 @@
 package ui.views.home
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
@@ -21,7 +22,6 @@ data class ProfileUiState(
     var user: User,
     var recommendedPeople: List<Student> = listOf(),
     var relatedOrganizations: List<Organization> = listOf(),
-    var associates: MutableList<Associate> = mutableListOf(),
 ) {
     var headerInfo: ProfileHeaderInfo = ProfileHeaderInfo(
         _name = user.getName(),
@@ -31,6 +31,7 @@ data class ProfileUiState(
         _school = user.getSchool(),
     )
     var tags = user.getTags()
+    var associates = mutableStateListOf<Associate>()
 }
 
 /**

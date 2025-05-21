@@ -40,7 +40,8 @@ import util.openFileChooser
 @Composable
 fun IndividualProfileTab(
     user: User,
-    uiState: ProfileUiState
+    uiState: ProfileUiState,
+    currentUser: User = user,
 ) {
     val profileHeaderInfo by rememberSaveable { mutableStateOf(ProfileHeaderInfo()) }
     var imagePath by rememberSaveable { mutableStateOf("") }

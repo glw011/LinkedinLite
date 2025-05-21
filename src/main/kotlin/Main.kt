@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -175,7 +176,7 @@ fun App() {
                         )
                     }
                 }
-                profileUiState.associates = associates
+                profileUiState.associates = associates.toMutableStateList()
                 UI(
                     profileUiState = profileUiState,
                     currentUser = currentUser!!,

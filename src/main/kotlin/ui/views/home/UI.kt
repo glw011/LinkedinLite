@@ -81,7 +81,8 @@ fun UI(
                         }
                     "Home" -> homeTab()
                     "Post" -> postTab(currentUser)
-                    "Notifications" -> onLogout()
+                    "Notifications" -> NotificationsTab(currentUser, NotificationsUiState(currentUser), profileUiState)
+                    "Settings" -> SettingsTab(onLogout = onLogout)
                     // Add your new tab content composables here
                 }
             }
