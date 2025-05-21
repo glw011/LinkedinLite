@@ -14,7 +14,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -40,7 +45,8 @@ fun searchBar(
     onSearchTextChanged: (String) -> Unit,
     hasFilter: Boolean = false,
     dropdownItems: List<String> = listOf(""),
-    onFilterSelectionChanged: (List<String>) -> Unit = {} // ← new
+    onFilterSelectionChanged: (List<String>) -> Unit = {}, // ← new
+    alwaysShow: Boolean = false,
 ) {
     var searchText by remember { mutableStateOf("") }
     val density = LocalDensity.current
@@ -50,7 +56,7 @@ fun searchBar(
     }
     val selectedFilters = remember { mutableStateListOf<String>() }
 
-    if (searchActive)
+    if (searchActive || alwaysShow)
         SEARCH_BAR_TEXT = searchText
     else {
         searchText = ""
@@ -61,7 +67,7 @@ fun searchBar(
 //        Spacer(modifier = Modifier.padding(top = 16.dp))
 
     AnimatedVisibility(
-        visible = searchActive,
+        visible = searchActive || alwaysShow,
         enter = slideInVertically(
             animationSpec = tween(durationMillis = 250),
             initialOffsetY = { -screenHeight }
@@ -75,7 +81,10 @@ fun searchBar(
             Row (modifier = Modifier.weight(1f)){
                 // Search Bar
                 styledTextField(
-                    onTextChanged = { searchText = it },
+                    onTextChanged = {
+                        searchText = it
+                        onSearchTextChanged(it)
+                    },
                     unfocusedText = "Search for People / Organizations",
                     width = 0,   // Arbitrarily large number for now, will change later
                     icon = Icons.Filled.Search,
@@ -101,7 +110,7 @@ fun searchBar(
             }
         }
 
-        if (searchActive)
+        if (searchActive || alwaysShow)
             Spacer(modifier = Modifier.padding(top = 16.dp))
     }
 }

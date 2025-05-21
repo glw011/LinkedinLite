@@ -23,10 +23,8 @@ import data.User
 import model.ModelManager
 import ui.components.DetailEditDialog
 import ui.components.ProfileHeader
-import ui.components.dialog.ProfileAssociateEditDialog
 import ui.components.dialog.ProfileAssociateInviteDialog
 import ui.components.dialog.ProfileTagsEditDialog
-import ui.components.profilecard.Associate
 import ui.components.profilecard.ProfileAssociatesCard
 import ui.components.profilecard.ProfilePostsCard
 import ui.components.profilecard.ProfileRecommendationCard
@@ -47,10 +45,8 @@ fun IndividualProfileTab(
     val profileHeaderInfo by rememberSaveable { mutableStateOf(ProfileHeaderInfo()) }
     var imagePath by rememberSaveable { mutableStateOf("") }
     var isEditingHeader by rememberSaveable { mutableStateOf(false) }
-    var isInvitingMember by rememberSaveable { mutableStateOf(false) }
+    var isRequestingMembership by rememberSaveable { mutableStateOf(false) }
     var isEditingTags by rememberSaveable { mutableStateOf(false) }
-    var organizationToEdit: Associate? by rememberSaveable { mutableStateOf(null) }
-    var organizationToEditRole: String by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -114,11 +110,8 @@ fun IndividualProfileTab(
                 ProfileAssociatesCard(
                     title = "Organizations",
                     associates = uiState.associates.toMutableList(),
-                    onAssociateClick = { organization ->
-                        organizationToEdit = organization
-                        organizationToEditRole = organization.role
-                    },
-                    onAddAssociateClick = { isInvitingMember = true },
+                    onAssociateClick = {},
+                    onAddAssociateClick = { isRequestingMembership = true },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp)
@@ -181,24 +174,10 @@ fun IndividualProfileTab(
             }
         )
     }
-    if (isInvitingMember) {
+    if (isRequestingMembership) {
         ProfileAssociateInviteDialog(
-            onCancel = { isInvitingMember = false }
-        )
-    }
-    if (organizationToEdit != null) {
-        ProfileAssociateEditDialog(
-            associate = organizationToEdit!!,
-            onRoleChange = { organizationToEditRole = it },
-            onSave = {
-                organizationToEdit?.role = organizationToEditRole
-                organizationToEdit = null
-                organizationToEditRole = ""
-            },
-            onCancel = {
-                organizationToEdit = null
-                organizationToEditRole = ""
-            },
+            user = uiState.user,
+            onCancel = { isRequestingMembership = false }
         )
     }
     if (isEditingTags) {

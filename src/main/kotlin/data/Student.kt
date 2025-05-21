@@ -82,7 +82,12 @@ class Student private constructor(
             .map { Organization.fromModel(it) }
     }
     fun getPendingInvites(): List<Organization> {
-        return StudentDAO.getAllPendingInvites(getId()).map { Organization.fromModel(it) }
+        val pendingInvites = StudentDAO.getAllPendingInvites(getId())
+        if (pendingInvites == null) {
+            return emptyList()
+        } else {
+            return pendingInvites.map { Organization.fromModel(it) }
+        }
     }
 
     override fun setName(name: String) {

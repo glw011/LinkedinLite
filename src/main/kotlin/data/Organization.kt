@@ -70,8 +70,11 @@ class Organization private constructor(
         return getModel().membersList.map { Student.fromModel(StudentService().getStudentById(it)) }
     }
     fun getPendingMembershipRequests(): List<Student> {
-        return OrgService().getPendingRequests(getId()).keys.map {
-            Student.fromModel(StudentService().getStudentById(it))
+        val pendingRequests = OrgService().getPendingRequests(getId())
+        if (pendingRequests == null) {
+            return emptyList()
+        } else {
+            return pendingRequests.map { Student.fromModel(it) }
         }
     }
 

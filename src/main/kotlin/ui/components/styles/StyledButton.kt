@@ -51,10 +51,11 @@ fun styledButton(
     onClick: () -> Unit = {},
     buttonColor: Color = Color.LightGray,
     textColor: Color = Color.Black,
+    modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
     Box(
-        modifier = Modifier
+        modifier = modifier
             .width(width.dp)
             .height(32.dp)
             .background(buttonColor, RoundedCornerShape(32.dp))

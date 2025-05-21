@@ -11,7 +11,7 @@ import service.UserService
 import ui.components.Post
 import ui.views.home.ProfileData
 import util.getBitmapFromFilepath
-import java.util.*
+import java.util.LinkedList
 
 /**
  * Asynchronously searches the database for users (students or organizations) whose names
@@ -45,6 +45,7 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
 //                val interests = user.interestList.mapNotNull { id ->
 //                    ModelManager.getInterest(id)?.name
 //                }
+                val email = user.email?.lowercase() ?: ""
                 val major = ModelManager.getMajor(user.major)?.name ?: ""
                 val school = ModelManager.getSchool(user.school.schoolId)?.name ?: ""
 
@@ -60,6 +61,7 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
                     name = "${user.fname} ${user.lname}",
                     bio = user.bio ?: "",
 //                    tags = interests,
+                    email = user.email,
                     major = major,
                     school = school
                 )
@@ -73,7 +75,8 @@ suspend fun getProfilesFromSearch(searchText: String): List<ProfileData> = withC
                     pfp = null,
                     name = user.name,
                     bio = user.bio ?: "",
-                    tags = emptyList()
+                    tags = emptyList(),
+                    email = user.email
                 )
             }
 

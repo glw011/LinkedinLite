@@ -188,6 +188,7 @@ fun OrgProfileTab(
     }
     if (isInvitingMember) {
         ProfileAssociateInviteDialog(
+            user = uiState.user,
             onCancel = { isInvitingMember = false }
         )
     }
