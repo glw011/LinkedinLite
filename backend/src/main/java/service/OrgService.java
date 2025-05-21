@@ -157,9 +157,10 @@ public class OrgService {
      */
     public boolean approveMemberRequest(int orgId, int studentId) {
         try {
-            boolean approved = OrgDAO.approveMemberRequest(orgId, studentId);
-            if (!approved) return false;
-            return OrgDAO.addMember(orgId, studentId);
+            return OrgDAO.approveMemberRequest(orgId, studentId);
+            //boolean approved = OrgDAO.approveMemberRequest(orgId, studentId);
+            //if (!approved) return false;
+            //return OrgDAO.addMember(orgId, studentId);
         } catch (SQLException e) {
             throw new OrgServiceException(
                     String.format("Error approving request for student %d in org %d", studentId, orgId), e);
