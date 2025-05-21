@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import data.User
 import ui.components.DetailEditDialog
 import ui.components.ProfileHeader
 import ui.components.dialog.ProfileMemberEditDialog
@@ -62,7 +63,8 @@ val exampleMembers = exampleNames.mapIndexed { index, name ->
  */
 @Composable
 fun OrgProfileTab(
-    uiState: ProfileUiState
+    uiState: ProfileUiState,
+    currentUser: User
 ) {
     val profileHeaderInfo by rememberSaveable { mutableStateOf(ProfileHeaderInfo()) }
     var imagePath by rememberSaveable { mutableStateOf("") }
@@ -115,7 +117,8 @@ fun OrgProfileTab(
                         .wrapContentHeight()
                         .fillMaxWidth()
                         .border(1.dp, Color.Gray, headerShape)
-                        .clip(headerShape)
+                        .clip(headerShape),
+                    currentUser
                 )
                 ProfilePostsCard(
                     title = "Posts",

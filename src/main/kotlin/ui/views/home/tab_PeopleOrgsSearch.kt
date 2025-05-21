@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bufferedImageToImageBitmap
 import dao.PictureDAO
 import dao.UserDAO
 import data.DataSource.searchFilters

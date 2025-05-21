@@ -13,16 +13,11 @@ import data.Organization
 import data.Student
 import data.User
 import model.ModelManager
-import model.Org
 import model.UserType
 import ui.theme.MainTheme
 import ui.views.home.ProfileUiState
 import ui.views.home.UI
-import ui.views.login.LoginEvent
-import ui.views.login.LoginResult
-import ui.views.login.LoginUiState
-import ui.views.login.loginScreen
-import ui.views.login.onLoginEvent
+import ui.views.login.*
 import ui.views.register.Register
 import util.updateScreenDimensions
 import java.awt.Dimension

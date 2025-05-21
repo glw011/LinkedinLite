@@ -7,17 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import model.UserType
-import ui.views.register.credentials.RegisterCredentialsEvent
-import ui.views.register.credentials.RegisterCredentialsResult
-import ui.views.register.credentials.RegisterCredentialsUiState
-import ui.views.register.credentials.onRegisterCredentialsEvent
-import ui.views.register.credentials.registerCredentialsScreen
-import ui.views.register.info.RegisterInfoEvent
-import ui.views.register.info.RegisterInfoResult
-import ui.views.register.info.RegisterInfoUiState
-import ui.views.register.info.onRegisterInfoEvent
-import ui.views.register.info.registerInfoScreen
-import ui.views.register.info.registerInfoScreenCont
+import ui.views.register.credentials.*
+import ui.views.register.info.*
 import ui.views.register.pfp.RegisterPfpUIState
 import ui.views.register.pfp.registerPfpScreen
 

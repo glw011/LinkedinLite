@@ -7,7 +7,7 @@ import model.Org
 import model.School
 import model.UserType
 import service.OrgService
-import java.util.LinkedList
+import java.util.*
 
 class Organization private constructor(
     private val id: Int,

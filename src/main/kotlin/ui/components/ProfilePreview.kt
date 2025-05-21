@@ -22,8 +22,6 @@ import androidx.compose.ui.unit.dp
 import org.example.linkedinlite.generated.resources.Res
 import org.example.linkedinlite.generated.resources.default_pfp
 import org.jetbrains.compose.resources.painterResource
-import ui.views.home.ProfileData
-import ui.views.home.ProfileUiState
 
 /**
  * Composable function for displaying a preview of a profile.

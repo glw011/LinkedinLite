@@ -1,9 +1,6 @@
 package ui.components.profilecard
 
 import androidx.compose.ui.graphics.ImageBitmap
-import org.example.linkedinlite.generated.resources.Res
-import org.example.linkedinlite.generated.resources.default_pfp
-import util.getBitmapFromDrawableID
 
 /**
  * Data class representing a member in a profile card.

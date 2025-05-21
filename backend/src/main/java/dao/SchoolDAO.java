@@ -2,7 +2,6 @@ package dao;
 
 import model.ModelManager;
 import model.School;
-import util.DBConnection;
 import util.DBConnection2;
 
 import java.sql.PreparedStatement;

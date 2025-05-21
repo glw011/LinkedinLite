@@ -11,6 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import dao.PictureDAO
+import dao.UserDAO
+import data.User
+import imageBitmapToBufferedImage
 import ui.components.DetailEditDialog
 import ui.components.ProfileHeader
 import ui.components.dialog.ProfileMemberEditDialog
@@ -27,7 +31,8 @@ import util.openFileChooser
  */
 @Composable
 fun IndividualProfileTab(
-    uiState: ProfileUiState
+    uiState: ProfileUiState,
+    currentUser: User
 ) {
     val profileHeaderInfo by rememberSaveable { mutableStateOf(ProfileHeaderInfo()) }
     var imagePath by rememberSaveable { mutableStateOf("") }
@@ -75,12 +80,27 @@ fun IndividualProfileTab(
                         if (imagePath.isNotEmpty()) {
                             uiState.headerInfo.profilePicture = getBitmapFromFilepath(imagePath)
                         }
+
+                        var imgId = 0
+
+                        if (uiState.headerInfo.profilePicture.height != 0 && uiState.headerInfo.profilePicture.width != 0) {
+                            imgId = PictureDAO.addNewImg(
+                                imageBitmapToBufferedImage(uiState.headerInfo.profilePicture),
+                                (currentUser as User).getId()
+                            )
+
+                            UserDAO.setProfileImg(
+                                (currentUser as User).getId(),
+                                imgId
+                            )
+                        }
                     },
                     modifier = Modifier
                         .wrapContentHeight()
                         .fillMaxWidth()
                         .border(1.dp, Color.Gray, headerShape)
-                        .clip(headerShape)
+                        .clip(headerShape),
+                    currentUser = currentUser
                 )
                 ProfilePostsCard(
                     title = "Posts",
