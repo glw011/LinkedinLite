@@ -162,6 +162,8 @@ fun ProfileAssociatesCard(
     associates: MutableList<Associate>,
     onAssociateClick: (Associate) -> Unit,
     onAddAssociateClick: () -> Unit,
+    onRemoveAssociate: (Associate) -> Unit,
+    isEditable: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     var isEditing by rememberSaveable{ mutableStateOf(false) }
@@ -170,9 +172,8 @@ fun ProfileAssociatesCard(
         title = title,
         subtitle = subtitle,
         editIcon = editIcon,
-        onClick = {
-            isEditing = !isEditing
-        },
+        isEditable = isEditable,
+        onClick = { isEditing = !isEditing },
         modifier = modifier
     ) {
         LazyRow(
@@ -197,7 +198,10 @@ fun ProfileAssociatesCard(
                         }
                     },
                     onDelete = {
-                        associates.remove(associates[index])
+                        if (associates.isNotEmpty()) {
+                            associates.remove(associates[index])
+                            onRemoveAssociate(associates[index])
+                        }
                     },
                     modifier = itemModifier
                 )

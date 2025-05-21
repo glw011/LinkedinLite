@@ -135,6 +135,7 @@ fun App() {
                     for (member in (currentUser as Organization).getMembers()) {
                         associates.add(
                             Associate(
+                                member.getEmail(),
                                 member.getName(),
                                 "Example Role"
                             )
@@ -144,6 +145,7 @@ fun App() {
                     for (organization in (currentUser as Student).getOrganizations()) {
                         associates.add(
                             Associate(
+                                organization.getEmail(),
                                 organization.getName(),
                                 "Example Role"
                             )

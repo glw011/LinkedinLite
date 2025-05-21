@@ -21,7 +21,7 @@ data class ProfileUiState(
     var user: User,
     var recommendedPeople: List<Student> = listOf(),
     var relatedOrganizations: List<Organization> = listOf(),
-    var associates: List<Associate> = listOf(),
+    var associates: MutableList<Associate> = mutableListOf(),
 ) {
     var headerInfo: ProfileHeaderInfo = ProfileHeaderInfo(
         _name = user.getName(),

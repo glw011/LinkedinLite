@@ -20,8 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import data.Organization
+import data.Student
 import data.User
 import model.ModelManager
+import service.StudentService
 import ui.components.DetailEditDialog
 import ui.components.ProfileHeader
 import ui.components.dialog.ProfileAssociateEditDialog
@@ -117,12 +120,17 @@ fun OrgProfileTab(
                 )
                 ProfileAssociatesCard(
                     title = "Members",
-                    associates = uiState.associates.toMutableList(),
+                    associates = uiState.associates,
                     onAssociateClick = { member ->
                         memberToEdit = member
                         memberToEditRole = member.role
                     },
                     onAddAssociateClick = { isInvitingMember = true },
+                    onRemoveAssociate = {
+                        uiState.associates.remove(it)
+                        val student = Student.fromModel(StudentService().getStudentById(ModelManager.getUserId(it.email)))
+                        (user as Organization).removeMember(student)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp)

@@ -109,9 +109,11 @@ fun IndividualProfileTab(
                 )
                 ProfileAssociatesCard(
                     title = "Organizations",
-                    associates = uiState.associates.toMutableList(),
+                    associates = uiState.associates,
                     onAssociateClick = {},
                     onAddAssociateClick = { isRequestingMembership = true },
+                    onRemoveAssociate = {},
+                    isEditable = false,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp)
